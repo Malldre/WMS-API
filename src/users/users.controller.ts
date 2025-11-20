@@ -1,5 +1,5 @@
 import { Controller, Post, Body, ConflictException } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from './users.repository';
 
 @Controller('users')
 export class UsersController {
