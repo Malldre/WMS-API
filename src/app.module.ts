@@ -9,7 +9,7 @@ import { SupplierModule } from './suppliers/supplier.module';
 import { CompanyModule } from './companies/company.module';
 import { MaterialModule } from './materials/material.module';
 import { MaterialCategoryModule } from './material_categories/material_category.module';
-import { StorageModule } from './storages/storage.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { StorageModule } from './storages/storage.module';
     CompanyModule,
     MaterialModule,
     MaterialCategoryModule,
-    StorageModule,
+    TasksModule,
   ],
 })
 export class AppModule {}
