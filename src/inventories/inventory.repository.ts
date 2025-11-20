@@ -27,11 +27,11 @@ export class InventoryRepository {
     return inventory;
   }
 
-  async findByMaterialId(materialId: number) {
+  async findByInvoiceItemId(invoiceItemId: number) {
     return await this.db
       .select()
       .from(inventories)
-      .where(eq(inventories.materialId, materialId));
+      .where(eq(inventories.materialId, invoiceItemId));
   }
 
   async findByStorageId(storageId: number) {
@@ -41,13 +41,13 @@ export class InventoryRepository {
       .where(eq(inventories.storageId, storageId));
   }
 
-  async findByMaterialAndStorage(materialId: number, storageId: number) {
+  async findByInvoiceItemAndStorage(invoiceItemId: number, storageId: number) {
     const [inventory] = await this.db
       .select()
       .from(inventories)
       .where(
         and(
-          eq(inventories.materialId, materialId),
+          eq(inventories.materialId, invoiceItemId),
           eq(inventories.storageId, storageId)
         )
       )
@@ -57,26 +57,42 @@ export class InventoryRepository {
   }
 
   async create(inventoryData: {
-    materialId: number;
+    invoiceItemId: number;
     storageId: number;
     quantity: string;
   }) {
     const [inventory] = await this.db
       .insert(inventories)
-      .values(inventoryData)
+      .values({
+        materialId: inventoryData.invoiceItemId,
+        storageId: inventoryData.storageId,
+        quantity: inventoryData.quantity,
+      })
       .returning();
     
     return inventory;
   }
 
   async update(uuid: string, inventoryData: {
-    materialId?: number;
+    invoiceItemId?: number;
     storageId?: number;
     quantity?: string;
   }) {
+    const updateData: any = {};
+    
+    if (inventoryData.invoiceItemId !== undefined) {
+      updateData.materialId = inventoryData.invoiceItemId;
+    }
+    if (inventoryData.storageId !== undefined) {
+      updateData.storageId = inventoryData.storageId;
+    }
+    if (inventoryData.quantity !== undefined) {
+      updateData.quantity = inventoryData.quantity;
+    }
+
     const [inventory] = await this.db
       .update(inventories)
-      .set(inventoryData)
+      .set(updateData)
       .where(eq(inventories.uuid, uuid))
       .returning();
     

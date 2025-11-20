@@ -1,8 +1,10 @@
 export class Inventory {
   id: number;
   uuid: string;
-  materialId: number;
+  invoiceItemId: number;
   storageId: number;
   quantity: string;
+  reserved: string;
+  available: string;
   createdAt: Date;
 }

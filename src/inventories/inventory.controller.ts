@@ -13,12 +13,12 @@ export class InventoryController {
   }
 
   @Get('search')
-  async findByMaterialAndStorage(
-    @Query('materialId') materialId: string,
+  async findByInvoiceItemAndStorage(
+    @Query('invoiceItemId') invoiceItemId: string,
     @Query('storageId') storageId: string
   ) {
-    return await this.inventoryService.findByMaterialAndStorage(
-      parseInt(materialId),
+    return await this.inventoryService.findByInvoiceItemAndStorage(
+      parseInt(invoiceItemId),
       parseInt(storageId)
     );
   }
@@ -28,9 +28,9 @@ export class InventoryController {
     return await this.inventoryService.findByUuid(uuid);
   }
 
-  @Get('material/:materialId')
-  async findByMaterial(@Param('materialId') materialId: string) {
-    return await this.inventoryService.findByMaterialId(parseInt(materialId));
+  @Get('invoice-item/:invoiceItemId')
+  async findByInvoiceItem(@Param('invoiceItemId') invoiceItemId: string) {
+    return await this.inventoryService.findByInvoiceItemId(parseInt(invoiceItemId));
   }
 
   @Get('storage/:storageId')
@@ -40,7 +40,7 @@ export class InventoryController {
 
   @Post()
   async create(@Body() body: {
-    materialId: number;
+    invoiceItemId: number;
     storageId: number;
     quantity: string;
   }) {
@@ -51,7 +51,7 @@ export class InventoryController {
   async update(
     @Param('uuid') uuid: string,
     @Body() body: {
-      materialId?: number;
+      invoiceItemId?: number;
       storageId?: number;
       quantity?: string;
     }
