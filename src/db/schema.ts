@@ -29,8 +29,6 @@ export const users = pgTable('user', {
   userGroupId: integer('user_group_id'),
   status: userStatusEnum('status').default('ACTIVE').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const userGroups = pgTable('user_group', {
@@ -38,12 +36,7 @@ export const userGroups = pgTable('user_group', {
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   name: varchar('name', { length: 100 }).notNull(),
   description: varchar('description', { length: 255 }).notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const services = pgTable('service', {
@@ -52,12 +45,7 @@ export const services = pgTable('service', {
   name: varchar('name', { length: 50 }).notNull(),
   description: varchar('description', { length: 100 }),
   status: serviceStatusEnum('status').default('TESTING').notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const roles = pgTable('role', {
@@ -95,36 +83,21 @@ export const companies = pgTable('company', {
   state: varchar('state', { length: 100 }).notNull(),
   postalCode: varchar('postal_code', { length: 20 }),
   country: varchar('country', { length: 100 }).notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const customerInfo = pgTable('customer_info', {
   id: serial('id').primaryKey(),
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const supplierInfo = pgTable('supplier_info', {
   id: serial('id').primaryKey(),
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const materialCategories = pgTable('material_category', {
@@ -133,12 +106,7 @@ export const materialCategories = pgTable('material_category', {
   name: varchar('name', { length: 100 }).notNull().unique(),
   description: varchar('description', { length: 255 }).notNull(),
   materialUnit: materialUnitEnum('material_unit').notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const materials = pgTable('material', {
@@ -149,12 +117,7 @@ export const materials = pgTable('material', {
   description: varchar('description', { length: 255 }).notNull(),
   materialUnit: materialUnitEnum('material_unit').notNull(),
   status: materialStatusEnum('status').default('DEVELOPMENT').notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const invoices = pgTable('invoice', {
@@ -164,12 +127,7 @@ export const invoices = pgTable('invoice', {
   supplierId: integer('supplier_id').notNull().references(() => supplierInfo.id),
   receivedAt: timestamp('received_at').notNull(),
   status: invoiceStatusEnum('status').default('PENDING').notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const invoiceItems = pgTable('invoice_item', {
@@ -182,12 +140,7 @@ export const invoiceItems = pgTable('invoice_item', {
   unitValue: numeric('unit_value', { precision: 18, scale: 6 }).generatedAlwaysAs(sql`CAST(total_value AS numeric) / CAST(quantity AS numeric)`).notNull(),
   status: invoiceMaterialStatusEnum('status').default('WAITING').notNull(),
   remark: varchar('remark', { length: 255 }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const costCenters = pgTable('cost_center', {
@@ -201,12 +154,7 @@ export const costCenters = pgTable('cost_center', {
   state: varchar('state', { length: 100 }).notNull(),
   postalCode: varchar('postal_code', { length: 20 }),
   country: varchar('country', { length: 100 }).notNull(),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const shipmentOrders = pgTable('shipment_order', {
@@ -216,12 +164,7 @@ export const shipmentOrders = pgTable('shipment_order', {
   requiredDate: timestamp('required_date').notNull(),
   status: shipmentOrderStatusEnum('status').default('OPEN').notNull(),
   remark: varchar('remark', { length: 255 }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const shipmentOrderMaterials = pgTable('shipment_order_material', {
@@ -232,12 +175,7 @@ export const shipmentOrderMaterials = pgTable('shipment_order_material', {
   quantity: numeric('quantity', { precision: 18, scale: 3 }).notNull(),
   status: shipmentOrderMaterialStatusEnum('status').default('WAITING_SEPARATION').notNull(),
   remark: varchar('remark', { length: 255 }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const shipmentDocuments = pgTable('shipment_documents', {
@@ -247,12 +185,7 @@ export const shipmentDocuments = pgTable('shipment_documents', {
   value: numeric('value', { precision: 18, scale: 3 }).notNull(),
   externalPackageId: varchar('external_package_id', { length: 255 }),
   shipmentDate: date('shipment_date'),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const shipmentLoads = pgTable('shipment_load', {
@@ -263,12 +196,7 @@ export const shipmentLoads = pgTable('shipment_load', {
   weight: numeric('weight', { precision: 18, scale: 3 }).notNull(),
   dimensions: varchar('dimensions', { length: 255 }).notNull(),
   externalPackageId: varchar('external_package_id', { length: 255 }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const shipmentPackages = pgTable('shipment_packages', {
@@ -280,12 +208,7 @@ export const shipmentPackages = pgTable('shipment_packages', {
   weight: numeric('weight', { precision: 18, scale: 3 }).notNull(),
   dimensions: varchar('dimensions', { length: 255 }).notNull(),
   shipmentLoadId: integer('shipment_load_id').references(() => shipmentLoads.id, { onDelete: 'cascade' }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const storages = pgTable('storage', {
@@ -294,12 +217,7 @@ export const storages = pgTable('storage', {
   code: varchar('code', { length: 50 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const inventories = pgTable('inventory', {
@@ -310,12 +228,7 @@ export const inventories = pgTable('inventory', {
   quantity: numeric('quantity', { precision: 18, scale: 3 }).notNull(),
   reserved: numeric('reserved', { precision: 18, scale: 3 }).default('0').notNull(),
   available: numeric('available', { precision: 18, scale: 3 }).generatedAlwaysAs(sql`quantity - reserved`),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 export const tasks = pgTable('task', {
@@ -325,12 +238,7 @@ export const tasks = pgTable('task', {
   description: varchar('description', { length: 1024 }),
   status: taskStatusEnum('status').default('PENDING').notNull(),
   dueDate: timestamp('due_date'),
-  createdById: integer('created_by_id').notNull().references(() => users.id),
-  changedById: integer('changed_by_id').references(() => users.id),
-  deletedById: integer('deleted_by_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  changedAt: timestamp('changed_at'),
-  deletedAt: timestamp('deleted_at'),
 });
 
 // Type exports
