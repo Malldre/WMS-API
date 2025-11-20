@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InvoiceItemRepository } from './invoiceItem.repository';
+import { InvoiceItemRepository } from './invoice_item.repository';
 
 @Injectable()
 export class InvoiceItemService {
@@ -48,7 +48,7 @@ export class InvoiceItemService {
 
   async remove(uuid: string) {
     await this.findByUuid(uuid);
-    return await this.invoiceItemRepository.softDelete(uuid);
+    return await this.invoiceItemRepository.delete(uuid);
   }
 
   async updateStatus(uuid: string, status: string, changedById: number) {

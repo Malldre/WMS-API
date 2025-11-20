@@ -1,60 +1,93 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InvoiceItemRepository } from './supplier.repository';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { SupplierRepository } from './supplier.repository';
+import { CompanyService } from '../companies/company.service';
 
 @Injectable()
-export class InvoiceItemService {
-  constructor(private readonly invoiceItemRepository: InvoiceItemRepository) {}
+export class SupplierService {
+  constructor(
+    private readonly supplierRepository: SupplierRepository,
+    private readonly companyService: CompanyService,
+  ) {}
 
   async findAll() {
-    return await this.invoiceItemRepository.findAll();
+    return await this.supplierRepository.findAll();
   }
 
   async findByUuid(uuid: string) {
-    const item = await this.invoiceItemRepository.findByUuid(uuid);
+    const supplier = await this.supplierRepository.findByUuid(uuid);
     
-    if (!item) {
-      throw new NotFoundException(`Invoice item with UUID ${uuid} not found`);
+    if (!supplier) {
+      throw new NotFoundException(`Supplier with UUID ${uuid} not found`);
     }
     
-    return item;
+    return supplier;
   }
 
-  async findByInvoiceId(invoiceId: number) {
-    return await this.invoiceItemRepository.findByInvoiceId(invoiceId);
+  async findByCnpj(cnpj: string) {
+    const supplier = await this.supplierRepository.findByCnpj(cnpj);
+    
+    if (!supplier) {
+      throw new NotFoundException(`Supplier with CNPJ ${cnpj} not found`);
+    }
+    
+    return supplier;
   }
 
-  async create(createItemDto: {
-    invoiceId: number;
-    materialId: number;
-    quantity: string;
-    totalValue: string;
-    status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-    remark?: string;
-    createdById: number;
+  async create(createSupplierDto: {
+    cnpj: string;
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
   }) {
-    return await this.invoiceItemRepository.create(createItemDto);
+    // Verificar se já existe um supplier com este CNPJ
+    try {
+      const existingSupplier = await this.supplierRepository.findByCnpj(createSupplierDto.cnpj);
+      if (existingSupplier) {
+        throw new ConflictException('Supplier with this CNPJ already exists');
+      }
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      // Se for NotFoundException, continua (supplier não existe)
+    }
+
+    // Buscar ou criar a company (usa findOrCreate)
+    const company = await this.companyService.findOrCreate(createSupplierDto);
+
+    // Criar supplierInfo vinculado à company
+    return await this.supplierRepository.create(company.id);
   }
 
-  async update(uuid: string, updateItemDto: {
-    quantity?: string;
-    totalValue?: string;
-    status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-    remark?: string;
-    changedById?: number;
+  async update(uuid: string, updateSupplierDto: {
+    cnpj?: string;
+    name?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
   }) {
-    await this.findByUuid(uuid);
-    return await this.invoiceItemRepository.update(uuid, updateItemDto);
+    // Verificar se supplier existe
+    const supplier = await this.findByUuid(uuid);
+
+    // Atualizar a company através do CompanyService
+    await this.companyService.update(supplier.company.uuid, updateSupplierDto);
+
+    // Retornar supplier atualizado
+    return await this.findByUuid(uuid);
   }
 
   async remove(uuid: string) {
+    // Verificar se supplier existe
     await this.findByUuid(uuid);
-    return await this.invoiceItemRepository.softDelete(uuid);
-  }
-
-  async updateStatus(uuid: string, status: string, changedById: number) {
-    return await this.update(uuid, { 
-      status: status as any, 
-      changedById 
-    });
+    
+    // Deletar apenas supplierInfo (não deletar a company)
+    return await this.supplierRepository.delete(uuid);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
-import { companies, Company, NewCompany } from '../db/schema';
+import { companies } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 @Injectable()
@@ -14,20 +14,14 @@ export class CompanyRepository {
   async findAll() {
     return await this.db
       .select()
-      .from(companies)
-      .where(isNull(companies.deletedAt));
+      .from(companies);
   }
 
   async findByUuid(uuid: string) {
     const [company] = await this.db
       .select()
       .from(companies)
-      .where(
-        and(
-          eq(companies.uuid, uuid),
-          isNull(companies.deletedAt)
-        )
-      )
+      .where(eq(companies.uuid, uuid))
       .limit(1);
     
     return company;
@@ -37,18 +31,22 @@ export class CompanyRepository {
     const [company] = await this.db
       .select()
       .from(companies)
-      .where(
-        and(
-          eq(companies.cnpj, cnpj),
-          isNull(companies.deletedAt)
-        )
-      )
+      .where(eq(companies.cnpj, cnpj))
       .limit(1);
     
     return company;
   }
 
-  async create(companyData: NewCompany) {
+  async create(companyData: {
+    cnpj: string;
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+  }) {
     const [company] = await this.db
       .insert(companies)
       .values(companyData)
@@ -57,37 +55,29 @@ export class CompanyRepository {
     return company;
   }
 
-  async update(uuid: string, companyData: Partial<Company>) {
+  async update(uuid: string, companyData: {
+    cnpj?: string;
+    name?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+  }) {
     const [company] = await this.db
       .update(companies)
-      .set({
-        ...companyData,
-        changedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(companies.uuid, uuid),
-          isNull(companies.deletedAt)
-        )
-      )
+      .set(companyData)
+      .where(eq(companies.uuid, uuid))
       .returning();
     
     return company;
   }
 
-  async softDelete(uuid: string, deletedById: number) {
+  async delete(uuid: string) {
     const [company] = await this.db
-      .update(companies)
-      .set({
-        deletedById,
-        deletedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(companies.uuid, uuid),
-          isNull(companies.deletedAt)
-        )
-      )
+      .delete(companies)
+      .where(eq(companies.uuid, uuid))
       .returning();
     
     return company;

@@ -34,7 +34,6 @@ export class InvoiceService {
     supplierId: number;
     receivedAt: Date;
     status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
-    createdById: number;
   }) {
     // Verificar se número da nota já existe
     const existingInvoice = await this.invoiceRepository.findByInvoiceNumber(createInvoiceDto.invoiceNumber);
@@ -50,7 +49,6 @@ export class InvoiceService {
     supplierId?: number;
     receivedAt?: Date;
     status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
-    changedById?: number;
   }) {
     // Verificar se invoice existe
     await this.findByUuid(uuid);
@@ -68,6 +66,6 @@ export class InvoiceService {
 
   async remove(uuid: string) {
     await this.findByUuid(uuid);
-    return await this.invoiceRepository.softDelete(uuid);
+    return await this.invoiceRepository.delete(uuid);
   }
 }

@@ -1,17 +1,19 @@
-export class InvoiceItem {
+export class Supplier {
   id: number;
   uuid: string;
-  invoiceId: number;
-  materialId: number;
-  quantity: string;
-  totalValue: string;
-  unitValue: string;
-  status: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-  remark: string | null;
-  createdById: number;
-  changedById: number | null;
-  deletedById: number | null;
+  companyId: number;
+  company: {
+    id: number;
+    uuid: string;
+    cnpj: string;
+    name: string;
+    status: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string | null;
+    country: string;
+    createdAt: Date;
+  };
   createdAt: Date;
-  changedAt: Date | null;
-  deletedAt: Date | null;
 }

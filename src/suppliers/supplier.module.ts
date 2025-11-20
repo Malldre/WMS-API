@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { InvoiceItemService } from './supplier.service';
-import { InvoiceItemController } from './supplier.controller';
-import { InvoiceItemRepository } from './supplier.repository';
+import { SupplierService } from './supplier.service';
+import { SupplierController } from './supplier.controller';
+import { SupplierRepository } from './supplier.repository';
 import { DbModule } from '../db/db.module';
+import { CompanyModule } from '../companies/company.module';
 
 @Module({
-  imports: [DbModule],
-  controllers: [InvoiceItemController],
-  providers: [InvoiceItemService, InvoiceItemRepository],
-  exports: [InvoiceItemService],
+  imports: [DbModule, CompanyModule],
+  controllers: [SupplierController],
+  providers: [SupplierService, SupplierRepository],
+  exports: [SupplierService],
 })
-export class InvoiceItemModule {}
+export class SupplierModule {}

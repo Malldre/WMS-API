@@ -38,20 +38,34 @@ export class CompanyService {
     country: string;
     postalCode?: string;
     status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
-    createdById: number;
   }) {
     // Verificar se CNPJ já existe
-    try {
-      const existingCompany = await this.companyRepository.findByCnpj(createCompanyDto.cnpj);
-      if (existingCompany) {
-        throw new ConflictException('Company with this CNPJ already exists');
-      }
-    } catch (error) {
-      if (!(error instanceof NotFoundException)) {
-        throw error;
-      }
+    const existingCompany = await this.companyRepository.findByCnpj(createCompanyDto.cnpj);
+    if (existingCompany) {
+      throw new ConflictException('Company with this CNPJ already exists');
     }
 
+    return await this.companyRepository.create(createCompanyDto);
+  }
+
+  async findOrCreate(createCompanyDto: {
+    cnpj: string;
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+  }) {
+    // Buscar company existente
+    const existingCompany = await this.companyRepository.findByCnpj(createCompanyDto.cnpj);
+    
+    if (existingCompany) {
+      return existingCompany;
+    }
+
+    // Criar nova company se não existir
     return await this.companyRepository.create(createCompanyDto);
   }
 
@@ -64,30 +78,23 @@ export class CompanyService {
     country?: string;
     postalCode?: string;
     status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
-    changedById: number;
   }) {
     // Verificar se company existe
     await this.findByUuid(uuid);
 
     // Se estiver atualizando o CNPJ, verificar duplicação
     if (updateCompanyDto.cnpj) {
-      try {
-        const existingCompany = await this.companyRepository.findByCnpj(updateCompanyDto.cnpj);
-        if (existingCompany && existingCompany.uuid !== uuid) {
-          throw new ConflictException('Company with this CNPJ already exists');
-        }
-      } catch (error) {
-        if (!(error instanceof NotFoundException)) {
-          throw error;
-        }
+      const existingCompany = await this.companyRepository.findByCnpj(updateCompanyDto.cnpj);
+      if (existingCompany && existingCompany.uuid !== uuid) {
+        throw new ConflictException('Company with this CNPJ already exists');
       }
     }
 
     return await this.companyRepository.update(uuid, updateCompanyDto);
   }
 
-  async remove(uuid: string, deletedById: number) {
+  async remove(uuid: string) {
     await this.findByUuid(uuid);
-    return await this.companyRepository.softDelete(uuid, deletedById);
+    return await this.companyRepository.delete(uuid);
   }
 }

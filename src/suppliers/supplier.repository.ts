@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
-import { invoiceItems, InvoiceItem, NewInvoiceItem } from '../db/schema';
+import { supplierInfo, companies } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 @Injectable()
-export class InvoiceItemRepository {
+export class SupplierRepository {
   constructor(
     @Inject(DB_CONNECTION)
     private db: PostgresJsDatabase<typeof import('../db/schema')>,
@@ -13,91 +13,85 @@ export class InvoiceItemRepository {
 
   async findAll() {
     return await this.db
-      .select()
-      .from(invoiceItems)
-      .where(isNull(invoiceItems.deletedAt));
+      .select({
+        id: supplierInfo.id,
+        uuid: supplierInfo.uuid,
+        companyId: supplierInfo.companyId,
+        company: companies,
+        createdAt: supplierInfo.createdAt,
+      })
+      .from(supplierInfo)
+      .innerJoin(companies, eq(supplierInfo.companyId, companies.id));
   }
 
   async findByUuid(uuid: string) {
-    const [item] = await this.db
-      .select()
-      .from(invoiceItems)
-      .where(
-        and(
-          eq(invoiceItems.uuid, uuid),
-          isNull(invoiceItems.deletedAt)
-        )
-      )
+    const [supplier] = await this.db
+      .select({
+        id: supplierInfo.id,
+        uuid: supplierInfo.uuid,
+        companyId: supplierInfo.companyId,
+        company: companies,
+        createdAt: supplierInfo.createdAt,
+      })
+      .from(supplierInfo)
+      .innerJoin(companies, eq(supplierInfo.companyId, companies.id))
+      .where(eq(supplierInfo.uuid, uuid))
       .limit(1);
     
-    return item;
+    return supplier;
   }
 
-  async findByInvoiceId(invoiceId: number) {
-    return await this.db
-      .select()
-      .from(invoiceItems)
-      .where(
-        and(
-          eq(invoiceItems.invoiceId, invoiceId),
-          isNull(invoiceItems.deletedAt)
-        )
-      );
-  }
-
-  async findByMaterialId(materialId: number) {
-    return await this.db
-      .select()
-      .from(invoiceItems)
-      .where(
-        and(
-          eq(invoiceItems.materialId, materialId),
-          isNull(invoiceItems.deletedAt)
-        )
-      );
-  }
-
-  async create(itemData: NewInvoiceItem) {
-    const [item] = await this.db
-      .insert(invoiceItems)
-      .values(itemData)
-      .returning();
-    
-    return item;
-  }
-
-  async update(uuid: string, itemData: Partial<InvoiceItem>) {
-    const [item] = await this.db
-      .update(invoiceItems)
-      .set({
-        ...itemData,
-        changedAt: new Date(),
+  async findByCnpj(cnpj: string) {
+    const [supplier] = await this.db
+      .select({
+        id: supplierInfo.id,
+        uuid: supplierInfo.uuid,
+        companyId: supplierInfo.companyId,
+        company: companies,
+        createdAt: supplierInfo.createdAt,
       })
-      .where(
-        and(
-          eq(invoiceItems.uuid, uuid),
-          isNull(invoiceItems.deletedAt)
-        )
-      )
-      .returning();
+      .from(supplierInfo)
+      .innerJoin(companies, eq(supplierInfo.companyId, companies.id))
+      .where(eq(companies.cnpj, cnpj))
+      .limit(1);
     
-    return item;
+    return supplier;
   }
 
-  async softDelete(uuid: string) {
-    const [item] = await this.db
-      .update(invoiceItems)
-      .set({
-        deletedAt: new Date(),
+  async findByCompanyId(companyId: number) {
+    const [supplier] = await this.db
+      .select({
+        id: supplierInfo.id,
+        uuid: supplierInfo.uuid,
+        companyId: supplierInfo.companyId,
+        company: companies,
+        createdAt: supplierInfo.createdAt,
       })
-      .where(
-        and(
-          eq(invoiceItems.uuid, uuid),
-          isNull(invoiceItems.deletedAt)
-        )
-      )
+      .from(supplierInfo)
+      .innerJoin(companies, eq(supplierInfo.companyId, companies.id))
+      .where(eq(supplierInfo.companyId, companyId))
+      .limit(1);
+    
+    return supplier;
+  }
+
+  async create(companyId: number) {
+    const [supplier] = await this.db
+      .insert(supplierInfo)
+      .values({
+        companyId,
+      })
+      .returning();
+
+    return await this.findByUuid(supplier.uuid);
+  }
+
+  async delete(uuid: string) {
+    const [supplier] = await this.db
+      .delete(supplierInfo)
+      .where(eq(supplierInfo.uuid, uuid))
       .returning();
     
-    return item;
+    return supplier;
   }
 }

@@ -9,10 +9,5 @@ export class Company {
   state: string;
   postalCode: string | null;
   country: string;
-  createdById: number;
-  changedById: number | null;
-  deletedById: number | null;
   createdAt: Date;
-  changedAt: Date | null;
-  deletedAt: Date | null;
 }

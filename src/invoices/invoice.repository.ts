@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
-import { invoices, Invoice, NewInvoice } from '../db/schema';
+import { invoices } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 @Injectable()
@@ -14,20 +14,14 @@ export class InvoiceRepository {
   async findAll() {
     return await this.db
       .select()
-      .from(invoices)
-      .where(isNull(invoices.deletedAt));
+      .from(invoices);
   }
 
   async findByUuid(uuid: string) {
     const [invoice] = await this.db
       .select()
       .from(invoices)
-      .where(
-        and(
-          eq(invoices.uuid, uuid),
-          isNull(invoices.deletedAt)
-        )
-      )
+      .where(eq(invoices.uuid, uuid))
       .limit(1);
     
     return invoice;
@@ -37,12 +31,7 @@ export class InvoiceRepository {
     const [invoice] = await this.db
       .select()
       .from(invoices)
-      .where(
-        and(
-          eq(invoices.invoiceNumber, invoiceNumber),
-          isNull(invoices.deletedAt)
-        )
-      )
+      .where(eq(invoices.invoiceNumber, invoiceNumber))
       .limit(1);
     
     return invoice;
@@ -52,15 +41,15 @@ export class InvoiceRepository {
     return await this.db
       .select()
       .from(invoices)
-      .where(
-        and(
-          eq(invoices.supplierId, supplierId),
-          isNull(invoices.deletedAt)
-        )
-      );
+      .where(eq(invoices.supplierId, supplierId));
   }
 
-  async create(invoiceData: NewInvoice) {
+  async create(invoiceData: {
+    invoiceNumber: string;
+    supplierId: number;
+    receivedAt: Date;
+    status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
+  }) {
     const [invoice] = await this.db
       .insert(invoices)
       .values(invoiceData)
@@ -69,36 +58,25 @@ export class InvoiceRepository {
     return invoice;
   }
 
-  async update(uuid: string, invoiceData: Partial<Invoice>) {
+  async update(uuid: string, invoiceData: {
+    invoiceNumber?: string;
+    supplierId?: number;
+    receivedAt?: Date;
+    status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
+  }) {
     const [invoice] = await this.db
       .update(invoices)
-      .set({
-        ...invoiceData,
-        changedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(invoices.uuid, uuid),
-          isNull(invoices.deletedAt)
-        )
-      )
+      .set(invoiceData)
+      .where(eq(invoices.uuid, uuid))
       .returning();
     
     return invoice;
   }
 
-  async softDelete(uuid: string) {
+  async delete(uuid: string) {
     const [invoice] = await this.db
-      .update(invoices)
-      .set({
-        deletedAt: new Date(),
-      })
-      .where(
-        and(
-          eq(invoices.uuid, uuid),
-          isNull(invoices.deletedAt)
-        )
-      )
+      .delete(invoices)
+      .where(eq(invoices.uuid, uuid))
       .returning();
     
     return invoice;

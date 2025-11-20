@@ -1,25 +1,25 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { SupplierService } from './supplier.service';
+import { CompanyService } from './company.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('suppliers')
+@Controller('companies')
 //@UseGuards(JwtAuthGuard)
-export class SupplierController {
-  constructor(private supplierService: SupplierService) {}
+export class CompanyController {
+  constructor(private companyService: CompanyService) {}
 
   @Get()
   async findAll() {
-    return await this.supplierService.findAll();
+    return await this.companyService.findAll();
   }
 
   @Get(':uuid')
   async findOne(@Param('uuid') uuid: string) {
-    return await this.supplierService.findByUuid(uuid);
+    return await this.companyService.findByUuid(uuid);
   }
 
   @Get('cnpj/:cnpj')
   async findByCnpj(@Param('cnpj') cnpj: string) {
-    return await this.supplierService.findByCnpj(cnpj);
+    return await this.companyService.findByCnpj(cnpj);
   }
 
   @Post()
@@ -33,7 +33,7 @@ export class SupplierController {
     postalCode?: string;
     status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
   }) {
-    return await this.supplierService.create(body);
+    return await this.companyService.create(body);
   }
 
   @Put(':uuid')
@@ -50,11 +50,11 @@ export class SupplierController {
       status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
     }
   ) {
-    return await this.supplierService.update(uuid, body);
+    return await this.companyService.update(uuid, body);
   }
 
   @Delete(':uuid')
   async remove(@Param('uuid') uuid: string) {
-    return await this.supplierService.remove(uuid);
+    return await this.companyService.remove(uuid);
   }
 }
