@@ -13,7 +13,7 @@ export const materialStatusEnum = pgEnum('material_status', ['ACTIVE', 'INACTIVE
 export const materialUnitEnum = pgEnum('material_unit', ['BX', 'CM', 'GR', 'KG', 'LT', 'M2', 'M3', 'ML', 'MT', 'PK', 'UN']);
 export const packageUnitEnum = pgEnum('package_unit', ['BX', 'BD', 'LT', 'PL', 'UN']);
 export const taskStatusEnum = pgEnum('task_status', ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
-export const taskTypeEnum = pgEnum('task_type', ['PICKING', 'STORAGE', 'CONFERENCE', 'PACKAGING', 'SHIPPING']);
+export const taskTypeEnum = pgEnum('task_type', ['PICKING', 'STORAGE', 'CONFERENCE', 'PACKAGING', 'SHIPPING', 'INVENTORY', 'DEMOBILIZATION']);
 export const zoneTypeEnum = pgEnum('zone_type', ['PICKING', 'BULK', 'STAGING', 'RECEIVING', 'DAMAGED']);
 export const serviceStatusEnum = pgEnum('service_status', ['ACTIVE', 'DEPRECATED', 'TESTING']);
 export const shipmentOrderStatusEnum = pgEnum('shipment_order_status', ['OPEN', 'DELIVERED', 'CANCELLED', 'ON HOLD']);
@@ -236,8 +236,16 @@ export const tasks = pgTable('task', {
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: varchar('description', { length: 1024 }),
+  taskType: taskTypeEnum('task_type').notNull(),
   status: taskStatusEnum('status').default('PENDING').notNull(),
+  invoiceId: integer('invoice_id').references(() => invoices.id, { onDelete: 'cascade' }),
+  materialId: integer('material_id').references(() => materials.id, { onDelete: 'set null' }),
+  itemSpecification: varchar('item_specification', { length: 255 }),
+  assignedUserId: integer('assigned_user_id').references(() => users.id, { onDelete: 'set null' }),
+  issuedBy: varchar('issued_by', { length: 255 }),
+  entryDate: timestamp('entry_date'),
   dueDate: timestamp('due_date'),
+  completedAt: timestamp('completed_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
