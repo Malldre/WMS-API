@@ -1,12 +1,29 @@
 services:
+  # Nginx Reverse Proxy with SSL
+  nginx:
+    image: nginx:alpine
+    container_name: wms-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+    networks:
+      - wms-network
+
+  # NestJS API
   api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: wms-api
     restart: unless-stopped
-    ports:
-      - "31244:3000"
+    expose:
+      - "3000"
     environment:
       PORT: ${PORT:-3000}
       NODE_ENV: ${NODE_ENV:-production}
@@ -15,3 +32,9 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
     env_file:
       - .env
+    networks:
+      - wms-network
+
+networks:
+  wms-network:
+    driver: bridge
