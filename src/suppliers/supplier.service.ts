@@ -56,8 +56,8 @@ export class SupplierService {
       // Se for NotFoundException, continua (supplier não existe)
     }
 
-    // Buscar ou criar a company (usa findOrCreate)
-    const company = await this.companyService.findOrCreate(createSupplierDto);
+    // Buscar ou criar a company (usa findOrCreateInternal para obter o id)
+    const company = await this.companyService.findOrCreateInternal(createSupplierDto);
 
     // Criar supplierInfo vinculado à company
     return await this.supplierRepository.create(company.id);

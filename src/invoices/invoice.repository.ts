@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
 import { invoices } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { omitAllInternalIds, omitAllInternalIdsFromArray } from '../common/utils/omit-id.util';
 
 @Injectable()
 export class InvoiceRepository {
@@ -11,37 +12,39 @@ export class InvoiceRepository {
     private db: PostgresJsDatabase<typeof import('../db/schema')>,
   ) {}
 
-  async findAll() {
-    return await this.db
+  async findAll(): Promise<Omit<typeof invoices.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(invoices);
+    return omitAllInternalIdsFromArray(result);
   }
 
-  async findByUuid(uuid: string) {
+  async findByUuid(uuid: string): Promise<Omit<typeof invoices.$inferSelect, 'id'> | undefined> {
     const [invoice] = await this.db
       .select()
       .from(invoices)
       .where(eq(invoices.uuid, uuid))
       .limit(1);
-    
-    return invoice;
+
+    return invoice ? omitAllInternalIds(invoice) : undefined;
   }
 
-  async findByInvoiceNumber(invoiceNumber: string) {
+  async findByInvoiceNumber(invoiceNumber: string): Promise<Omit<typeof invoices.$inferSelect, 'id'> | undefined> {
     const [invoice] = await this.db
       .select()
       .from(invoices)
       .where(eq(invoices.invoiceNumber, invoiceNumber))
       .limit(1);
-    
-    return invoice;
+
+    return invoice ? omitAllInternalIds(invoice) : undefined;
   }
 
-  async findBySupplierId(supplierId: number) {
-    return await this.db
+  async findBySupplierId(supplierId: number): Promise<Omit<typeof invoices.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(invoices)
       .where(eq(invoices.supplierId, supplierId));
+    return omitAllInternalIdsFromArray(result);
   }
 
   async create(invoiceData: {
@@ -49,13 +52,13 @@ export class InvoiceRepository {
     supplierId: number;
     receivedAt: Date;
     status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
-  }) {
+  }): Promise<Omit<typeof invoices.$inferSelect, 'id'>> {
     const [invoice] = await this.db
       .insert(invoices)
       .values(invoiceData)
       .returning();
-    
-    return invoice;
+
+    return omitAllInternalIds(invoice);
   }
 
   async update(uuid: string, invoiceData: {
@@ -63,22 +66,22 @@ export class InvoiceRepository {
     supplierId?: number;
     receivedAt?: Date;
     status?: 'PENDING' | 'RECEIVED' | 'REJECTED' | 'CANCELLED' | 'WAITING_INSPECTION';
-  }) {
+  }): Promise<Omit<typeof invoices.$inferSelect, 'id'>> {
     const [invoice] = await this.db
       .update(invoices)
       .set(invoiceData)
       .where(eq(invoices.uuid, uuid))
       .returning();
-    
-    return invoice;
+
+    return omitAllInternalIds(invoice);
   }
 
-  async delete(uuid: string) {
+  async delete(uuid: string): Promise<Omit<typeof invoices.$inferSelect, 'id'>> {
     const [invoice] = await this.db
       .delete(invoices)
       .where(eq(invoices.uuid, uuid))
       .returning();
-    
-    return invoice;
+
+    return omitAllInternalIds(invoice);
   }
 }

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DbModule } from './db/db.module';
@@ -12,10 +14,15 @@ import { MaterialCategoryModule } from './material_categories/material_category.
 import { TasksModule } from './tasks/tasks.module';
 import { InventoryModule } from './inventories/inventory.module';
 import { StorageModule } from './storages/storage.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
     DbModule,
     AuthModule,
     UsersModule,
@@ -28,6 +35,16 @@ import { StorageModule } from './storages/storage.module';
     TasksModule,
     InventoryModule,
     StorageModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}
