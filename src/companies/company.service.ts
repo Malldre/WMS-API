@@ -60,13 +60,38 @@ export class CompanyService {
   }) {
     // Buscar company existente
     const existingCompany = await this.companyRepository.findByCnpj(createCompanyDto.cnpj);
-    
+
     if (existingCompany) {
       return existingCompany;
     }
 
     // Criar nova company se não existir
     return await this.companyRepository.create(createCompanyDto);
+  }
+
+  /**
+   * Internal method for finding or creating a company with the id field included
+   * Should only be used for internal foreign key relationships
+   */
+  async findOrCreateInternal(createCompanyDto: {
+    cnpj: string;
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode?: string;
+    status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+  }) {
+    // Buscar company existente
+    const existingCompany = await this.companyRepository.findByCnpjInternal(createCompanyDto.cnpj);
+
+    if (existingCompany) {
+      return existingCompany;
+    }
+
+    // Criar nova company se não existir
+    return await this.companyRepository.createInternal(createCompanyDto);
   }
 
   async update(uuid: string, updateCompanyDto: {

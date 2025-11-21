@@ -3,6 +3,7 @@ import { eq, and } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
 import { inventories } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { omitAllInternalIds, omitAllInternalIdsFromArray } from '../common/utils/omit-id.util';
 
 @Injectable()
 export class InventoryRepository {
@@ -11,37 +12,40 @@ export class InventoryRepository {
     private db: PostgresJsDatabase<typeof import('../db/schema')>,
   ) {}
 
-  async findAll() {
-    return await this.db
+  async findAll(): Promise<Omit<typeof inventories.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(inventories);
+    return omitAllInternalIdsFromArray(result);
   }
 
-  async findByUuid(uuid: string) {
+  async findByUuid(uuid: string): Promise<Omit<typeof inventories.$inferSelect, 'id'> | undefined> {
     const [inventory] = await this.db
       .select()
       .from(inventories)
       .where(eq(inventories.uuid, uuid))
       .limit(1);
-    
-    return inventory;
+
+    return inventory ? omitAllInternalIds(inventory) : undefined;
   }
 
-  async findByInvoiceItemId(invoiceItemId: number) {
-    return await this.db
+  async findByInvoiceItemId(invoiceItemId: number): Promise<Omit<typeof inventories.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(inventories)
       .where(eq(inventories.materialId, invoiceItemId));
+    return omitAllInternalIdsFromArray(result);
   }
 
-  async findByStorageId(storageId: number) {
-    return await this.db
+  async findByStorageId(storageId: number): Promise<Omit<typeof inventories.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(inventories)
       .where(eq(inventories.storageId, storageId));
+    return omitAllInternalIdsFromArray(result);
   }
 
-  async findByInvoiceItemAndStorage(invoiceItemId: number, storageId: number) {
+  async findByInvoiceItemAndStorage(invoiceItemId: number, storageId: number): Promise<Omit<typeof inventories.$inferSelect, 'id'> | undefined> {
     const [inventory] = await this.db
       .select()
       .from(inventories)
@@ -52,15 +56,15 @@ export class InventoryRepository {
         )
       )
       .limit(1);
-    
-    return inventory;
+
+    return inventory ? omitAllInternalIds(inventory) : undefined;
   }
 
   async create(inventoryData: {
     invoiceItemId: number;
     storageId: number;
     quantity: string;
-  }) {
+  }): Promise<Omit<typeof inventories.$inferSelect, 'id'>> {
     const [inventory] = await this.db
       .insert(inventories)
       .values({
@@ -69,17 +73,17 @@ export class InventoryRepository {
         quantity: inventoryData.quantity,
       })
       .returning();
-    
-    return inventory;
+
+    return omitAllInternalIds(inventory);
   }
 
   async update(uuid: string, inventoryData: {
     invoiceItemId?: number;
     storageId?: number;
     quantity?: string;
-  }) {
+  }): Promise<Omit<typeof inventories.$inferSelect, 'id'>> {
     const updateData: any = {};
-    
+
     if (inventoryData.invoiceItemId !== undefined) {
       updateData.materialId = inventoryData.invoiceItemId;
     }
@@ -95,16 +99,16 @@ export class InventoryRepository {
       .set(updateData)
       .where(eq(inventories.uuid, uuid))
       .returning();
-    
-    return inventory;
+
+    return omitAllInternalIds(inventory);
   }
 
-  async delete(uuid: string) {
+  async delete(uuid: string): Promise<Omit<typeof inventories.$inferSelect, 'id'>> {
     const [inventory] = await this.db
       .delete(inventories)
       .where(eq(inventories.uuid, uuid))
       .returning();
-    
-    return inventory;
+
+    return omitAllInternalIds(inventory);
   }
 }

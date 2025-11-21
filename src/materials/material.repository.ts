@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { DB_CONNECTION } from '../db/db.module';
 import { materials } from '../db/schema';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { omitAllInternalIds, omitAllInternalIdsFromArray } from '../common/utils/omit-id.util';
 
 @Injectable()
 export class MaterialRepository {
@@ -11,37 +12,39 @@ export class MaterialRepository {
     private db: PostgresJsDatabase<typeof import('../db/schema')>,
   ) {}
 
-  async findAll() {
-    return await this.db
+  async findAll(): Promise<Omit<typeof materials.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(materials);
+    return omitAllInternalIdsFromArray(result);
   }
 
-  async findByUuid(uuid: string) {
+  async findByUuid(uuid: string): Promise<Omit<typeof materials.$inferSelect, 'id'> | undefined> {
     const [material] = await this.db
       .select()
       .from(materials)
       .where(eq(materials.uuid, uuid))
       .limit(1);
-    
-    return material;
+
+    return material ? omitAllInternalIds(material) : undefined;
   }
 
-  async findByExternalCode(externalCode: string) {
+  async findByExternalCode(externalCode: string): Promise<Omit<typeof materials.$inferSelect, 'id'> | undefined> {
     const [material] = await this.db
       .select()
       .from(materials)
       .where(eq(materials.externalCode, externalCode))
       .limit(1);
-    
-    return material;
+
+    return material ? omitAllInternalIds(material) : undefined;
   }
 
-  async findByCategoryId(categoryId: number) {
-    return await this.db
+  async findByCategoryId(categoryId: number): Promise<Omit<typeof materials.$inferSelect, 'id'>[]> {
+    const result = await this.db
       .select()
       .from(materials)
       .where(eq(materials.categoryId, categoryId));
+    return omitAllInternalIdsFromArray(result);
   }
 
   async create(materialData: {
@@ -50,13 +53,13 @@ export class MaterialRepository {
     description: string;
     materialUnit: 'BX' | 'CM' | 'GR' | 'KG' | 'LT' | 'M2' | 'M3' | 'ML' | 'MT' | 'PK' | 'UN';
     status?: 'ACTIVE' | 'INACTIVE' | 'DISCONTINUED' | 'DEVELOPMENT';
-  }) {
+  }): Promise<Omit<typeof materials.$inferSelect, 'id'>> {
     const [material] = await this.db
       .insert(materials)
       .values(materialData)
       .returning();
-    
-    return material;
+
+    return omitAllInternalIds(material);
   }
 
   async update(uuid: string, materialData: {
@@ -65,22 +68,22 @@ export class MaterialRepository {
     description?: string;
     materialUnit?: 'BX' | 'CM' | 'GR' | 'KG' | 'LT' | 'M2' | 'M3' | 'ML' | 'MT' | 'PK' | 'UN';
     status?: 'ACTIVE' | 'INACTIVE' | 'DISCONTINUED' | 'DEVELOPMENT';
-  }) {
+  }): Promise<Omit<typeof materials.$inferSelect, 'id'>> {
     const [material] = await this.db
       .update(materials)
       .set(materialData)
       .where(eq(materials.uuid, uuid))
       .returning();
-    
-    return material;
+
+    return omitAllInternalIds(material);
   }
 
-  async delete(uuid: string) {
+  async delete(uuid: string): Promise<Omit<typeof materials.$inferSelect, 'id'>> {
     const [material] = await this.db
       .delete(materials)
       .where(eq(materials.uuid, uuid))
       .returning();
-    
-    return material;
+
+    return omitAllInternalIds(material);
   }
 }
