@@ -3,9 +3,9 @@
 ## 📋 Índice
 
 1. [Visão Geral](#visão-geral)
-2. [Swagger UI](#swagger-ui)
 3. [Autenticação](#autenticação)
 4. [Endpoints](#endpoints)
+   - [Users](#users)
    - [Auth](#auth)
    - [Companies](#companies)
    - [Suppliers](#suppliers)
@@ -39,34 +39,6 @@ Esta API REST foi desenvolvida para gerenciar operações de um sistema WMS (War
 - PostgreSQL
 - Drizzle ORM
 - JWT Authentication
-- Swagger/OpenAPI
-
----
-
-## 📚 Swagger UI
-
-A documentação interativa está disponível em:
-
-```
-http://localhost:3000/api/docs
-```
-
-### Recursos do Swagger:
-
-- 🔍 Exploração interativa de todos os endpoints
-- 📝 Schemas de request/response
-- 🧪 Testar requisições diretamente no navegador
-- 🔐 Sistema de autenticação integrado
-- 📖 Descrições detalhadas de cada operação
-
-### Como usar o Swagger:
-
-1. Acesse `http://localhost:3000/api/docs`
-2. Faça login no endpoint `/auth/login`
-3. Copie o `access_token` retornado
-4. Clique no botão **"Authorize"** no topo da página
-5. Cole o token no formato: `Bearer {seu_token_aqui}`
-6. Agora você pode testar todos os endpoints protegidos
 
 ---
 
@@ -116,6 +88,206 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ---
 
 ## 📚 Endpoints
+
+### Users
+
+Gerenciamento de usuários do sistema.
+
+#### `GET /users`
+
+Listar todos os usuários.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "name": "Administrador",
+    "createdAt": "2024-11-20T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "username": "joao.silva",
+    "name": "João Silva",
+    "createdAt": "2024-11-20T14:30:00.000Z"
+  }
+]
+```
+
+**⚠️ Nota:** A senha não é retornada nas respostas por segurança.
+
+#### `GET /users/{username}`
+
+Buscar usuário por username.
+
+**Parameters:**
+- `username` (path) - Nome de usuário
+
+**Exemplo:**
+```
+GET /users/joao.silva
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 2,
+  "username": "joao.silva",
+  "name": "João Silva",
+  "createdAt": "2024-11-20T14:30:00.000Z"
+}
+```
+
+**Responses:**
+- `200` - Usuário encontrado
+- `404` - Usuário não encontrado
+
+#### `POST /users`
+
+Criar novo usuário.
+
+**Request Body:**
+```json
+{
+  "username": "joao.silva",
+  "password": "Senha@123",
+  "name": "João Silva"
+}
+```
+
+**Campos obrigatórios:**
+- `username` - Nome de usuário, único (mín. 3, máx. 50 caracteres)
+- `password` - Senha do usuário (mín. 6, máx. 100 caracteres)
+
+**Campos opcionais:**
+- `name` - Nome completo do usuário (máx. 255 caracteres)
+
+**Validações:**
+- Username deve ter pelo menos 3 caracteres
+- Senha deve ter pelo menos 6 caracteres
+- Username deve ser único no sistema
+- Senha será hasheada automaticamente antes de salvar
+
+**Response (201 Created):**
+```json
+{
+  "id": 2,
+  "username": "joao.silva",
+  "name": "João Silva",
+  "createdAt": "2024-11-20T14:30:00.000Z"
+}
+```
+
+**Responses:**
+- `201` - Usuário criado com sucesso
+- `409` - Usuário com este username já existe
+- `400` - Dados inválidos (validação falhou)
+
+**Exemplo de erro de validação:**
+```json
+{
+  "statusCode": 400,
+  "message": [
+    "username should not be empty",
+    "username must be longer than or equal to 3 characters",
+    "password should not be empty",
+    "password must be longer than or equal to 6 characters"
+  ],
+  "error": "Bad Request"
+}
+```
+
+#### `PUT /users/{username}`
+
+Atualizar usuário.
+
+**Parameters:**
+- `username` (path) - Nome de usuário atual
+
+**Request Body:**
+```json
+{
+  "username": "joao.silva2",
+  "name": "João Silva Santos",
+  "password": "NovaSenha@456"
+}
+```
+
+**Campos opcionais:**
+- `username` - Novo nome de usuário (mín. 3, máx. 50 caracteres)
+- `password` - Nova senha (mín. 6, máx. 100 caracteres)
+- `name` - Novo nome completo (máx. 255 caracteres)
+
+**Exemplos de atualização:**
+
+**Atualizar apenas a senha:**
+```json
+{
+  "password": "NovaSenha@789"
+}
+```
+
+**Atualizar apenas o nome:**
+```json
+{
+  "name": "João Silva Santos"
+}
+```
+
+**Atualizar username e nome:**
+```json
+{
+  "username": "joao.silva2",
+  "name": "João Silva Santos"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 2,
+  "username": "joao.silva2",
+  "name": "João Silva Santos",
+  "createdAt": "2024-11-20T14:30:00.000Z"
+}
+```
+
+**Responses:**
+- `200` - Usuário atualizado com sucesso
+- `404` - Usuário não encontrado
+- `409` - Novo username já existe (se tentar mudar para username em uso)
+- `400` - Dados inválidos
+
+#### `DELETE /users/{username}`
+
+Deletar usuário.
+
+**Parameters:**
+- `username` (path) - Nome de usuário
+
+**Exemplo:**
+```
+DELETE /users/joao.silva
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 2,
+  "username": "joao.silva",
+  "name": "João Silva",
+  "createdAt": "2024-11-20T14:30:00.000Z"
+}
+```
+
+**Responses:**
+- `200` - Usuário deletado com sucesso
+- `404` - Usuário não encontrado
+
+**⚠️ Atenção:** Esta é uma exclusão permanente (hard delete). O usuário não poderá mais fazer login.
+
+---
 
 ### Auth
 
@@ -960,6 +1132,36 @@ Deletar registro de inventário.
 
 Este exemplo mostra o fluxo completo desde a criação de categorias até o registro no inventário.
 
+---
+
+#### 0️⃣ (Opcional) Criar Novo Usuário
+
+```http
+POST /users
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "username": "operador.estoque",
+  "password": "Senha@2024",
+  "name": "Operador de Estoque"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 3,
+  "username": "operador.estoque",
+  "name": "Operador de Estoque",
+  "createdAt": "2024-11-20T09:00:00.000Z"
+}
+```
+
+✅ Agora este usuário pode fazer login com suas próprias credenciais.
+
+---
+
 #### 1️⃣ Autenticação
 
 ```http
@@ -1387,6 +1589,16 @@ Authorization: Bearer {token}
 
 ```
 ┌─────────────────┐
+│      User       │
+│─────────────────│
+│ id              │
+│ username (uniq) │
+│ password (hash) │
+│ name            │
+│ createdAt       │
+└─────────────────┘
+
+┌─────────────────┐
 │    Company      │
 │─────────────────│
 │ id              │◄───┐
@@ -1470,14 +1682,15 @@ Authorization: Bearer {token}
 
 ### Relacionamentos Principais:
 
-1. **Company ↔ SupplierInfo**: Uma empresa pode ser fornecedor (1:1)
-2. **Company ↔ Storage**: Uma empresa possui múltiplos storages (1:N)
-3. **SupplierInfo ↔ Invoice**: Um fornecedor tem múltiplas invoices (1:N)
-4. **MaterialCategory ↔ Material**: Uma categoria tem múltiplos materiais (1:N)
-5. **Invoice ↔ InvoiceItem**: Uma invoice tem múltiplos itens (1:N)
-6. **Material ↔ InvoiceItem**: Um material pode estar em múltiplos invoice items (1:N)
-7. **InvoiceItem ↔ Inventory**: Um invoice item pode estar em múltiplos storages (1:N)
-8. **Storage ↔ Inventory**: Um storage contém múltiplos invoice items (1:N)
+1. **User**: Tabela independente para autenticação
+2. **Company ↔ SupplierInfo**: Uma empresa pode ser fornecedor (1:1)
+3. **Company ↔ Storage**: Uma empresa possui múltiplos storages (1:N)
+4. **SupplierInfo ↔ Invoice**: Um fornecedor tem múltiplas invoices (1:N)
+5. **MaterialCategory ↔ Material**: Uma categoria tem múltiplos materiais (1:N)
+6. **Invoice ↔ InvoiceItem**: Uma invoice tem múltiplos itens (1:N)
+7. **Material ↔ InvoiceItem**: Um material pode estar em múltiplos invoice items (1:N)
+8. **InvoiceItem ↔ Inventory**: Um invoice item pode estar em múltiplos storages (1:N)
+9. **Storage ↔ Inventory**: Um storage contém múltiplos invoice items (1:N)
 
 ---
 
@@ -1637,6 +1850,7 @@ Esta API usa **hard delete** em todos os módulos:
 
 | Tabela | Campo único | Descrição |
 |--------|-------------|-----------|
+| User | `username` | Nome de usuário deve ser único |
 | Company | `cnpj` | CNPJ deve ser único |
 | Company | `uuid` | UUID gerado automaticamente |
 | Material | `externalCode` | Código externo do material |
@@ -1749,7 +1963,6 @@ npm run start:prod
 
 6. **Acesse a aplicação:**
 - API: `http://localhost:3000`
-- Swagger: `http://localhost:3000/api/docs`
 
 ---
 
@@ -1774,14 +1987,6 @@ curl -X GET http://localhost:3000/materials \
 2. Configure a variável `{{baseUrl}}` = `http://localhost:3000`
 3. Configure a variável `{{token}}` após o login
 4. Use `{{token}}` no header Authorization
-
-### Usando Swagger UI
-
-1. Acesse `http://localhost:3000/api/docs`
-2. Clique em "Authorize" (cadeado no topo)
-3. Faça login em `/auth/login` para obter o token
-4. Cole o token no formato: `Bearer {seu_token}`
-5. Teste os endpoints diretamente na interface
 
 ---
 
@@ -1819,6 +2024,7 @@ Contribuições são bem-vindas! Por favor:
 
 #### Adicionado
 - ✨ Sistema completo de autenticação JWT
+- ✨ CRUD completo de Users (com hash de senha)
 - ✨ CRUD completo de Companies
 - ✨ CRUD completo de Suppliers (com reutilização de Companies)
 - ✨ CRUD completo de Material Categories
@@ -1827,9 +2033,9 @@ Contribuições são bem-vindas! Por favor:
 - ✨ CRUD completo de Invoices
 - ✨ CRUD completo de Invoice Items (com cálculo automático de unit value)
 - ✨ CRUD completo de Inventories (com rastreabilidade por invoice item)
-- ✨ Documentação Swagger/OpenAPI completa
 - ✨ Validação de dados em todos os endpoints
 - ✨ Tratamento de erros padronizado
+- ✨ Hash automático de senhas com bcrypt
 
 ---
 
