@@ -15,6 +15,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { InventoryModule } from './inventories/inventory.module';
 import { StorageModule } from './storages/storage.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     InventoryModule,
     StorageModule,
   ],
+  controllers: [],
   providers: [
     {
       provide: APP_GUARD,

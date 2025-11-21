@@ -1,10 +1,11 @@
 import { Controller, Post, Body, ConflictException, Get, Put, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { Public } from '../auth/public.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-  
+
   @Get()
   async getAllUsers() {
     const users = await this.usersService.getAllUsers();
@@ -44,6 +45,7 @@ export class UsersController {
     };
   }
 
+  @Public()
   @Post('register')
   async register(@Body() body: { username: string; email: string; password: string }) {
     const { username, email, password } = body;
