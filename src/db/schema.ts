@@ -233,20 +233,23 @@ export const inventories = pgTable('inventory', {
 
 export const tasks = pgTable('task', {
   id: serial('id').primaryKey(),
-  uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
+  uuid: uuid('uuid').defaultRandom().notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: varchar('description', { length: 1024 }),
-  taskType: taskTypeEnum('task_type').notNull(),
   status: taskStatusEnum('status').default('PENDING').notNull(),
-  invoiceId: integer('invoice_id').references(() => invoices.id, { onDelete: 'cascade' }),
-  materialId: integer('material_id').references(() => materials.id, { onDelete: 'set null' }),
+  dueDate: timestamp('due_date'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  taskType: taskTypeEnum('task_type').notNull(),
+  invoiceId: integer('invoice_id').references(() => invoices.id),
+  materialId: integer('material_id').references(() => materials.id),
   itemSpecification: varchar('item_specification', { length: 255 }),
-  assignedUserId: integer('assigned_user_id').references(() => users.id, { onDelete: 'set null' }),
+  assignedUserId: integer('assigned_user_id').references(() => users.id),
   issuedBy: varchar('issued_by', { length: 255 }),
   entryDate: timestamp('entry_date'),
-  dueDate: timestamp('due_date'),
   completedAt: timestamp('completed_at'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  countedQuantity: numeric('counted_quantity', { precision: 10, scale: 3 }),
+  countAttempts: integer('count_attempts').default(0),
+  lastCountAt: timestamp('last_count_at'),
 });
 
 // Type exports

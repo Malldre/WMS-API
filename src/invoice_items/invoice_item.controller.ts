@@ -1,56 +1,54 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { InvoiceItemService } from './invoice_item.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import * as schema from '../db/schema';
 
 @Controller('invoice-items')
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class InvoiceItemController {
-  constructor(private invoiceItemService: InvoiceItemService) {}
+  constructor(private readonly invoiceItemService: InvoiceItemService) {}
 
   @Get()
   async findAll() {
     return await this.invoiceItemService.findAll();
   }
 
+  @Get('invoice/:invoiceId')
+  async findByInvoiceId(@Param('invoiceId') invoiceId: string) {
+    return await this.invoiceItemService.findByInvoiceId(
+      parseInt(invoiceId, 10),
+    );
+  }
+
   @Get(':uuid')
-  async findOne(@Param('uuid') uuid: string) {
+  async findByUuid(@Param('uuid') uuid: string) {
     return await this.invoiceItemService.findByUuid(uuid);
   }
 
-  @Get('invoice/:invoiceId')
-  async findByInvoice(@Param('invoiceId') invoiceId: string) {
-    return await this.invoiceItemService.findByInvoiceId(parseInt(invoiceId));
-  }
-
   @Post()
-  async create(@Body() body: {
-    invoiceId: number;
-    materialId: number;
-    quantity: string;
-    totalValue: string;
-    status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-    remark?: string;
-    createdById: number;
-  }) {
-    return await this.invoiceItemService.create(body);
+  async create(@Body() invoiceItem: typeof schema.invoiceItems.$inferInsert) {
+    return await this.invoiceItemService.create(invoiceItem);
   }
 
   @Put(':uuid')
   async update(
     @Param('uuid') uuid: string,
-    @Body() body: {
-      quantity?: string;
-      totalValue?: string;
-      status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-      remark?: string;
-      changedById?: number;
-    }
+    @Body() invoiceItem: Partial<typeof schema.invoiceItems.$inferInsert>,
   ) {
-    return await this.invoiceItemService.update(uuid, body);
+    return await this.invoiceItemService.update(uuid, invoiceItem);
   }
 
   @Delete(':uuid')
-  async remove(@Param('uuid') uuid: string) {
-    return await this.invoiceItemService.remove(uuid);
+  async delete(@Param('uuid') uuid: string) {
+    return await this.invoiceItemService.delete(uuid);
   }
 }

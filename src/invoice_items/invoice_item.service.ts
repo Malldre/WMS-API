@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InvoiceItemRepository } from './invoice_item.repository';
+import * as schema from '../db/schema';
 
 @Injectable()
 export class InvoiceItemService {
@@ -10,51 +11,68 @@ export class InvoiceItemService {
   }
 
   async findByUuid(uuid: string) {
-    const item = await this.invoiceItemRepository.findByUuid(uuid);
-    
-    if (!item) {
+    const invoiceItem = await this.invoiceItemRepository.findByUuid(uuid);
+
+    if (!invoiceItem) {
       throw new NotFoundException(`Invoice item with UUID ${uuid} not found`);
     }
-    
-    return item;
+
+    return invoiceItem;
   }
 
   async findByInvoiceId(invoiceId: number) {
     return await this.invoiceItemRepository.findByInvoiceId(invoiceId);
   }
 
-  async create(createItemDto: {
-    invoiceId: number;
-    materialId: number;
-    quantity: string;
-    totalValue: string;
-    status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-    remark?: string;
-    createdById: number;
-  }) {
-    return await this.invoiceItemRepository.create(createItemDto);
+  async findByInvoiceAndMaterial(invoiceId: number, materialId: number) {
+    const item = await this.invoiceItemRepository.findByInvoiceAndMaterial(
+      invoiceId,
+      materialId,
+    );
+
+    if (!item) {
+      throw new NotFoundException(
+        `Invoice item not found for invoice ${invoiceId} and material ${materialId}`,
+      );
+    }
+
+    return item;
   }
 
-  async update(uuid: string, updateItemDto: {
-    quantity?: string;
-    totalValue?: string;
-    status?: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
-    remark?: string;
-    changedById?: number;
-  }) {
-    await this.findByUuid(uuid);
-    return await this.invoiceItemRepository.update(uuid, updateItemDto);
+  async create(invoiceItem: typeof schema.invoiceItems.$inferInsert) {
+    return await this.invoiceItemRepository.create(invoiceItem);
   }
 
-  async remove(uuid: string) {
-    await this.findByUuid(uuid);
+  async update(
+    uuid: string,
+    invoiceItem: Partial<typeof schema.invoiceItems.$inferInsert>,
+  ) {
+    const existingItem = await this.invoiceItemRepository.findByUuid(uuid);
+
+    if (!existingItem) {
+      throw new NotFoundException(`Invoice item with UUID ${uuid} not found`);
+    }
+
+    return await this.invoiceItemRepository.update(uuid, invoiceItem);
+  }
+
+  async updateStatus(uuid: string, status: string) {
+    const existingItem = await this.invoiceItemRepository.findByUuid(uuid);
+
+    if (!existingItem) {
+      throw new NotFoundException(`Invoice item with UUID ${uuid} not found`);
+    }
+
+    return await this.invoiceItemRepository.update(uuid, { status: status as any });
+  }
+
+  async delete(uuid: string) {
+    const existingItem = await this.invoiceItemRepository.findByUuid(uuid);
+
+    if (!existingItem) {
+      throw new NotFoundException(`Invoice item with UUID ${uuid} not found`);
+    }
+
     return await this.invoiceItemRepository.delete(uuid);
-  }
-
-  async updateStatus(uuid: string, status: string, changedById: number) {
-    return await this.update(uuid, { 
-      status: status as any, 
-      changedById 
-    });
   }
 }

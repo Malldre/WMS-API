@@ -1,5 +1,13 @@
-import { Controller, Post, UseGuards, Request, Get, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
+import { 
+  Controller, 
+  Post, 
+  Body, 
+  UseGuards, 
+  Request, 
+  Get, 
+  HttpCode, 
+  HttpStatus 
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -7,17 +15,37 @@ import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Body() loginDto: { email: string; password: string }) {
+    console.log('🔐 Login attempt for:', loginDto.email);
+    
+    const user = await this.authService.validateUser(
+      loginDto.email,
+      loginDto.password,
+    );
+
+    return this.authService.login(user);
   }
 
+  @Public()
+  @Post('register')
+  async register(
+    @Body()
+    registerDto: {
+      username: string;
+      email: string;
+      password: string;
+      userGroupId?: number;
+    },
+  ) {
+    return this.authService.register(registerDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
