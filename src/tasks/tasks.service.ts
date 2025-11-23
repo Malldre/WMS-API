@@ -129,48 +129,62 @@ export class TasksService {
     quantityFound: number;
     requiresReview: boolean;
   }> {
+
+    // Buscar a task
     const task = await this.tasksRepository.findByUuid(taskUuid);
     if (!task) {
       throw new NotFoundException(`Task with UUID ${taskUuid} not found`);
     }
 
+    // Validar se a task tem invoice e material
     if (!task.invoiceId || !task.materialId) {
       throw new NotFoundException(
         'Task must have invoiceId and materialId for conference',
       );
     }
 
+    // Buscar o invoice_item (que contém a quantidade esperada da nota fiscal)
     const invoiceItem = await this.invoiceItemService.findByInvoiceAndMaterial(
       task.invoiceId,
       task.materialId,
     );
 
     if (!invoiceItem) {
-      throw new NotFoundException('Invoice item not found');
+      console.error('❌ [Conference] Invoice item not found for:', {
+        invoiceId: task.invoiceId,
+        materialId: task.materialId,
+      });
+      throw new NotFoundException(
+        `Invoice item not found for invoice ${task.invoiceId} and material ${task.materialId}`,
+      );
     }
 
-    const invoiceQuantity = parseFloat(invoiceItem.quantity.toString());
-    const isConforming = quantityFound === invoiceQuantity;
+    // A quantidade esperada vem do invoice_item (nota fiscal)
+    const expectedQuantity = parseFloat(invoiceItem.quantity.toString());
+    const isConforming = quantityFound === expectedQuantity;
 
     await this.invoiceItemService.update(invoiceItem.uuid, {
       status: isConforming ? 'CONFORMING' : 'DIVERGENT',
       remark: isConforming
-        ? 'Material conforme nota'
-        : `Divergência: Esperado ${invoiceQuantity}, Encontrado ${quantityFound}`,
+        ? 'Material conforme nota fiscal'
+        : `Divergência: Quantidade ${quantityFound} divergente da nota fiscal!`,
     });
 
-    await this.tasksRepository.update(taskUuid, {
-      status: 'COMPLETED',
-      completedAt: new Date(),
-      countedQuantity: quantityFound.toString(),
-      assignedUserId: userId,
-    });
+    // Atualizar a task como concluída
+    if (isConforming) {
+      await this.tasksRepository.update(taskUuid, {
+        status: 'COMPLETED',
+        completedAt: new Date(),
+        countedQuantity: quantityFound.toString(),
+        assignedUserId: userId,
+      });
+    }
 
     return {
       success: isConforming,
       message: isConforming
         ? 'Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.'
-        : 'DIVERGÊNCIA DETECTADA: A quantidade informada não corresponde à nota fiscal.',
+        : `DIVERGÊNCIA DETECTADA: Quantidade ${quantityFound} divergente da nota fiscal!`,
       quantityFound,
       requiresReview: !isConforming,
     };

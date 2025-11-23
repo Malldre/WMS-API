@@ -17,21 +17,14 @@ export function omitIdFromArray<T extends { id?: number }>(records: T[]): Omit<T
 }
 
 /**
- * Omits all internal ID fields (id and foreign key *Id fields) from a record
- * Only keeps UUID fields for public-facing identifiers
+ * Omits only the internal 'id' field from a record
+ * Keeps all foreign keys (invoiceId, materialId, etc.) for API use
  */
 export function omitAllInternalIds<T extends Record<string, any>>(record: T): any {
   if (!record) return record;
 
-  const result: any = {};
-  for (const [key, value] of Object.entries(record)) {
-    // Skip 'id' field and fields ending with 'Id' (except uuid fields)
-    if (key === 'id' || (key.endsWith('Id') && !key.toLowerCase().includes('uuid'))) {
-      continue;
-    }
-    result[key] = value;
-  }
-  return result;
+  const { id, ...rest } = record;
+  return rest;
 }
 
 /**
