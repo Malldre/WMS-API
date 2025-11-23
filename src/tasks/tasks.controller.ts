@@ -7,11 +7,15 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import * as schema from '../db/schema';
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
@@ -22,7 +26,6 @@ export class TasksController {
     @Query('assignedUserId') assignedUserId?: string,
   ) {
     const filters: any = {};
-
     if (status) filters.status = status;
     if (taskType) filters.taskType = taskType;
     if (assignedUserId) filters.assignedUserId = parseInt(assignedUserId, 10);
@@ -30,19 +33,51 @@ export class TasksController {
     return await this.tasksService.findAll(filters);
   }
 
+  @Get('my-tasks')
+  async findMyTasks(
+    @Request() req,
+    @Query('status') status?: string,
+    @Query('taskType') taskType?: string,
+  ) {
+    const userId = req.user.userId;
+    return await this.tasksService.findUserTasks(userId, taskType, status);
+  }
+
   @Get('open')
-  async findOpenTasks() {
-    return await this.tasksService.findOpenTasks();
+  async findOpenTasks(
+    @Query('taskType') taskType?: string,
+    @Query('assignedUserId') assignedUserId?: string,
+  ) {
+    const filters: any = {};
+    if (assignedUserId) {
+      filters.assignedUserId = parseInt(assignedUserId, 10);
+    }
+    return await this.tasksService.findOpenTasks(taskType, filters);
   }
 
   @Get('closed')
-  async findClosedTasks() {
-    return await this.tasksService.findClosedTasks();
+  async findClosedTasks(
+    @Query('taskType') taskType?: string,
+    @Query('assignedUserId') assignedUserId?: string,
+  ) {
+    const filters: any = {};
+    if (assignedUserId) {
+      filters.assignedUserId = parseInt(assignedUserId, 10);
+    }
+    return await this.tasksService.findClosedTasks(taskType, filters);
   }
 
   @Get('user/:userId')
-  async findUserTasks(@Param('userId') userId: string) {
-    return await this.tasksService.findUserTasks(parseInt(userId, 10));
+  async findUserTasks(
+    @Param('userId') userId: string,
+    @Query('taskType') taskType?: string,
+    @Query('status') status?: string,
+  ) {
+    return await this.tasksService.findUserTasks(
+      parseInt(userId, 10),
+      taskType,
+      status,
+    );
   }
 
   @Get('invoice/:invoiceId')
@@ -65,23 +100,46 @@ export class TasksController {
     @Param('uuid') uuid: string,
     @Body() task: Partial<typeof schema.tasks.$inferInsert>,
   ) {
+    if (task.entryDate) {
+      task.entryDate = new Date(task.entryDate);
+    }
+    if (task.dueDate) {
+      task.dueDate = new Date(task.dueDate);
+    }
+    if (task.completedAt) {
+      task.completedAt = new Date(task.completedAt);
+    }
+    if (task.lastCountAt) {
+      task.lastCountAt = new Date(task.lastCountAt);
+    }
     return await this.tasksService.update(uuid, task);
-  }
-
-  @Put(':uuid/assign')
-  async assignToUser(
-    @Param('uuid') uuid: string,
-    @Body('userId') userId: number,
-  ) {
-    return await this.tasksService.assignToUser(uuid, userId);
   }
 
   @Put(':uuid/status')
   async updateStatus(
     @Param('uuid') uuid: string,
-    @Body('status') status: string,
+    @Body() body: { status: string },
   ) {
-    return await this.tasksService.updateStatus(uuid, status);
+    return await this.tasksService.updateStatus(uuid, body.status);
+  }
+
+  @Put(':uuid/assign')
+  async assignToUser(
+    @Param('uuid') uuid: string,
+    @Body() body: { userId: number },
+  ) {
+    return await this.tasksService.assignToUser(uuid, body.userId);
+  }
+
+  @Post('conference')
+  async performConference(
+    @Body() body: { taskUuid: string; quantityFound: number; userId: number },
+  ) {
+    return await this.tasksService.performConference(
+      body.taskUuid,
+      body.quantityFound,
+      body.userId,
+    );
   }
 
   @Delete(':uuid')

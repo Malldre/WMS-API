@@ -1,76 +1,122 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DB_CONNECTION } from '../db/db.module';
-import { users, User, NewUser } from '../db/schema';
-import * as bcrypt from 'bcrypt';
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { omitId, omitIdFromArray } from '../common/utils/omit-id.util';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../db/schema';
+import { eq } from 'drizzle-orm';
+import { omitAllInternalIds } from '../common/utils/omit-id.util';
+
+type User = typeof schema.users.$inferSelect;
+type UserInsert = typeof schema.users.$inferInsert;
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(DB_CONNECTION)
-    private db: PostgresJsDatabase<typeof import('../db/schema')>,
+    private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async getAllUsers(): Promise<Omit<User, 'id'>[] | undefined> {
-    const result = await this.db
-      .select()
-      .from(users);
-
-    return omitIdFromArray(result);
+  async findAll(): Promise<Omit<User, 'id'>[]> {
+    const users = await this.db.select().from(schema.users);
+    return users.map((user) => omitAllInternalIds(user));
   }
 
-  async findOne(username: string): Promise<Omit<User, 'id'> | undefined> {
-    const result = await this.db
+  async findByUuid(uuid: string): Promise<Omit<User, 'id'> | null> {
+    const user = await this.db
       .select()
-      .from(users)
-      .where(eq(users.username, username))
+      .from(schema.users)
+      .where(eq(schema.users.uuid, uuid))
       .limit(1);
 
-    return result[0] ? omitId(result[0]) : undefined;
+    if (!user[0]) {
+      return null;
+    }
+
+    return omitAllInternalIds(user[0]);
   }
 
-  async findById(uuid: string): Promise<Omit<User, 'id'> | undefined> {
-    const result = await this.db
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.db
       .select()
-      .from(users)
-      .where(eq(users.uuid, uuid))
+      .from(schema.users)
+      .where(eq(schema.users.email, email))
       .limit(1);
 
-    return result[0] ? omitId(result[0]) : undefined;
+    return user[0] || null;
   }
 
-  async createUser(username: string, email: string,  password: string): Promise<Omit<User, 'id'>> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser: NewUser = {
-      username,
-      email,
-      password: hashedPassword,
-    };
+  async findByUsername(username: string): Promise<User | null> {
+    const user = await this.db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.username, username))
+      .limit(1);
 
-    const result = await this.db.insert(users).values(newUser).returning();
-    return omitId(result[0]);
+    return user[0] || null;
   }
 
-  async updateUser(uuid: string, username: string, email: string, password: string): Promise<Omit<User, 'id'>> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await this.db
-      .update(users)
-      .set({
-        username,
-        email,
-        password: hashedPassword,
+  async create(userData: {
+    username: string;
+    email: string;
+    password: string;
+    userGroupId?: number;
+  }): Promise<Omit<User, 'id'>> {
+    const newUser = await this.db
+      .insert(schema.users)
+      .values({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        userGroupId: userData.userGroupId || null,
       })
-      .where(eq(users.uuid, uuid))
       .returning();
 
-    return omitId(result[0]);
+    return omitAllInternalIds(newUser[0]);
   }
 
-  async deleteUser(uuid: string): Promise<void> {
-    await this.db
-      .delete(users)
-      .where(eq(users.uuid, uuid));
+  async createUser(
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<Omit<User, 'id'>> {
+    const newUser = await this.db
+      .insert(schema.users)
+      .values({
+        username,
+        email,
+        password,
+      })
+      .returning();
+
+    return omitAllInternalIds(newUser[0]);
+  }
+
+  async updateUser(
+    uuid: string,
+    userData: Partial<UserInsert>,
+  ): Promise<Omit<User, 'id'>> {
+    const updatedUser = await this.db
+      .update(schema.users)
+      .set(userData)
+      .where(eq(schema.users.uuid, uuid))
+      .returning();
+
+    if (!updatedUser[0]) {
+      throw new NotFoundException(`User with UUID ${uuid} not found`);
+    }
+
+    return omitAllInternalIds(updatedUser[0]);
+  }
+
+  async deleteUser(uuid: string): Promise<Omit<User, 'id'>> {
+    const deletedUser = await this.db
+      .delete(schema.users)
+      .where(eq(schema.users.uuid, uuid))
+      .returning();
+
+    if (!deletedUser[0]) {
+      throw new NotFoundException(`User with UUID ${uuid} not found`);
+    }
+
+    return omitAllInternalIds(deletedUser[0]);
   }
 }

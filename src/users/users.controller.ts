@@ -1,66 +1,56 @@
-import { Controller, Post, Body, ConflictException, Get, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Public } from '../auth/public.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async getAllUsers() {
-    const users = await this.usersService.getAllUsers();
-    return users;
+  async findAll() {
+    return await this.usersService.findAll();
   }
 
   @Get(':uuid')
-  async getUserById(uuid: string) {
-    const user = await this.usersService.findById(uuid);
-    return user;
+  async findByUuid(@Param('uuid') uuid: string) {
+    return await this.usersService.findByUuid(uuid);
   }
 
   @Get('username/:username')
-  async getUserByUsername(username: string) {
-    const user = await this.usersService.findOne(username);
-    return user;
+  async findByUsername(@Param('username') username: string) {
+    return await this.usersService.findByUsername(username);
   }
 
   @Put(':uuid')
-  async updateUser(uuid: string, @Body() body: { username: string; email: string; password: string }) {
-    const { username, email, password } = body;
-
-    const user = await this.usersService.updateUser(uuid, username, email, password);
-
-    return {
-      id: user.uuid,
-      username: user.username,
-      message: 'User updated successfully',
-    };
+  async update(
+    @Param('uuid') uuid: string,
+    @Body() userData: {
+      username?: string;
+      email?: string;
+      password?: string;
+      userGroupId?: number;
+      status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+    },
+  ) {
+    return await this.usersService.updateUser(uuid, userData);
   }
 
   @Delete(':uuid')
-  async deleteUser(uuid: string) {
-    await this.usersService.deleteUser(uuid);
-    return {
-      message: 'User deleted successfully',
-    };
+  async delete(@Param('uuid') uuid: string) {
+    return await this.usersService.deleteUser(uuid);
   }
 
-  @Public()
-  @Post('register')
-  async register(@Body() body: { username: string; email: string; password: string }) {
-    const { username, email, password } = body;
-
-    const existingUser = await this.usersService.findOne(username);
-    if (existingUser) {
-      throw new ConflictException('Username already exists');
-    }
-
-    const user = await this.usersService.createUser(username, email, password);
-
-    return {
-      id: user.uuid,
-      username: user.username,
-      message: 'User registered successfully',
-    };
+  @Post()
+  async create(
+    @Body()
+    userData: {
+      username: string;
+      email: string;
+      password: string;
+      userGroupId?: number;
+    },
+  ) {
+    return await this.usersService.create(userData);
   }
 }
