@@ -8,6 +8,6 @@ import { DbModule } from '../db/db.module';
   imports: [DbModule],
   controllers: [MaterialController],
   providers: [MaterialService, MaterialRepository],
-  exports: [MaterialService],
+  exports: [MaterialService, MaterialRepository],
 })
 export class MaterialModule {}

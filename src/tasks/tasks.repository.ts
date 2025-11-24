@@ -151,7 +151,6 @@ export class TasksRepository {
     task: typeof schema.tasks.$inferInsert,
   ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
     const result = await this.db.insert(schema.tasks).values(task).returning();
-
     return omitAllInternalIds(result[0]);
   }
 

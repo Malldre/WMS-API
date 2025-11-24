@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TasksRepository } from './tasks.repository';
 import { InvoiceItemService } from '../invoice_items/invoice_item.service';
 import * as schema from '../db/schema';
+import { MaterialRepository } from 'src/materials/material.repository';
 
 @Injectable()
 export class TasksService {
   constructor(
     private readonly tasksRepository: TasksRepository,
     private readonly invoiceItemService: InvoiceItemService,
+    private readonly materialRepository: MaterialRepository,
   ) {}
 
   async findAll(filters?: {
@@ -59,7 +61,21 @@ export class TasksService {
   async create(
     task: typeof schema.tasks.$inferInsert,
   ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
-    return await this.tasksRepository.create(task);
+    
+    const material = await this.materialRepository.findById(task.materialId);
+
+    if (!material) {
+      throw new NotFoundException(`Material with ID ${task.materialId} not found`);
+    }
+
+    task = {
+      ...task,
+      description: material.description,
+    };
+
+    const createdTask = await this.tasksRepository.create(task);
+
+    return createdTask;
   }
 
   async update(
@@ -177,6 +193,18 @@ export class TasksService {
         completedAt: new Date(),
         countedQuantity: quantityFound.toString(),
         assignedUserId: userId,
+        countAttempts: (task.countAttempts || 0) + 1,
+        lastCountAt: new Date(),
+      });
+    }
+
+    if (!isConforming) {
+      await this.tasksRepository.update(taskUuid, {
+        completedAt: new Date(),
+        countedQuantity: quantityFound.toString(),
+        assignedUserId: userId,
+        countAttempts: (task.countAttempts || 0) + 1,
+        lastCountAt: new Date(),
       });
     }
 
