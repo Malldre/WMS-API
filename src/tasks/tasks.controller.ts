@@ -92,6 +92,21 @@ export class TasksController {
 
   @Post()
   async create(@Body() task: typeof schema.tasks.$inferInsert) {
+
+    // Converter timestamp strings para Date objects
+    if (task.entryDate) {
+      task.entryDate = new Date(task.entryDate);
+    }
+    if (task.dueDate) {
+      task.dueDate = new Date(task.dueDate);
+    }
+    if (task.completedAt) {
+      task.completedAt = new Date(task.completedAt);
+    }
+    if (task.lastCountAt) {
+      task.lastCountAt = new Date(task.lastCountAt);
+    }
+
     return await this.tasksService.create(task);
   }
 

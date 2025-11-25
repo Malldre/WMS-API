@@ -29,6 +29,16 @@ export class MaterialRepository {
     return material ? omitAllInternalIds(material) : undefined;
   }
 
+  async findById(id: number): Promise<Omit<typeof materials.$inferSelect, 'id'> | undefined> {
+    const [material] = await this.db
+      .select()
+      .from(materials)
+      .where(eq(materials.id, id))
+      .limit(1);
+      
+    return material ? omitAllInternalIds(material) : undefined;
+  }
+
   async findByExternalCode(externalCode: string): Promise<Omit<typeof materials.$inferSelect, 'id'> | undefined> {
     const [material] = await this.db
       .select()
