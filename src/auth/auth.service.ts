@@ -11,7 +11,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmailForAuth(email);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -22,7 +22,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const { password: _, ...result } = user;
+    const { password: _, id: __, ...result } = user;
     return result;
   }
 
@@ -48,14 +48,10 @@ export class AuthService {
     password: string;
     userGroupId?: number;
   }) {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    // UsersService.create already hashes the password
+    const user = await this.usersService.create(userData);
 
-    const user = await this.usersService.create({
-      ...userData,
-      password: hashedPassword,
-    });
-
-    const { password: _, ...result } = user;
-    return result;
+    // User returned from create() already has no password field
+    return user;
   }
 }
