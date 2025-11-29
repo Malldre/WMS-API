@@ -1,21 +1,25 @@
-import { 
-  Controller, 
-  Post, 
-  Body, 
-  UseGuards, 
-  Request, 
-  Get, 
-  HttpCode, 
-  HttpStatus 
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { Public } from './public.decorator';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Public()
   @HttpCode(HttpStatus.OK)
@@ -45,7 +49,12 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@Request() req) {
+    // Retorna dados completos do usuário ao invés de apenas o payload JWT
+    const user = await this.usersService.findByUuid(req.user.uuid);
+    if (!user) {
+      return req.user; // Fallback para o payload JWT se não encontrar o usuário
+    }
+    return user;
   }
 }

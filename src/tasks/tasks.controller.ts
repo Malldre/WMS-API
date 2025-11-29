@@ -163,6 +163,15 @@ export class TasksController {
     );
   }
 
+  @Put(':uuid/complete-conference')
+  async completeConference(
+    @Param('uuid') uuid: string,
+    @Request() req,
+  ) {
+    const userId = req.user.userId;
+    return await this.tasksService.completeConference(uuid, userId);
+  }
+
   @Delete(':uuid')
   async delete(@Param('uuid') uuid: string) {
     return await this.tasksService.delete(uuid);
