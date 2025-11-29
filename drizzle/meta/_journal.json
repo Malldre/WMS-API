@@ -8,6 +8,13 @@
       "when": 1763679991498,
       "tag": "0000_serious_vulture",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764446939649,
+      "tag": "0001_calm_mole_man",
+      "breakpoints": true
     }
   ]
 }

@@ -24,6 +24,7 @@ export const users = pgTable('user', {
   id: serial('id').primaryKey(),
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   username: varchar('username', { length: 100 }).notNull().unique(),
+  name: varchar('name', { length: 255 }),
   password: varchar('password', { length: 255 }).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   userGroupId: integer('user_group_id'),
