@@ -461,7 +461,7 @@ Content-Type: application/json
 }
 
 ### 68. Assign Task to User
-PUT {{baseUrl}}/tasks/35947996-664e-47ef-97f2-684811f02c59/assign
+PUT {{baseUrl}}/tasks/9d54b4d3-995e-4681-ba04-5d3cd639e49f/assign
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -475,8 +475,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "taskUuid": "35947996-664e-47ef-97f2-684811f02c59",
-  "quantityFound": 200,
+  "taskUuid": "9d54b4d3-995e-4681-ba04-5d3cd639e49f",
+  "quantityFound": 800,
   "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
   "storageId": 1
 }
