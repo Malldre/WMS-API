@@ -138,4 +138,11 @@ export class UsersService {
 
     return deletedUser;
   }
+
+  /**
+   * Get internal user ID from UUID (for internal services only)
+   */
+  async getInternalIdByUuid(uuid: string): Promise<number | null> {
+    return await this.usersRepository.getInternalIdByUuid(uuid);
+  }
 }

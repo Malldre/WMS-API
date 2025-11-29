@@ -205,4 +205,17 @@ export class UsersRepository {
 
     return Number(result[0].count) > 0;
   }
+
+  /**
+   * Get internal user ID from UUID (for internal use only)
+   */
+  async getInternalIdByUuid(uuid: string): Promise<number | null> {
+    const result = await this.db
+      .select({ id: schema.users.id })
+      .from(schema.users)
+      .where(eq(schema.users.uuid, uuid))
+      .limit(1);
+
+    return result[0]?.id || null;
+  }
 }
