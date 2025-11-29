@@ -1,4 +1,4 @@
-# 📦 Documentação da API - Sistema WMS (Warehouse Management System)
+﻿# 📦 Documentação da API - Sistema WMS (Warehouse Management System)
 
 ## 📋 Índice
 
@@ -1620,7 +1620,7 @@ Listar todas as tarefas com filtros opcionais.
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`
 - `taskType` (opcional) - Filtrar por tipo: `PICKING`, `STORAGE`, `CONFERENCE`, etc.
-- `assignedUserId` (opcional) - Filtrar por usuário atribuído (ID numérico)
+- `assignedUserUuid` (opcional) - Filtrar por usuário atribuído (UUID)
 
 **Exemplos:**
 
@@ -1638,11 +1638,11 @@ GET /tasks?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas do usuário 2
-GET /tasks?assignedUserId=2
+GET /tasks?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
 # Tarefas de conferência pendentes do usuário 2
-GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserId=2
+GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -1722,7 +1722,7 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -1736,7 +1736,7 @@ GET /tasks/open?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas abertas do usuário 2
-GET /tasks/open?assignedUserId=2
+GET /tasks/open?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -1748,7 +1748,7 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -1764,12 +1764,12 @@ Authorization: Bearer {token}
 
 ---
 
-#### `GET /tasks/user/{userId}`
+#### `GET /tasks/user/{userUuid}`
 
 Listar tarefas de um usuário específico.
 
 **Parameters:**
-- `userId` (path) - ID do usuário
+- `userUuid` (path) - UUID do usuário
 
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status
@@ -1779,26 +1779,26 @@ Listar tarefas de um usuário específico.
 
 ```http
 # Todas as tarefas do usuário 1
-GET /tasks/user/1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
 # Tarefas concluídas do usuário 1
-GET /tasks/user/1?status=COMPLETED
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=COMPLETED
 Authorization: Bearer {token}
 
 # Tarefas de picking em andamento do usuário 1
-GET /tasks/user/1?status=IN_PROGRESS&taskType=PICKING
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=IN_PROGRESS&taskType=PICKING
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/invoice/{invoiceId}`
+#### `GET /tasks/invoice/{invoiceUuid}`
 
 Buscar tarefas relacionadas a uma nota fiscal.
 
 **Parameters:**
-- `invoiceId` (path) - ID da nota fiscal
+- `invoiceUuid` (path) - UUID da nota fiscal
 
 **Exemplo:**
 
@@ -2105,7 +2105,7 @@ Atribuir tarefa a um usuário.
 **Request Body:**
 ```json
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -2117,7 +2117,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -2146,22 +2146,27 @@ Realizar conferência de material (tarefa de conferência).
 - A tarefa deve ter `invoiceId` e `materialId` preenchidos
 - Deve existir um `invoice_item` correspondente
 - A quantidade esperada vem da nota fiscal (`invoice_item.quantity`)
+- Se `storageId` for fornecido e a conferência for conforme, o inventário é criado automaticamente
 
 **Request Body:**
 ```json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
 **Campos obrigatórios:**
 - `taskUuid` - UUID da tarefa de conferência
 - `quantityFound` - Quantidade encontrada durante a conferência
-- `userId` - ID do usuário que está realizando a conferência
+- `userUuid` - UUID do usuário que está realizando a conferência
 
-**Exemplo - Conferência com quantidade conforme:**
+**Campos opcionais:**
+- `storageId` - ID do local de armazenamento (se fornecido e conferência conforme, cria inventário automaticamente)
+
+**Exemplo - Conferência com quantidade conforme e armazenamento:**
 
 ```http
 POST /tasks/conference
@@ -2171,15 +2176,16 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 150,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Response (200 OK - Conforme):**
+**Response (200 OK - Conforme com armazenamento):**
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal. Inventário criado/atualizado.",
   "quantityFound": 150,
   "expectedQuantity": 150,
   "requiresReview": false
@@ -2196,7 +2202,8 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
@@ -3794,7 +3801,7 @@ Listar todas as tarefas com filtros opcionais.
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`
 - `taskType` (opcional) - Filtrar por tipo: `PICKING`, `STORAGE`, `CONFERENCE`, etc.
-- `assignedUserId` (opcional) - Filtrar por usuário atribuído (ID numérico)
+- `assignedUserUuid` (opcional) - Filtrar por usuário atribuído (UUID)
 
 **Exemplos:**
 
@@ -3812,11 +3819,11 @@ GET /tasks?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas do usuário 2
-GET /tasks?assignedUserId=2
+GET /tasks?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
 # Tarefas de conferência pendentes do usuário 2
-GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserId=2
+GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -3896,7 +3903,7 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -3910,7 +3917,7 @@ GET /tasks/open?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas abertas do usuário 2
-GET /tasks/open?assignedUserId=2
+GET /tasks/open?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -3922,7 +3929,7 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -3938,12 +3945,12 @@ Authorization: Bearer {token}
 
 ---
 
-#### `GET /tasks/user/{userId}`
+#### `GET /tasks/user/{userUuid}`
 
 Listar tarefas de um usuário específico.
 
 **Parameters:**
-- `userId` (path) - ID do usuário
+- `userUuid` (path) - UUID do usuário
 
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status
@@ -3953,26 +3960,26 @@ Listar tarefas de um usuário específico.
 
 ```http
 # Todas as tarefas do usuário 1
-GET /tasks/user/1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
 # Tarefas concluídas do usuário 1
-GET /tasks/user/1?status=COMPLETED
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=COMPLETED
 Authorization: Bearer {token}
 
 # Tarefas de picking em andamento do usuário 1
-GET /tasks/user/1?status=IN_PROGRESS&taskType=PICKING
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=IN_PROGRESS&taskType=PICKING
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/invoice/{invoiceId}`
+#### `GET /tasks/invoice/{invoiceUuid}`
 
 Buscar tarefas relacionadas a uma nota fiscal.
 
 **Parameters:**
-- `invoiceId` (path) - ID da nota fiscal
+- `invoiceUuid` (path) - UUID da nota fiscal
 
 **Exemplo:**
 
@@ -4279,7 +4286,7 @@ Atribuir tarefa a um usuário.
 **Request Body:**
 ```json
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4291,7 +4298,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4320,22 +4327,27 @@ Realizar conferência de material (tarefa de conferência).
 - A tarefa deve ter `invoiceId` e `materialId` preenchidos
 - Deve existir um `invoice_item` correspondente
 - A quantidade esperada vem da nota fiscal (`invoice_item.quantity`)
+- Se `storageId` for fornecido e a conferência for conforme, o inventário é criado automaticamente
 
 **Request Body:**
 ```json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
 **Campos obrigatórios:**
 - `taskUuid` - UUID da tarefa de conferência
 - `quantityFound` - Quantidade encontrada durante a conferência
-- `userId` - ID do usuário que está realizando a conferência
+- `userUuid` - UUID do usuário que está realizando a conferência
 
-**Exemplo - Conferência com quantidade conforme:**
+**Campos opcionais:**
+- `storageId` - ID do local de armazenamento (se fornecido e conferência conforme, cria inventário automaticamente)
+
+**Exemplo - Conferência com quantidade conforme e armazenamento:**
 
 ```http
 POST /tasks/conference
@@ -4345,15 +4357,16 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 150,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Response (200 OK - Conforme):**
+**Response (200 OK - Conforme com armazenamento):**
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal. Inventário criado/atualizado.",
   "quantityFound": 150,
   "expectedQuantity": 150,
   "requiresReview": false
@@ -4370,7 +4383,8 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
@@ -4839,7 +4853,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4885,7 +4899,7 @@ Content-Type: application/json
 {
   "taskUuid": "abc123-def456-ghi789",
   "quantityFound": 1000,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4893,7 +4907,7 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal. Inventário criado/atualizado.",
   "quantityFound": 1000,
   "expectedQuantity": 1000,
   "requiresReview": false
@@ -4917,7 +4931,7 @@ Content-Type: application/json
 {
   "taskUuid": "abc123-def456-ghi789",
   "quantityFound": 950,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -5847,3 +5861,11 @@ Contribuições são bem-vindas! Por favor:
 **Versão da API:** 1.1.0  
 **Última atualização:** 24 de Novembro de 2024  
 **Desenvolvido com:** ❤️ e NestJS
+
+
+
+
+
+
+
+
