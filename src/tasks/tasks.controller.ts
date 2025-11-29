@@ -12,12 +12,16 @@ import {
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UsersService } from '../users/users.service';
 import * as schema from '../db/schema';
 
 @Controller('tasks')
 @UseGuards(JwtAuthGuard)
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get()
   async findAll(
@@ -39,7 +43,13 @@ export class TasksController {
     @Query('status') status?: string,
     @Query('taskType') taskType?: string,
   ) {
-    const userId = req.user.userId;
+    const userUuid = req.user.uuid;
+    const userId = await this.usersService.getInternalIdByUuid(userUuid);
+
+    if (!userId) {
+      throw new Error('User not found');
+    }
+
     return await this.tasksService.findUserTasks(userId, taskType, status);
   }
 
