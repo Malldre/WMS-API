@@ -1,7 +1,7 @@
 ### WMS API - Teste Integrado de Todas as Rotas
 ### Base URL
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5vdm91c3VhcmlvMTIzIiwic3ViIjoiYmEzMmI0MDMtOGQzMC00ZGI1LTgzNmUtNzUyNzllNDE0MTc0IiwidXNlcklkIjoxMywiaWF0IjoxNzY0NDQ1MTM0LCJleHAiOjE3NjQ1MzE1MzR9.cYOPnhdSxuo6UEI3zxH6tps04DAdVGPn31TMVGDp5Rw
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5vdm91c3VhcmlvMTIzIiwic3ViIjoiYmEzMmI0MDMtOGQzMC00ZGI1LTgzNmUtNzUyNzllNDE0MTc0IiwidXNlcklkIjoxMywiaWF0IjoxNzY0NDQ5MzQ2LCJleHAiOjE3NjQ1MzU3NDZ9.ijeCoqeHAMV5AUiPB9EI5nuqEXepiohGOGIU8pRfXmk
 
 ### ORDEM RECOMENDADA PARA CRIAR DADOS:
 ### 1. Companies → 2. Suppliers → 3. Material Categories → 4. Materials → 5. Storages → 6. Invoices → 7. Invoice Items → 8. Tasks
@@ -579,7 +579,7 @@ Authorization: Bearer {{token}}
 ###
 
 # Step 3: Assign Task
-PUT {{baseUrl}}/tasks/TASK_UUID/assign
+PUT {{baseUrl}}/tasks/"9d54b4d3-995e-4681-ba04-5d3cd639e49f"/assign
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
