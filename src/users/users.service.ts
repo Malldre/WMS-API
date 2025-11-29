@@ -1,122 +1,141 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { DB_CONNECTION } from '../db/db.module';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../db/schema';
-import { eq } from 'drizzle-orm';
-import { omitAllInternalIds } from '../common/utils/omit-id.util';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { UsersRepository } from './users.repository';
+import * as bcrypt from 'bcrypt';
 
-type User = typeof schema.users.$inferSelect;
-type UserInsert = typeof schema.users.$inferInsert;
+type UserInsert = {
+  username: string;
+  name?: string;
+  email: string;
+  password: string;
+  userGroupId?: number;
+  status?: 'ACTIVE' | 'INACTIVE' | 'BLOCKED';
+};
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @Inject(DB_CONNECTION)
-    private readonly db: NodePgDatabase<typeof schema>,
-  ) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
-  async findAll(): Promise<Omit<User, 'id'>[]> {
-    const users = await this.db.select().from(schema.users);
-    return users.map((user) => omitAllInternalIds(user));
+  async findAll(): Promise<any[]> {
+    return await this.usersRepository.findAll();
   }
 
-  async findByUuid(uuid: string): Promise<Omit<User, 'id'> | null> {
-    const user = await this.db
-      .select()
-      .from(schema.users)
-      .where(eq(schema.users.uuid, uuid))
-      .limit(1);
+  async findByUuid(uuid: string): Promise<any | null> {
+    const user = await this.usersRepository.findByUuid(uuid);
 
-    if (!user[0]) {
-      return null;
-    }
-
-    return omitAllInternalIds(user[0]);
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    const user = await this.db
-      .select()
-      .from(schema.users)
-      .where(eq(schema.users.email, email))
-      .limit(1);
-
-    return user[0] || null;
-  }
-
-  async findByUsername(username: string): Promise<User | null> {
-    const user = await this.db
-      .select()
-      .from(schema.users)
-      .where(eq(schema.users.username, username))
-      .limit(1);
-
-    return user[0] || null;
-  }
-
-  async create(userData: {
-    username: string;
-    email: string;
-    password: string;
-    userGroupId?: number;
-  }): Promise<Omit<User, 'id'>> {
-    const newUser = await this.db
-      .insert(schema.users)
-      .values({
-        username: userData.username,
-        email: userData.email,
-        password: userData.password,
-        userGroupId: userData.userGroupId || null,
-      })
-      .returning();
-
-    return omitAllInternalIds(newUser[0]);
-  }
-
-  async createUser(
-    username: string,
-    email: string,
-    password: string,
-  ): Promise<Omit<User, 'id'>> {
-    const newUser = await this.db
-      .insert(schema.users)
-      .values({
-        username,
-        email,
-        password,
-      })
-      .returning();
-
-    return omitAllInternalIds(newUser[0]);
-  }
-
-  async updateUser(
-    uuid: string,
-    userData: Partial<UserInsert>,
-  ): Promise<Omit<User, 'id'>> {
-    const updatedUser = await this.db
-      .update(schema.users)
-      .set(userData)
-      .where(eq(schema.users.uuid, uuid))
-      .returning();
-
-    if (!updatedUser[0]) {
+    if (!user) {
       throw new NotFoundException(`User with UUID ${uuid} not found`);
     }
 
-    return omitAllInternalIds(updatedUser[0]);
+    return user;
   }
 
-  async deleteUser(uuid: string): Promise<Omit<User, 'id'>> {
-    const deletedUser = await this.db
-      .delete(schema.users)
-      .where(eq(schema.users.uuid, uuid))
-      .returning();
+  async findByUsername(username: string): Promise<any | null> {
+    const user = await this.usersRepository.findByUsername(username);
 
-    if (!deletedUser[0]) {
+    if (!user) {
+      throw new NotFoundException(`User with username ${username} not found`);
+    }
+
+    return user;
+  }
+
+  /**
+   * Find user by username WITH password (for authentication only)
+   * Used by AuthService for login validation
+   */
+  async findByUsernameForAuth(username: string): Promise<any | null> {
+    return await this.usersRepository.findByUsernameWithPassword(username);
+  }
+
+  /**
+   * Find user by email WITH password (for authentication only)
+   * Used by AuthService for login validation
+   */
+  async findByEmailForAuth(email: string): Promise<any | null> {
+    return await this.usersRepository.findByEmailWithPassword(email);
+  }
+
+  async create(userData: UserInsert): Promise<any> {
+    // Check if username already exists
+    const usernameExists = await this.usersRepository.usernameExists(userData.username);
+    if (usernameExists) {
+      throw new ConflictException('Username already exists');
+    }
+
+    // Check if email already exists
+    const emailExists = await this.usersRepository.emailExists(userData.email);
+    if (emailExists) {
+      throw new ConflictException('Email already exists');
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    // Create user
+    return await this.usersRepository.create({
+      ...userData,
+      password: hashedPassword,
+    });
+  }
+
+  /**
+   * Legacy method for backward compatibility with AuthService
+   * @deprecated Use create() instead
+   */
+  async createUser(username: string, email: string, password: string): Promise<any> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return await this.usersRepository.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+  }
+
+  async updateUser(uuid: string, userData: Partial<UserInsert>): Promise<any> {
+    // Check if user exists
+    const existingUser = await this.usersRepository.findByUuid(uuid);
+    if (!existingUser) {
       throw new NotFoundException(`User with UUID ${uuid} not found`);
     }
 
-    return omitAllInternalIds(deletedUser[0]);
+    // If updating username, check if new username already exists
+    if (userData.username && userData.username !== existingUser.username) {
+      const usernameExists = await this.usersRepository.usernameExists(userData.username);
+      if (usernameExists) {
+        throw new ConflictException('Username already exists');
+      }
+    }
+
+    // If updating email, check if new email already exists
+    if (userData.email && userData.email !== existingUser.email) {
+      const emailExists = await this.usersRepository.emailExists(userData.email);
+      if (emailExists) {
+        throw new ConflictException('Email already exists');
+      }
+    }
+
+    // Hash password if provided
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+
+    const updatedUser = await this.usersRepository.update(uuid, userData);
+
+    if (!updatedUser) {
+      throw new NotFoundException(`Failed to update user with UUID ${uuid}`);
+    }
+
+    return updatedUser;
+  }
+
+  async deleteUser(uuid: string): Promise<any> {
+    const deletedUser = await this.usersRepository.delete(uuid);
+
+    if (!deletedUser) {
+      throw new NotFoundException(`User with UUID ${uuid} not found`);
+    }
+
+    return deletedUser;
   }
 }

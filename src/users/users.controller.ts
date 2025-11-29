@@ -32,6 +32,7 @@ export class UsersController {
     @Param('uuid') uuid: string,
     @Body() userData: {
       username?: string;
+      name?: string;
       email?: string;
       password?: string;
       userGroupId?: number;
@@ -51,6 +52,7 @@ export class UsersController {
     @Body()
     userData: {
       username: string;
+      name?: string;
       email: string;
       password: string;
       userGroupId?: number;
