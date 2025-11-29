@@ -1,7 +1,7 @@
 ### WMS API - Teste Integrado de Todas as Rotas
 ### Base URL
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5vdm91c3VhcmlvMTIzIiwic3ViIjoiYmEzMmI0MDMtOGQzMC00ZGI1LTgzNmUtNzUyNzllNDE0MTc0IiwidXNlcklkIjoxMywiaWF0IjoxNzY0NDQ5MzQ2LCJleHAiOjE3NjQ1MzU3NDZ9.ijeCoqeHAMV5AUiPB9EI5nuqEXepiohGOGIU8pRfXmk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvYW9zaWx2YSIsInN1YiI6IjIxMDNlOGRmLWY4OWQtNDdiZS05YmUxLTNhM2RiMDE3MmMzNSIsImlhdCI6MTc2NDQ1NDc4NCwiZXhwIjoxNzY0NTQxMTg0fQ.8n853janZKCc36ivzIy7iO22O-y2ZJkVg0jDkjHnFgM
 
 ### ORDEM RECOMENDADA PARA CRIAR DADOS:
 ### 1. Companies → 2. Suppliers → 3. Material Categories → 4. Materials → 5. Storages → 6. Invoices → 7. Invoice Items → 8. Tasks
@@ -58,7 +58,7 @@ GET {{baseUrl}}/users/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {{token}}
 
 ### 7. Get User by Username
-GET {{baseUrl}}/users/joaosilva
+GET {{baseUrl}}/users/username/joaosilva
 Authorization: Bearer {{token}}
 
 ### 8. Update User
@@ -359,7 +359,7 @@ GET {{baseUrl}}/invoice-items
 Authorization: Bearer {{token}}
 
 ### 51. Get Invoice Items by Invoice UUID
-GET {{baseUrl}}/invoice-items/invoice/9924c1d6-89b5-4088-b628-3ae34511708a
+GET {{baseUrl}}/invoice-items/invoice/15746a9d-2dd6-4801-911b-d91966ecb519
 Authorization: Bearer {{token}}
 
 ### 52. Get Invoice Item by UUID
@@ -466,7 +466,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 
 ### 69. Perform Conference (Conforming)
@@ -476,8 +476,8 @@ Content-Type: application/json
 
 {
   "taskUuid": "35947996-664e-47ef-97f2-684811f02c59",
-  "quantityFound": 100,
-  "userId": 2,
+  "quantityFound": 200,
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
   "storageId": 1
 }
 
@@ -489,7 +489,7 @@ Content-Type: application/json
 {
   "taskUuid": "35947996-664e-47ef-97f2-684811f02c59",
   "quantityFound": 95,
-  "userId": 2,
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
   "storageId": 1
 }
 
@@ -501,7 +501,7 @@ Content-Type: application/json
 {
   "taskUuid": "35947996-664e-47ef-97f2-684811f02c59",
   "quantityFound": 100,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 
 ### 72. Delete Task

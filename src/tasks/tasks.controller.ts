@@ -9,10 +9,12 @@ import {
   Query,
   UseGuards,
   Request,
+  NotFoundException,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from '../users/users.service';
+import { InvoiceService } from '../invoices/invoice.service';
 import * as schema from '../db/schema';
 
 @Controller('tasks')
@@ -21,18 +23,25 @@ export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
     private readonly usersService: UsersService,
+    private readonly invoiceService: InvoiceService,
   ) {}
 
   @Get()
   async findAll(
     @Query('status') status?: string,
     @Query('taskType') taskType?: string,
-    @Query('assignedUserId') assignedUserId?: string,
+    @Query('assignedUserUuid') assignedUserUuid?: string,
   ) {
     const filters: any = {};
     if (status) filters.status = status;
     if (taskType) filters.taskType = taskType;
-    if (assignedUserId) filters.assignedUserId = parseInt(assignedUserId, 10);
+    
+    if (assignedUserUuid) {
+      const userId = await this.usersService.getInternalIdByUuid(assignedUserUuid);
+      if (userId) {
+        filters.assignedUserId = userId;
+      }
+    }
 
     return await this.tasksService.findAll(filters);
   }
@@ -47,7 +56,7 @@ export class TasksController {
     const userId = await this.usersService.getInternalIdByUuid(userUuid);
 
     if (!userId) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return await this.tasksService.findUserTasks(userId, taskType, status);
@@ -56,43 +65,65 @@ export class TasksController {
   @Get('open')
   async findOpenTasks(
     @Query('taskType') taskType?: string,
-    @Query('assignedUserId') assignedUserId?: string,
+    @Query('assignedUserUuid') assignedUserUuid?: string,
   ) {
     const filters: any = {};
-    if (assignedUserId) {
-      filters.assignedUserId = parseInt(assignedUserId, 10);
+    
+    if (assignedUserUuid) {
+      const userId = await this.usersService.getInternalIdByUuid(assignedUserUuid);
+      if (userId) {
+        filters.assignedUserId = userId;
+      }
     }
+    
     return await this.tasksService.findOpenTasks(taskType, filters);
   }
 
   @Get('closed')
   async findClosedTasks(
     @Query('taskType') taskType?: string,
-    @Query('assignedUserId') assignedUserId?: string,
+    @Query('assignedUserUuid') assignedUserUuid?: string,
   ) {
     const filters: any = {};
-    if (assignedUserId) {
-      filters.assignedUserId = parseInt(assignedUserId, 10);
+    
+    if (assignedUserUuid) {
+      const userId = await this.usersService.getInternalIdByUuid(assignedUserUuid);
+      if (userId) {
+        filters.assignedUserId = userId;
+      }
     }
+    
     return await this.tasksService.findClosedTasks(taskType, filters);
   }
 
-  @Get('user/:userId')
+  @Get('user/:userUuid')
   async findUserTasks(
-    @Param('userId') userId: string,
+    @Param('userUuid') userUuid: string,
     @Query('taskType') taskType?: string,
     @Query('status') status?: string,
   ) {
+    const userId = await this.usersService.getInternalIdByUuid(userUuid);
+    
+    if (!userId) {
+      throw new NotFoundException(`User with UUID ${userUuid} not found`);
+    }
+    
     return await this.tasksService.findUserTasks(
-      parseInt(userId, 10),
+      userId,
       taskType,
       status,
     );
   }
 
-  @Get('invoice/:invoiceId')
-  async findByInvoiceId(@Param('invoiceId') invoiceId: string) {
-    return await this.tasksService.findByInvoiceId(parseInt(invoiceId, 10));
+  @Get('invoice/:invoiceUuid')
+  async findByInvoiceId(@Param('invoiceUuid') invoiceUuid: string) {
+    const invoiceId = await this.invoiceService.getInternalIdByUuid(invoiceUuid);
+    
+    if (!invoiceId) {
+      throw new NotFoundException(`Invoice with UUID ${invoiceUuid} not found`);
+    }
+    
+    return await this.tasksService.findByInvoiceId(invoiceId);
   }
 
   @Get(':uuid')
@@ -151,9 +182,16 @@ export class TasksController {
   @Put(':uuid/assign')
   async assignToUser(
     @Param('uuid') uuid: string,
-    @Body() body: { userId: number },
+    @Body() body: { userUuid: string },
   ) {
-    return await this.tasksService.assignToUser(uuid, body.userId);
+    // Converter userUuid para userId interno
+    const userId = await this.usersService.getInternalIdByUuid(body.userUuid);
+    
+    if (!userId) {
+      throw new NotFoundException(`User with UUID ${body.userUuid} not found`);
+    }
+    
+    return await this.tasksService.assignToUser(uuid, userId);
   }
 
   @Post('conference')
@@ -161,14 +199,21 @@ export class TasksController {
     @Body() body: { 
       taskUuid: string; 
       quantityFound: number; 
-      userId: number;
+      userUuid: string;
       storageId?: number;
     },
   ) {
+    // Converter userUuid para userId interno
+    const userId = await this.usersService.getInternalIdByUuid(body.userUuid);
+    
+    if (!userId) {
+      throw new NotFoundException(`User with UUID ${body.userUuid} not found`);
+    }
+    
     return await this.tasksService.performConference(
       body.taskUuid,
       body.quantityFound,
-      body.userId,
+      userId,
       body.storageId,
     );
   }

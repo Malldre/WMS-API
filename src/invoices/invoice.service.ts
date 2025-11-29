@@ -68,4 +68,8 @@ export class InvoiceService {
     await this.findByUuid(uuid);
     return await this.invoiceRepository.delete(uuid);
   }
+
+  async getInternalIdByUuid(uuid: string): Promise<number | null> {
+    return await this.invoiceRepository.getInternalIdByUuid(uuid);
+  }
 }

@@ -25,7 +25,13 @@ export class InvoiceItemService {
   }
 
   async findByInvoiceUuid(invoiceUuid: string) {
-    return await this.invoiceItemRepository.findByInvoiceUuid(invoiceUuid);
+    const items = await this.invoiceItemRepository.findByInvoiceUuid(invoiceUuid);
+    
+    if (items === null) {
+      throw new NotFoundException(`Invoice with UUID ${invoiceUuid} not found`);
+    }
+    
+    return items;
   }
 
   async findByInvoiceAndMaterial(invoiceId: number, materialId: number) {
