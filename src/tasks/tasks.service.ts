@@ -218,6 +218,38 @@ export class TasksService {
     };
   }
 
+  async completeConference(
+    uuid: string,
+    userId: number,
+  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
+    const task = await this.tasksRepository.findByUuid(uuid);
+    if (!task) {
+      throw new NotFoundException(`Task with UUID ${uuid} not found`);
+    }
+
+    // Verificar se a task é do tipo CONFERENCE
+    if (task.taskType !== 'CONFERENCE') {
+      throw new NotFoundException(
+        `Task with UUID ${uuid} is not a conference task`,
+      );
+    }
+
+    // Finalizar a conferência marcando como COMPLETED
+    const updated = await this.tasksRepository.update(uuid, {
+      status: 'COMPLETED',
+      completedAt: new Date(),
+      assignedUserId: userId,
+    });
+
+    if (!updated) {
+      throw new NotFoundException(
+        `Failed to complete conference for task ${uuid}`,
+      );
+    }
+
+    return updated;
+  }
+
   async delete(
     uuid: string,
   ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
