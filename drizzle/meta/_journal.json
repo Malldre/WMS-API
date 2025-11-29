@@ -8,6 +8,20 @@
       "when": 1763679991498,
       "tag": "0000_serious_vulture",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764435997141,
+      "tag": "0001_cool_mariko_yashida",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764439943701,
+      "tag": "0002_ordinary_tarot",
+      "breakpoints": true
     }
   ]
 }

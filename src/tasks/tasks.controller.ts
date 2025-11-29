@@ -148,12 +148,18 @@ export class TasksController {
 
   @Post('conference')
   async performConference(
-    @Body() body: { taskUuid: string; quantityFound: number; userId: number },
+    @Body() body: { 
+      taskUuid: string; 
+      quantityFound: number; 
+      userId: number;
+      storageId?: number;
+    },
   ) {
     return await this.tasksService.performConference(
       body.taskUuid,
       body.quantityFound,
       body.userId,
+      body.storageId,
     );
   }
 

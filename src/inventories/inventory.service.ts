@@ -28,13 +28,7 @@ export class InventoryService {
   }
 
   async findByInvoiceItemAndStorage(invoiceItemId: number, storageId: number) {
-    const inventory = await this.inventoryRepository.findByInvoiceItemAndStorage(invoiceItemId, storageId);
-    
-    if (!inventory) {
-      throw new NotFoundException(`Inventory with invoiceItemId ${invoiceItemId} and storageId ${storageId} not found`);
-    }
-    
-    return inventory;
+    return await this.inventoryRepository.findByInvoiceItemAndStorage(invoiceItemId, storageId);
   }
 
   async create(createInventoryDto: {
@@ -66,7 +60,7 @@ export class InventoryService {
     // Se estiver atualizando invoiceItemId ou storageId, verificar duplicação
     if (updateInventoryDto.invoiceItemId || updateInventoryDto.storageId) {
       const currentInventory = await this.inventoryRepository.findByUuid(uuid);
-      const invoiceItemId = updateInventoryDto.invoiceItemId || currentInventory.materialId;
+      const invoiceItemId = updateInventoryDto.invoiceItemId || currentInventory.invoiceItemId;
       const storageId = updateInventoryDto.storageId || currentInventory.storageId;
       
       const existingInventory = await this.inventoryRepository.findByInvoiceItemAndStorage(invoiceItemId, storageId);

@@ -3,13 +3,19 @@ import { TasksRepository } from './tasks.repository';
 import { InvoiceItemService } from '../invoice_items/invoice_item.service';
 import * as schema from '../db/schema';
 import { MaterialRepository } from 'src/materials/material.repository';
+import { InventoryService } from 'src/inventories/inventory.service';
+import { StorageService } from 'src/storages/storage.service';
+import { InvoiceItemRepository } from '../invoice_items/invoice_item.repository';
 
 @Injectable()
 export class TasksService {
   constructor(
     private readonly tasksRepository: TasksRepository,
     private readonly invoiceItemService: InvoiceItemService,
+    private readonly invoiceItemRepository: InvoiceItemRepository,
     private readonly materialRepository: MaterialRepository,
+    private readonly inventoryService: InventoryService,
+    private readonly storageService: StorageService,
   ) {}
 
   async findAll(filters?: {
@@ -123,11 +129,13 @@ export class TasksService {
     userId: number,
   ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
     const existingTask = await this.tasksRepository.findByUuid(uuid);
+    
     if (!existingTask) {
       throw new NotFoundException(`Task with UUID ${uuid} not found`);
     }
 
     const updated = await this.tasksRepository.assignToUser(uuid, userId);
+    
     if (!updated) {
       throw new NotFoundException(`Failed to assign task`);
     }
@@ -139,6 +147,7 @@ export class TasksService {
     taskUuid: string,
     quantityFound: number,
     userId: number,
+    storageId?: number,
   ): Promise<{
     success: boolean;
     message: string;
@@ -166,10 +175,6 @@ export class TasksService {
     );
 
     if (!invoiceItem) {
-      console.error('❌ [Conference] Invoice item not found for:', {
-        invoiceId: task.invoiceId,
-        materialId: task.materialId,
-      });
       throw new NotFoundException(
         `Invoice item not found for invoice ${task.invoiceId} and material ${task.materialId}`,
       );
@@ -179,6 +184,11 @@ export class TasksService {
     const expectedQuantity = parseFloat(invoiceItem.quantity.toString());
     const isConforming = quantityFound === expectedQuantity;
 
+    // Validar storageId se fornecido
+    if (storageId) {
+      await this.storageService.findById(storageId);
+    }
+
     await this.invoiceItemService.update(invoiceItem.uuid, {
       status: isConforming ? 'CONFORMING' : 'DIVERGENT',
       remark: isConforming
@@ -186,26 +196,56 @@ export class TasksService {
         : `Divergência: Quantidade ${quantityFound} divergente da nota fiscal!`,
     });
 
-    // Atualizar a task como concluída
+    // Preparar dados de atualização da task
+    const taskUpdateData: any = {
+      completedAt: new Date(),
+      countedQuantity: quantityFound.toString(),
+      assignedUserId: userId,
+      countAttempts: (task.countAttempts || 0) + 1,
+      lastCountAt: new Date(),
+    };
+
+    // Atualizar status como COMPLETED apenas se conforme
     if (isConforming) {
-      await this.tasksRepository.update(taskUuid, {
-        status: 'COMPLETED',
-        completedAt: new Date(),
-        countedQuantity: quantityFound.toString(),
-        assignedUserId: userId,
-        countAttempts: (task.countAttempts || 0) + 1,
-        lastCountAt: new Date(),
-      });
+      taskUpdateData.status = 'COMPLETED';
+      taskUpdateData.countAttempts = (task.countAttempts || 0) + 1;
     }
 
-    if (!isConforming) {
-      await this.tasksRepository.update(taskUuid, {
-        completedAt: new Date(),
-        countedQuantity: quantityFound.toString(),
-        assignedUserId: userId,
-        countAttempts: (task.countAttempts || 0) + 1,
-        lastCountAt: new Date(),
-      });
+    await this.tasksRepository.update(taskUuid, taskUpdateData);
+
+    // Criar ou atualizar inventory se conferência bem-sucedida e storageId fornecido
+    if (isConforming && storageId) {
+      // Buscar invoiceItem com ID para usar no inventory
+      const invoiceItemWithId = await this.invoiceItemRepository.findByInvoiceAndMaterialWithId(
+        task.invoiceId,
+        task.materialId,
+      );
+
+      if (!invoiceItemWithId) {
+        throw new NotFoundException('Invoice item not found with ID');
+      }
+
+      // Verificar se já existe inventário para este invoice item e storage
+      const existingInventory = await this.inventoryService.findByInvoiceItemAndStorage(
+        invoiceItemWithId.id,
+        storageId,
+      );
+
+      if (existingInventory) {
+        // Atualizar quantidade existente
+        const currentQuantity = parseFloat(existingInventory.quantity);
+        const newQuantity = currentQuantity + quantityFound;
+        await this.inventoryService.update(existingInventory.uuid, {
+          quantity: newQuantity.toString(),
+        });
+      } else {
+        // Criar novo registro de inventário
+        await this.inventoryService.create({
+          invoiceItemId: invoiceItemWithId.id,
+          storageId: storageId,
+          quantity: quantityFound.toString(),
+        });
+      }
     }
 
     return {

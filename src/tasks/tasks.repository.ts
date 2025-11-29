@@ -184,7 +184,7 @@ export class TasksRepository {
   ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'> | null> {
     const result = await this.db
       .update(schema.tasks)
-      .set({ assignedUserId: userId })
+      .set({ assignedUserId: userId, status: 'IN_PROGRESS' })
       .where(eq(schema.tasks.uuid, uuid))
       .returning();
 

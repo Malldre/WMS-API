@@ -8,6 +8,22 @@ import {
   omitAllInternalIdsFromArray,
 } from '../common/utils/omit-id.util';
 
+type InvoiceItemWithDetails = {
+  uuid: string;
+  quantity: string;
+  totalValue: string;
+  unitValue: string;
+  status: 'DIVERGENT' | 'CONFORMING' | 'COUNTING' | 'DAMAGED' | 'MISSING' | 'MISMATCHED' | 'WAITING';
+  remark: string | null;
+  createdAt: Date;
+  invoiceId: number;
+  materialId: number;
+  materialName: string | null;
+  materialUnit: string | null;
+  materialDescription?: string | null;
+  invoiceNumber?: string | null;
+};
+
 @Injectable()
 export class InvoiceItemRepository {
   constructor(
@@ -15,7 +31,7 @@ export class InvoiceItemRepository {
     private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<InvoiceItemWithDetails[]> {
     const result = await this.db
       .select({
         uuid: schema.invoiceItems.uuid,
@@ -47,7 +63,7 @@ export class InvoiceItemRepository {
     return result;
   }
 
-  async findByUuid(uuid: string): Promise<any | null> {
+  async findByUuid(uuid: string): Promise<InvoiceItemWithDetails | null> {
     const result = await this.db
       .select({
         uuid: schema.invoiceItems.uuid,
@@ -80,7 +96,7 @@ export class InvoiceItemRepository {
     return result[0] || null;
   }
 
-  async findByInvoiceId(invoiceId: number): Promise<any[]> {
+  async findByInvoiceId(invoiceId: number): Promise<InvoiceItemWithDetails[]> {
     const result = await this.db
       .select({
         uuid: schema.invoiceItems.uuid,
@@ -108,6 +124,38 @@ export class InvoiceItemRepository {
     return result;
   }
 
+  async findByInvoiceUuid(invoiceUuid: string): Promise<InvoiceItemWithDetails[]> {
+    const result = await this.db
+      .select({
+        uuid: schema.invoiceItems.uuid,
+        quantity: schema.invoiceItems.quantity,
+        totalValue: schema.invoiceItems.totalValue,
+        unitValue: schema.invoiceItems.unitValue,
+        status: schema.invoiceItems.status,
+        remark: schema.invoiceItems.remark,
+        createdAt: schema.invoiceItems.createdAt,
+        invoiceId: schema.invoiceItems.invoiceId,
+        materialId: schema.invoiceItems.materialId,
+        // Dados do material
+        materialName: schema.materials.description,
+        materialUnit: schema.materials.materialUnit,
+        materialDescription: schema.materials.description,
+      })
+      .from(schema.invoiceItems)
+      .leftJoin(
+        schema.materials,
+        eq(schema.invoiceItems.materialId, schema.materials.id),
+      )
+      .leftJoin(
+        schema.invoices,
+        eq(schema.invoiceItems.invoiceId, schema.invoices.id),
+      )
+      .where(eq(schema.invoices.uuid, invoiceUuid))
+      .orderBy(desc(schema.invoiceItems.createdAt));
+      
+    return result;
+  }
+
   async findByInvoiceAndMaterial(
     invoiceId: number,
     materialId: number,
@@ -124,6 +172,24 @@ export class InvoiceItemRepository {
       .limit(1);
 
     return result[0] ? omitAllInternalIds(result[0]) : null;
+  }
+
+  async findByInvoiceAndMaterialWithId(
+    invoiceId: number,
+    materialId: number,
+  ): Promise<typeof schema.invoiceItems.$inferSelect | null> {
+    const result = await this.db
+      .select()
+      .from(schema.invoiceItems)
+      .where(
+        and(
+          eq(schema.invoiceItems.invoiceId, invoiceId),
+          eq(schema.invoiceItems.materialId, materialId),
+        ),
+      )
+      .limit(1);
+
+    return result[0] || null;
   }
 
   async create(

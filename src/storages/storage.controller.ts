@@ -12,6 +12,11 @@ export class StorageController {
     return await this.storageService.findAll();
   }
 
+  @Get('names/list')
+  async getAllNames() {
+    return await this.storageService.getAllStorageNames();
+  }
+
   @Get(':uuid')
   async findOne(@Param('uuid') uuid: string) {
     return await this.storageService.findByUuid(uuid);

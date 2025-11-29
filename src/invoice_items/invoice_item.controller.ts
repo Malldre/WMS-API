@@ -22,11 +22,9 @@ export class InvoiceItemController {
     return await this.invoiceItemService.findAll();
   }
 
-  @Get('invoice/:invoiceId')
-  async findByInvoiceId(@Param('invoiceId') invoiceId: string) {
-    return await this.invoiceItemService.findByInvoiceId(
-      parseInt(invoiceId, 10),
-    );
+  @Get('invoice/:invoiceUuid')
+  async findByInvoiceUuid(@Param('invoiceUuid') invoiceUuid: string) {
+    return await this.invoiceItemService.findByInvoiceUuid(invoiceUuid);
   }
 
   @Get(':uuid')

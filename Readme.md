@@ -3,8 +3,9 @@
 ## 📋 Índice
 
 1. [Visão Geral](#visão-geral)
-2. [Autenticação](#autenticação)
-3. [Endpoints](#endpoints)
+2. [Novidades da v2.0.0](#novidades-da-v200)
+3. [Autenticação](#autenticação)
+4. [Endpoints](#endpoints)
    - [Auth](#auth)
    - [Users](#users)
    - [Companies](#companies)
@@ -16,16 +17,16 @@
    - [Invoice Items](#invoice-items)
    - [Inventories](#inventories)
    - [Tasks](#tasks)
-4. [Fluxos Completos](#fluxos-completos)
+5. [Fluxos Completos](#fluxos-completos)
    - [Fluxo de Recebimento de Material](#fluxo-de-recebimento-de-material)
    - [Fluxo de Conferência com Tasks](#fluxo-de-conferência-com-tasks)
-5. [Códigos de Status HTTP](#códigos-de-status-http)
-6. [Tratamento de Erros](#tratamento-de-erros)
-7. [Modelo de Dados](#modelo-de-dados)
+6. [Códigos de Status HTTP](#códigos-de-status-http)
+7. [Tratamento de Erros](#tratamento-de-erros)
+8. [Modelo de Dados](#modelo-de-dados)
    - [Diagrama de Relacionamentos Completo](#diagrama-de-relacionamentos-completo)
    - [Principais Relacionamentos](#principais-relacionamentos)
    - [Rastreabilidade Completa](#rastreabilidade-completa)
-8. [Observações Importantes](#observações-importantes)
+9. [Observações Importantes](#observações-importantes)
    - [1. Rastreabilidade Completa](#1-rastreabilidade-completa)
    - [2. Reutilização de Companies](#2-reutilização-de-companies)
    - [3. Campos Calculados Automaticamente](#3-campos-calculados-automaticamente)
@@ -36,16 +37,16 @@
    - [8. Precisão Numérica](#8-precisão-numérica)
    - [9. Sistema de Tasks](#9-sistema-de-tasks)
    - [10. Sistema de Identificadores (ID vs UUID)](#10-sistema-de-identificadores-id-vs-uuid)
-9. [Começando](#começando)
-   - [Pré-requisitos](#pré-requisitos)
-   - [Instalação](#instalação)
-10. [Testando a API](#testando-a-api)
+10. [Começando](#começando)
+    - [Pré-requisitos](#pré-requisitos)
+    - [Instalação](#instalação)
+11. [Testando a API](#testando-a-api)
     - [Usando cURL](#usando-curl)
     - [Usando Postman](#usando-postman)
-11. [Suporte](#suporte)
-12. [Licença](#licença)
-13. [Contribuindo](#contribuindo)
-14. [Changelog](#changelog)
+12. [Suporte](#suporte)
+13. [Licença](#licença)
+14. [Contribuindo](#contribuindo)
+15. [Changelog](#changelog)
 
 ---
 
@@ -55,22 +56,58 @@ Esta API REST foi desenvolvida para gerenciar operações completas de um sistem
 
 - ✅ Gestão de empresas e fornecedores
 - ✅ Controle de categorias e materiais
-- ✅ Gerenciamento de armazéns (storages)
+- ✅ Gerenciamento de armazéns (storages) com seleção de localização
 - ✅ Controle de notas fiscais e seus itens
-- ✅ Rastreabilidade completa de inventário
+- ✅ Rastreabilidade completa de inventário por item de nota fiscal
 - ✅ **Sistema de tarefas (Tasks) para operações de armazém**
 - ✅ **Conferência automatizada com validação de quantidades**
+- ✅ **Criação automática de inventário após conferência bem-sucedida**
 
 **Base URL:** `http://localhost:3000`
 
 **Tecnologias:**
-- NestJS v10
+- NestJS v11
 - PostgreSQL 14+
-- Drizzle ORM
-- JWT Authentication
+- Drizzle ORM v0.44.7
+- JWT Authentication (Passport.js)
 - bcrypt (hash de senhas)
+- Docker & Docker Compose
 
-**Versão da API:** 1.1.0
+**Versão da API:** 2.0.0
+
+---
+
+## 🆕 Novidades da v2.0.0
+
+### 🎯 Principais Mudanças
+
+#### 1. **Sistema de Storages Aprimorado**
+- ✨ Novo endpoint `GET /storages/names/list` para listar apenas nomes de locais
+- 🔍 Método `findById()` adicionado ao repositório
+- 🔍 Método `findByName()` para buscar storages por nome
+- 🔒 **Constraint de unicidade**: Agora os nomes dos storages devem ser únicos no sistema
+
+#### 2. **Workflow de Conferência Melhorado**
+- 📍 Suporte a **seleção de localização (storage)** durante a conferência
+- ✅ **Criação automática de inventário** após conferência bem-sucedida
+- 🔄 Status da tarefa muda automaticamente para `IN_PROGRESS` ao ser atribuída
+- 🎯 Parâmetro opcional `storageId` no endpoint de conferência
+
+#### 3. **Sistema de Rastreabilidade Aprimorado**
+- 🔗 Inventários agora referenciam **invoice_items** ao invés de materials
+- 📦 Rastreamento mais preciso: cada item de nota fiscal tem seu próprio registro
+- 🆔 Novos métodos no repositório de Invoice Items:
+  - `findByInvoiceUuid()`: Buscar itens por UUID da nota
+  - `findByInvoiceAndMaterialWithId()`: Buscar com retorno de IDs numéricos
+
+#### 4. **Migrações de Banco de Dados**
+- 📄 Adicionadas migrações `0001` e `0002` para evolução do schema
+- 🗄️ Suporte completo ao Drizzle ORM v0.44.7
+
+#### 5. **Arquivo de Testes Completo**
+- 📝 Novo arquivo `test-all-routes.http` com 80+ endpoints testados
+- ⚡ Organizado por módulos para facilitar testes
+- 🔧 Variáveis configuráveis para `baseUrl` e `token`
 
 ---
 
@@ -2215,8 +2252,11 @@ Content-Type: application/json
 5. [Códigos de Status HTTP](#códigos-de-status-http)
 6. [Tratamento de Erros](#tratamento-de-erros)
 7. [Modelo de Dados](#modelo-de-dados)
-8. [Começando](#começando)
-9. [Observações Importantes](#observações-importantes)
+9. [Começando](#começando)
+10. [Observações Importantes](#observações-importantes)
+11. [Testando a API](#testando-a-api)
+12. [Suporte](#suporte)
+13. [Changelog](#changelog)
 
 ---
 
@@ -5651,7 +5691,6 @@ npm run start:prod
 ## 🧪 Testando a API
 
 ### Usando cURL
-
 ```bash
 # Login
 curl -X POST http://localhost:3000/auth/login \
@@ -5662,6 +5701,76 @@ curl -X POST http://localhost:3000/auth/login \
 curl -X GET http://localhost:3000/materials \
   -H "Authorization: Bearer {token}"
 ```
+
+**💡 Dica:** Use o arquivo `test-all-routes.http` na raiz do projeto! Ele contém **80+ exemplos prontos** de requisições organizadas por módulo.
+
+### Usando o arquivo test-all-routes.http
+
+O projeto inclui um arquivo completo com todos os endpoints testados. Você pode usá-lo com:
+
+- **VS Code:** Instale a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+- **IntelliJ/WebStorm:** Suporte nativo para arquivos `.http`
+
+**Como usar:**
+
+1. **Configure as variáveis:**
+   - Altere `@baseUrl` se necessário (padrão: `http://localhost:3000`)
+   - Após fazer login, copie o `access_token` e cole em `@token`
+
+2. **Execute as requisições:**
+   - Clique em "Send Request" acima de cada requisição
+   - Ou use o atalho `Ctrl+Alt+R` (VS Code)
+
+3. **Navegue pelos módulos:**
+   - O arquivo está organizado em seções por módulo
+   - Use a estrutura de navegação do editor para pular entre seções
+
+**Benefícios:**
+
+✅ **Todos os endpoints testados** - Não precisa escrever cURL ou Postman collections
+✅ **Exemplos de todos os cenários** - Criação, atualização, busca, deleção
+✅ **Variáveis reutilizáveis** - Defina `@token` uma vez, use em todas as requisições
+✅ **Sintaxe simples** - Mais fácil que cURL, mais rápido que Postman
+✅ **Versionado com o código** - Sempre atualizado com as mudanças da API
+✅ **Fácil compartilhamento** - Envie o arquivo para o time usar
+
+**Exemplo de uso prático:**
+
+```http
+### 1. Faça login primeiro
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "******"
+}
+
+### 2. Copie o access_token da resposta e cole em @token
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### 3. Agora todos os endpoints funcionam!
+GET {{baseUrl}}/materials
+Authorization: Bearer {{token}}
+```
+
+**📁 Localização:** `/test-all-routes.http` na raiz do projeto
+
+**🔗 Módulos incluídos:**
+- ✅ Auth (Login)
+- ✅ Users (CRUD completo)
+- ✅ Companies (CRUD completo)
+- ✅ Suppliers (CRUD completo)
+- ✅ Material Categories (CRUD completo)
+- ✅ Materials (CRUD completo)
+- ✅ Storages (CRUD completo + lista de nomes)
+- ✅ Invoices (CRUD completo)
+- ✅ Invoice Items (CRUD completo + filtros)
+- ✅ Inventories (CRUD completo + buscas avançadas)
+- ✅ Tasks (CRUD completo + conferência + filtros + atribuição)
+
+**⚡ Produtividade:** Com o arquivo `.http`, você pode testar toda a API em minutos!
+
 
 ### Usando Postman
 
