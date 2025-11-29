@@ -55,6 +55,13 @@ export class UsersService {
     return await this.usersRepository.findByEmailWithPassword(email);
   }
 
+  /**
+   * Find user by UUID WITH password (for password change only)
+   */
+  async findByUuidWithPassword(uuid: string): Promise<any | null> {
+    return await this.usersRepository.findByUuidWithPassword(uuid);
+  }
+
   async create(userData: UserInsert): Promise<any> {
     // Check if username already exists
     const usernameExists = await this.usersRepository.usernameExists(userData.username);

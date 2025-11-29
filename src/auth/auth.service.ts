@@ -54,4 +54,46 @@ export class AuthService {
     // User returned from create() already has no password field
     return user;
   }
+
+  async changePassword(
+    userUuid: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    // Buscar usuário com senha
+    const user = await this.usersService.findByUuidWithPassword(userUuid);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Validar senha atual
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    // Atualizar senha
+    await this.usersService.updateUser(userUuid, { password: newPassword });
+
+    return { message: 'Password changed successfully' };
+  }
+
+  async resetPassword(
+    email: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    // Buscar usuário pelo email
+    const user = await this.usersService.findByEmailForAuth(email);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Atualizar senha
+    await this.usersService.updateUser(user.uuid, { password: newPassword });
+
+    return { message: 'Password reset successfully' };
+  }
 }

@@ -1,7 +1,7 @@
 ### WMS API - Teste Integrado de Todas as Rotas
 ### Base URL
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvYW9zaWx2YSIsInN1YiI6IjIxMDNlOGRmLWY4OWQtNDdiZS05YmUxLTNhM2RiMDE3MmMzNSIsImlhdCI6MTc2NDQ1NDc4NCwiZXhwIjoxNzY0NTQxMTg0fQ.8n853janZKCc36ivzIy7iO22O-y2ZJkVg0jDkjHnFgM
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5vdm91c3VhcmlvMTIzIiwic3ViIjoiYmEzMmI0MDMtOGQzMC00ZGI1LTgzNmUtNzUyNzllNDE0MTc0IiwiaWF0IjoxNzY0NDU5OTYwLCJleHAiOjE3NjQ1NDYzNjB9.O1QHCRM7UipaKAkoevoY7VwDqadjW-F786H1z9FAEKs
 
 ### ORDEM RECOMENDADA PARA CRIAR DADOS:
 ### 1. Companies → 2. Suppliers → 3. Material Categories → 4. Materials → 5. Storages → 6. Invoices → 7. Invoice Items → 8. Tasks
@@ -16,7 +16,7 @@ Content-Type: application/json
 
 {
   "username": "novousuario123",
-  "password": "Test123456!",
+  "password": "123",
   "email": "novoemail123@example.com"
 }
 
@@ -27,18 +27,37 @@ Content-Type: application/json
 
 {
   "email": "novoemail123@example.com",
-  "password": "Test123456!"
+  "password": "123"
 }
 
 ### 3. Get Profile
 GET {{baseUrl}}/auth/profile
 Authorization: Bearer {{token}}
 
+### 4. Change Password (authenticated user)
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Test123456!",
+  "newPassword": "NewPassword123!"
+}
+
+### 5. Reset Password (public - no auth required)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "joao.silva@malldre.com",
+  "newPassword": "123"
+}
+
 ### ========================================
 ### USERS ROUTES
 ### ========================================
 
-### 4. Create User
+### 6. Create User
 POST {{baseUrl}}/users
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -49,19 +68,19 @@ Content-Type: application/json
   "email": "newuser@example.com"
 }
 
-### 5. Get All Users
+### 7. Get All Users
 GET {{baseUrl}}/users
 Authorization: Bearer {{token}}
 
-### 6. Get User by UUID
+### 8. Get User by UUID
 GET {{baseUrl}}/users/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {{token}}
 
-### 7. Get User by Username
+### 9. Get User by Username
 GET {{baseUrl}}/users/username/joaosilva
 Authorization: Bearer {{token}}
 
-### 8. Update User
+### 10. Update User
 PUT {{baseUrl}}/users/UUID_HERE
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -71,7 +90,7 @@ Content-Type: application/json
   "email": "updated@example.com"
 }
 
-### 9. Delete User
+### 11. Delete User
 DELETE {{baseUrl}}/users/UUID_HERE
 Authorization: Bearer {{token}}
 
@@ -79,7 +98,7 @@ Authorization: Bearer {{token}}
 ### COMPANIES ROUTES
 ### ========================================
 
-### 10. Create Company
+### 12. Create Company
 POST {{baseUrl}}/companies
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -94,19 +113,19 @@ Content-Type: application/json
   "postalCode": "01234-567"
 }
 
-### 11. Get All Companies
+### 13. Get All Companies
 GET {{baseUrl}}/companies
 Authorization: Bearer {{token}}
 
-### 12. Get Company by UUID
+### 14. Get Company by UUID
 GET {{baseUrl}}/companies/d92138d4-b89f-4fde-ac09-b998e741e900
 Authorization: Bearer {{token}}
 
-### 13. Get Company by CNPJ
+### 15. Get Company by CNPJ
 GET {{baseUrl}}/companies/cnpj/12345678901288
 Authorization: Bearer {{token}}
 
-### 14. Update Company
+### 16. Update Company
 PUT {{baseUrl}}/companies/0e09e365-6cd3-4a29-81cf-3b7fa8858131
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -117,7 +136,7 @@ Content-Type: application/json
   "state": "RJ"
 }
 
-### 15. Delete Company
+### 17. Delete Company
 DELETE {{baseUrl}}/companies/UUID_HERE
 Authorization: Bearer {{token}}
 
@@ -125,7 +144,7 @@ Authorization: Bearer {{token}}
 ### SUPPLIERS ROUTES
 ### ========================================
 
-### 16. Create Supplier
+### 18. Create Supplier
 POST {{baseUrl}}/suppliers
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -140,20 +159,20 @@ Content-Type: application/json
   "postalCode": "80000-000"
 }
 
-### 17. Get All Suppliers
+### 19. Get All Suppliers
 GET {{baseUrl}}/suppliers
 Authorization: Bearer {{token}}
 
-### 18. Get Supplier by UUID
-GET {{baseUrl}}/suppliers/bac8c4e9-a3fc-46b3-881c-37c401da6194
+### 20. Get Supplier by UUID
+GET {{baseUrl}}/suppliers/81a185dd-78e9-4253-a964-e6bd125479ef
 Authorization: Bearer {{token}}
 
-### 19. Get Supplier by CNPJ
+### 21. Get Supplier by CNPJ
 GET {{baseUrl}}/suppliers/cnpj/98765432109889
 Authorization: Bearer {{token}}
 
-### 20. Update Supplier
-PUT {{baseUrl}}/suppliers/bac8c4e9-a3fc-46b3-881c-37c401da6194
+### 22. Update Supplier
+PUT {{baseUrl}}/suppliers/81a185dd-78e9-4253-a964-e6bd125479ef
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -163,8 +182,8 @@ Content-Type: application/json
   "state": "RS"
 }
 
-### 21. Delete Supplier
-DELETE {{baseUrl}}/suppliers/UUID_HERE
+### 23. Delete Supplier
+DELETE {{baseUrl}}/suppliers/bac8c4e9-a3fc-46b3-881c-37c401da6194
 Authorization: Bearer {{token}}
 
 ### ========================================
@@ -430,11 +449,11 @@ GET {{baseUrl}}/tasks/closed
 Authorization: Bearer {{token}}
 
 ### 63. Get Tasks by User
-GET {{baseUrl}}/tasks/user/2
+GET {{baseUrl}}/tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {{token}}
 
 ### 64. Get Tasks by Invoice
-GET {{baseUrl}}/tasks/invoice/1
+GET {{baseUrl}}/tasks/invoice/9924c1d6-89b5-4088-b628-3ae34511708a
 Authorization: Bearer {{token}}
 
 ### 65. Get Task by UUID
@@ -500,7 +519,7 @@ Content-Type: application/json
 
 {
   "taskUuid": "35947996-664e-47ef-97f2-684811f02c59",
-  "quantityFound": 100,
+  "quantityFound": 120,
   "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 
@@ -618,3 +637,6 @@ Authorization: Bearer {{token}}
 # Step 7: Verify Task Status
 GET {{baseUrl}}/tasks/TASK_UUID
 Authorization: Bearer {{token}}
+
+
+

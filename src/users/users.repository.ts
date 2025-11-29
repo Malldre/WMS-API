@@ -103,6 +103,20 @@ export class UsersRepository {
   }
 
   /**
+   * Find user by UUID WITH password (for password change only)
+   * Returns full user record including internal id and password hash
+   */
+  async findByUuidWithPassword(uuid: string): Promise<any | null> {
+    const result = await this.db
+      .select()
+      .from(schema.users)
+      .where(eq(schema.users.uuid, uuid))
+      .limit(1);
+
+    return result[0] || null;
+  }
+
+  /**
    * Find user by username (WITHOUT password - for public API)
    */
   async findByUsername(username: string): Promise<any | null> {
