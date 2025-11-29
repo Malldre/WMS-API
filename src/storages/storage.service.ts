@@ -19,6 +19,16 @@ export class StorageService {
     return storage;
   }
 
+  async findById(id: number) {
+    const storage = await this.storageRepository.findById(id);
+    
+    if (!storage) {
+      throw new NotFoundException(`Storage with ID ${id} not found`);
+    }
+    
+    return storage;
+  }
+
   async findByCode(code: string) {
     const storage = await this.storageRepository.findByCode(code);
     
@@ -27,6 +37,15 @@ export class StorageService {
     }
     
     return storage;
+  }
+
+  async getAllStorageNames() {
+    const storages = await this.storageRepository.findAll();
+    return storages.map(storage => ({
+      uuid: storage.uuid,
+      name: storage.name,
+      code: storage.code,
+    }));
   }
 
   async findByCompanyId(companyId: number) {
@@ -42,6 +61,12 @@ export class StorageService {
     const existingStorage = await this.storageRepository.findByCode(createStorageDto.code);
     if (existingStorage) {
       throw new ConflictException('Storage with this code already exists');
+    }
+
+    // Verificar se name já existe
+    const existingName = await this.storageRepository.findByName(createStorageDto.name);
+    if (existingName) {
+      throw new ConflictException('Storage with this name already exists');
     }
 
     return await this.storageRepository.create(createStorageDto);
@@ -60,6 +85,14 @@ export class StorageService {
       const existingStorage = await this.storageRepository.findByCode(updateStorageDto.code);
       if (existingStorage && existingStorage.uuid !== uuid) {
         throw new ConflictException('Storage with this code already exists');
+      }
+    }
+
+    // Se estiver atualizando o name, verificar duplicação
+    if (updateStorageDto.name) {
+      const existingName = await this.storageRepository.findByName(updateStorageDto.name);
+      if (existingName && existingName.uuid !== uuid) {
+        throw new ConflictException('Storage with this name already exists');
       }
     }
 

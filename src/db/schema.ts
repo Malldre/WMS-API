@@ -216,7 +216,7 @@ export const storages = pgTable('storage', {
   id: serial('id').primaryKey(),
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
   code: varchar('code', { length: 50 }).notNull(),
-  name: varchar('name', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull().unique(),
   companyId: integer('company_id').notNull().references(() => companies.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
@@ -224,7 +224,7 @@ export const storages = pgTable('storage', {
 export const inventories = pgTable('inventory', {
   id: serial('id').primaryKey(),
   uuid: uuid('uuid').default(sql`gen_random_uuid()`).notNull().unique(),
-  materialId: integer('material_id').notNull().references(() => invoiceItems.id, { onDelete: 'cascade' }),
+  invoiceItemId: integer('invoice_item_id').notNull().references(() => invoiceItems.id, { onDelete: 'cascade' }),
   storageId: integer('storage_id').notNull().references(() => storages.id, { onDelete: 'cascade' }),
   quantity: numeric('quantity', { precision: 18, scale: 3 }).notNull(),
   reserved: numeric('reserved', { precision: 18, scale: 3 }).default('0').notNull(),

@@ -24,6 +24,10 @@ export class InvoiceItemService {
     return await this.invoiceItemRepository.findByInvoiceId(invoiceId);
   }
 
+  async findByInvoiceUuid(invoiceUuid: string) {
+    return await this.invoiceItemRepository.findByInvoiceUuid(invoiceUuid);
+  }
+
   async findByInvoiceAndMaterial(invoiceId: number, materialId: number) {
     const item = await this.invoiceItemRepository.findByInvoiceAndMaterial(
       invoiceId,

@@ -35,7 +35,6 @@ export class MaterialController {
     materialUnit: 'BX' | 'CM' | 'GR' | 'KG' | 'LT' | 'M2' | 'M3' | 'ML' | 'MT' | 'PK' | 'UN';
     status?: 'ACTIVE' | 'INACTIVE' | 'DISCONTINUED' | 'DEVELOPMENT';
   }) {
-    console.log('Received body:', body); // Debug
     return await this.materialService.create(body);
   }
 

@@ -33,7 +33,7 @@ export class InventoryRepository {
     const result = await this.db
       .select()
       .from(inventories)
-      .where(eq(inventories.materialId, invoiceItemId));
+      .where(eq(inventories.invoiceItemId, invoiceItemId));
     return omitAllInternalIdsFromArray(result);
   }
 
@@ -51,7 +51,7 @@ export class InventoryRepository {
       .from(inventories)
       .where(
         and(
-          eq(inventories.materialId, invoiceItemId),
+          eq(inventories.invoiceItemId, invoiceItemId),
           eq(inventories.storageId, storageId)
         )
       )
@@ -68,7 +68,7 @@ export class InventoryRepository {
     const [inventory] = await this.db
       .insert(inventories)
       .values({
-        materialId: inventoryData.invoiceItemId,
+        invoiceItemId: inventoryData.invoiceItemId,
         storageId: inventoryData.storageId,
         quantity: inventoryData.quantity,
       })
@@ -85,7 +85,7 @@ export class InventoryRepository {
     const updateData: any = {};
 
     if (inventoryData.invoiceItemId !== undefined) {
-      updateData.materialId = inventoryData.invoiceItemId;
+      updateData.invoiceItemId = inventoryData.invoiceItemId;
     }
     if (inventoryData.storageId !== undefined) {
       updateData.storageId = inventoryData.storageId;

@@ -39,6 +39,26 @@ export class StorageRepository {
     return storage ? omitAllInternalIds(storage) : undefined;
   }
 
+  async findByName(name: string): Promise<Omit<typeof storages.$inferSelect, 'id'> | undefined> {
+    const [storage] = await this.db
+      .select()
+      .from(storages)
+      .where(eq(storages.name, name))
+      .limit(1);
+
+    return storage ? omitAllInternalIds(storage) : undefined;
+  }
+
+  async findById(id: number): Promise<Omit<typeof storages.$inferSelect, 'id'> | undefined> {
+    const [storage] = await this.db
+      .select()
+      .from(storages)
+      .where(eq(storages.id, id))
+      .limit(1);
+
+    return storage ? omitAllInternalIds(storage) : undefined;
+  }
+
   async findByCompanyId(companyId: number): Promise<Omit<typeof storages.$inferSelect, 'id'>[]> {
     const result = await this.db
       .select()

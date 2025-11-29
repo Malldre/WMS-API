@@ -1,6 +1,6 @@
 {
-  "id": "cdfdfc84-880a-4f9a-bc8e-d5976acc87a7",
-  "prevId": "fc99c7ed-8a18-408a-9935-9cb1305f37e6",
+  "id": "7860c1b1-2991-4e96-8855-6f2d83538d6a",
+  "prevId": "6e54f02a-7ca1-409e-8585-da99cd53a9b1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1555,12 +1555,6 @@
         "last_count_at": {
           "name": "last_count_at",
           "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "photo_id": {
-          "name": "photo_id",
-          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         }
