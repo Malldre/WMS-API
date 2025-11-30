@@ -124,7 +124,20 @@ export class InvoiceItemRepository {
     return result;
   }
 
-  async findByInvoiceUuid(invoiceUuid: string): Promise<InvoiceItemWithDetails[]> {
+  async findByInvoiceUuid(invoiceUuid: string): Promise<InvoiceItemWithDetails[] | null> {
+    // Primeiro busca a invoice pelo UUID para obter o ID
+    const invoice = await this.db
+      .select({ id: schema.invoices.id })
+      .from(schema.invoices)
+      .where(eq(schema.invoices.uuid, invoiceUuid))
+      .limit(1);
+
+    // Se não encontrar a invoice, retorna null para que o service trate
+    if (!invoice || invoice.length === 0) {
+      return null;
+    }
+
+    // Agora busca os items usando o invoiceId
     const result = await this.db
       .select({
         uuid: schema.invoiceItems.uuid,
@@ -140,6 +153,8 @@ export class InvoiceItemRepository {
         materialName: schema.materials.description,
         materialUnit: schema.materials.materialUnit,
         materialDescription: schema.materials.description,
+        // Dados da invoice
+        invoiceNumber: schema.invoices.invoiceNumber,
       })
       .from(schema.invoiceItems)
       .leftJoin(
@@ -150,7 +165,7 @@ export class InvoiceItemRepository {
         schema.invoices,
         eq(schema.invoiceItems.invoiceId, schema.invoices.id),
       )
-      .where(eq(schema.invoices.uuid, invoiceUuid))
+      .where(eq(schema.invoiceItems.invoiceId, invoice[0].id))
       .orderBy(desc(schema.invoiceItems.createdAt));
       
     return result;

@@ -215,36 +215,45 @@ export class TasksService {
 
     // Criar ou atualizar inventory se conferência bem-sucedida e storageId fornecido
     if (isConforming && storageId) {
-      // Buscar invoiceItem com ID para usar no inventory
-      const invoiceItemWithId = await this.invoiceItemRepository.findByInvoiceAndMaterialWithId(
-        task.invoiceId,
-        task.materialId,
-      );
+      try {
+        // Buscar invoiceItem com ID para usar no inventory
+        const invoiceItemWithId = await this.invoiceItemRepository.findByInvoiceAndMaterialWithId(
+          task.invoiceId,
+          task.materialId,
+        );
 
-      if (!invoiceItemWithId) {
-        throw new NotFoundException('Invoice item not found with ID');
-      }
+        if (!invoiceItemWithId) {
+          throw new NotFoundException('Invoice item not found with ID');
+        }
 
-      // Verificar se já existe inventário para este invoice item e storage
-      const existingInventory = await this.inventoryService.findByInvoiceItemAndStorage(
-        invoiceItemWithId.id,
-        storageId,
-      );
+        // Verificar se já existe inventário para este invoice item e storage
+        const existingInventory = await this.inventoryService.findByInvoiceItemAndStorage(
+          invoiceItemWithId.id,
+          storageId,
+        );
 
-      if (existingInventory) {
-        // Atualizar quantidade existente
-        const currentQuantity = parseFloat(existingInventory.quantity);
-        const newQuantity = currentQuantity + quantityFound;
-        await this.inventoryService.update(existingInventory.uuid, {
-          quantity: newQuantity.toString(),
-        });
-      } else {
-        // Criar novo registro de inventário
-        await this.inventoryService.create({
-          invoiceItemId: invoiceItemWithId.id,
-          storageId: storageId,
-          quantity: quantityFound.toString(),
-        });
+        if (existingInventory && existingInventory.uuid) {
+          // Atualizar quantidade existente
+          const currentQuantity = parseFloat(existingInventory.quantity);
+          const newQuantity = currentQuantity + quantityFound;
+          await this.inventoryService.update(existingInventory.uuid, {
+            quantity: newQuantity.toString(),
+          });
+        } else {
+          // Criar novo registro de inventário
+          await this.inventoryService.create({
+            invoiceItemId: invoiceItemWithId.id,
+            storageId: storageId,
+            quantity: quantityFound.toString(),
+          });
+        }
+      } catch (error) {
+        // Log the error but don't fail the conference
+        console.error('Error creating/updating inventory:', error);
+        // Re-throw if it's a critical error
+        if (error instanceof NotFoundException) {
+          throw error;
+        }
       }
     }
 

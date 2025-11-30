@@ -47,6 +47,16 @@ export class InvoiceRepository {
     return omitAllInternalIdsFromArray(result);
   }
 
+  async getInternalIdByUuid(uuid: string): Promise<number | null> {
+    const [invoice] = await this.db
+      .select({ id: invoices.id })
+      .from(invoices)
+      .where(eq(invoices.uuid, uuid))
+      .limit(1);
+    
+    return invoice?.id || null;
+  }
+
   async create(invoiceData: {
     invoiceNumber: string;
     supplierId: number;

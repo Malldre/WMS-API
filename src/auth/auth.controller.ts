@@ -57,4 +57,25 @@ export class AuthController {
     }
     return user;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(
+    @Request() req,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
+    return this.authService.changePassword(
+      req.user.uuid,
+      body.currentPassword,
+      body.newPassword,
+    );
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(
+    @Body() body: { email: string; newPassword: string },
+  ) {
+    return this.authService.resetPassword(body.email, body.newPassword);
+  }
 }

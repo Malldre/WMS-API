@@ -1,10 +1,10 @@
-# 📦 Documentação da API - Sistema WMS (Warehouse Management System)
+﻿# 🆕 Documentaaao da API - Sistema WMS (Warehouse Management System)
 
-## 📋 Índice
+## 🆕 andice
 
-1. [Visão Geral](#visão-geral)
+1. [Visao Geral](#visao-geral)
 2. [Novidades da v2.0.0](#novidades-da-v200)
-3. [Autenticação](#autenticação)
+3. [Autenticação](#Autenticação)
 4. [Endpoints](#endpoints)
    - [Auth](#auth)
    - [Users](#users)
@@ -19,49 +19,49 @@
    - [Tasks](#tasks)
 5. [Fluxos Completos](#fluxos-completos)
    - [Fluxo de Recebimento de Material](#fluxo-de-recebimento-de-material)
-   - [Fluxo de Conferência com Tasks](#fluxo-de-conferência-com-tasks)
-6. [Códigos de Status HTTP](#códigos-de-status-http)
+   - [Fluxo de Conferência com Tasks](#fluxo-de-Conferência-com-tasks)
+6. [Cadigos de Status HTTP](#cadigos-de-status-http)
 7. [Tratamento de Erros](#tratamento-de-erros)
 8. [Modelo de Dados](#modelo-de-dados)
    - [Diagrama de Relacionamentos Completo](#diagrama-de-relacionamentos-completo)
    - [Principais Relacionamentos](#principais-relacionamentos)
    - [Rastreabilidade Completa](#rastreabilidade-completa)
-9. [Observações Importantes](#observações-importantes)
+9. [Observaaaes Importantes](#observaaaes-importantes)
    - [1. Rastreabilidade Completa](#1-rastreabilidade-completa)
-   - [2. Reutilização de Companies](#2-reutilização-de-companies)
-   - [3. Campos Calculados Automaticamente](#3-campos-calculados-automaticamente)
+   - [2. Reutilizaaao de Companies](#2-reutilizaaao-de-companies)
+   - [3. Campos Calculados automáticamente](#3-campos-calculados-automáticamente)
    - [4. Status e Fluxos](#4-status-e-fluxos)
    - [5. Soft Delete vs Hard Delete](#5-soft-delete-vs-hard-delete)
    - [6. Unicidade e Constraints](#6-unicidade-e-constraints)
    - [7. Formato de Datas](#7-formato-de-datas)
-   - [8. Precisão Numérica](#8-precisão-numérica)
+   - [8. Precisao Numarica](#8-precisao-numarica)
    - [9. Sistema de Tasks](#9-sistema-de-tasks)
    - [10. Sistema de Identificadores (ID vs UUID)](#10-sistema-de-identificadores-id-vs-uuid)
-10. [Começando](#começando)
-    - [Pré-requisitos](#pré-requisitos)
-    - [Instalação](#instalação)
+10. [Comeaando](#comeaando)
+    - [Pra-requisitos](#pra-requisitos)
+    - [Instalaaao](#instalaaao)
 11. [Testando a API](#testando-a-api)
     - [Usando cURL](#usando-curl)
     - [Usando Postman](#usando-postman)
 12. [Suporte](#suporte)
-13. [Licença](#licença)
+13. [Licenaa](#licenaa)
 14. [Contribuindo](#contribuindo)
 15. [Changelog](#changelog)
 
 ---
 
-## 🎯 Visão Geral
+## 🆕 Visao Geral
 
-Esta API REST foi desenvolvida para gerenciar operações completas de um sistema WMS (Warehouse Management System), incluindo:
+Esta API REST foi desenvolvida para gerenciar operaaaes completas de um sistema WMS (Warehouse Management System), incluindo:
 
-- ✅ Gestão de empresas e fornecedores
-- ✅ Controle de categorias e materiais
-- ✅ Gerenciamento de armazéns (storages) com seleção de localização
-- ✅ Controle de notas fiscais e seus itens
-- ✅ Rastreabilidade completa de inventário por item de nota fiscal
-- ✅ **Sistema de tarefas (Tasks) para operações de armazém**
-- ✅ **Conferência automatizada com validação de quantidades**
-- ✅ **Criação automática de inventário após conferência bem-sucedida**
+- ✨ Gestao de empresas e fornecedores
+- ✨ Controle de categorias e materiais
+- ✨ Gerenciamento de armazans (storages) com seleção de localização
+- ✨ Controle de notas fiscais e seus itens
+- ✨ Rastreabilidade completa de inventário por item de nota fiscal
+- ✨ **Sistema de tarefas (Tasks) para operaaaes de armazam**
+- ✨ **Conferência automatizada com validaaao de quantidades**
+- ✨ **Criação automática de inventário após Conferência bem-sucedida**
 
 **Base URL:** `http://localhost:3000`
 
@@ -73,47 +73,61 @@ Esta API REST foi desenvolvida para gerenciar operações completas de um sistem
 - bcrypt (hash de senhas)
 - Docker & Docker Compose
 
-**Versão da API:** 2.0.0
+**Versao da API:** 2.0.0
 
 ---
 
 ## 🆕 Novidades da v2.0.0
 
-### 🎯 Principais Mudanças
+### 🆕 Principais Mudanças
 
 #### 1. **Sistema de Storages Aprimorado**
 - ✨ Novo endpoint `GET /storages/names/list` para listar apenas nomes de locais
-- 🔍 Método `findById()` adicionado ao repositório
-- 🔍 Método `findByName()` para buscar storages por nome
-- 🔒 **Constraint de unicidade**: Agora os nomes dos storages devem ser únicos no sistema
+- 🆕 Método `findById()` adicionado ao repositório
+- 🆕 Método `findByName()` para buscar storages por nome
+- 🆕 **Constraint de unicidade**: Agora os nomes dos storages devem ser únicos no sistema
 
 #### 2. **Workflow de Conferência Melhorado**
-- 📍 Suporte a **seleção de localização (storage)** durante a conferência
-- ✅ **Criação automática de inventário** após conferência bem-sucedida
-- 🔄 Status da tarefa muda automaticamente para `IN_PROGRESS` ao ser atribuída
-- 🎯 Parâmetro opcional `storageId` no endpoint de conferência
+- 🆕 Suporte a **seleção de localização (storage)** durante a Conferência
+- ✨ **Criação automática de inventário** após Conferência bem-sucedida
+- 🆕 Status da tarefa muda automáticamente para `IN_PROGRESS` ao ser atribuída
+- 🆕 Parâmetro opcional `storageId` no endpoint de Conferência
 
 #### 3. **Sistema de Rastreabilidade Aprimorado**
-- 🔗 Inventários agora referenciam **invoice_items** ao invés de materials
-- 📦 Rastreamento mais preciso: cada item de nota fiscal tem seu próprio registro
-- 🆔 Novos métodos no repositório de Invoice Items:
+- 🆕 inventários agora referenciam **invoice_items** ao invés de materials
+- 🆕 Rastreamento mais preciso: cada item de nota fiscal tem seu próprio registro
+- 🆕 Novos Métodos no repositório de Invoice Items:
   - `findByInvoiceUuid()`: Buscar itens por UUID da nota
   - `findByInvoiceAndMaterialWithId()`: Buscar com retorno de IDs numéricos
 
-#### 4. **Migrações de Banco de Dados**
-- 📄 Adicionadas migrações `0001` e `0002` para evolução do schema
-- 🗄️ Suporte completo ao Drizzle ORM v0.44.7
+#### 4. **Migração para UUIDs nas Tasks** 🔄
+- ✅ **BREAKING CHANGE**: Todos os endpoints de Tasks agora usam UUIDs
+- 🔐 Query parameters: `assignedUserId` → `assignedUserUuid`
+- 🔗 Path parameters: `/tasks/user/{userId}` → `/tasks/user/{userUuid}`
+- 🔗 Path parameters: `/tasks/invoice/{invoiceId}` → `/tasks/invoice/{invoiceUuid}`
+- 📝 Request bodies: `userId` → `userUuid` em todos os endpoints
+- ✅ 7 endpoints refatorados para maior segurança
 
-#### 5. **Arquivo de Testes Completo**
-- 📝 Novo arquivo `test-all-routes.http` com 80+ endpoints testados
-- ⚡ Organizado por módulos para facilitar testes
-- 🔧 Variáveis configuráveis para `baseUrl` e `token`
+#### 5. **Gerenciamento de Senhas** 🔑
+- ✨ Novo endpoint `POST /auth/change-password` para trocar senha
+- 🔓 Novo endpoint `POST /auth/reset-password` para redefinir senha
+- 🔒 Validação de senha atual antes de permitir mudança
+- 📧 Reset de senha via email (implementação básica)
+
+#### 6. **Migrações de Banco de Dados**
+- 📦 Adicionadas Migrações `0001` e `0002` para evolução do schema
+- 📦 Suporte completo ao Drizzle ORM v0.44.7
+
+#### 7. **Arquivo de Testes Completo**
+- 📝 Novo arquivo `test-all-routes.http` com 82+ endpoints testados
+- 📂 Organizado por módulos para facilitar testes
+- ⚙️ Variáveis configuráveis para `baseUrl` e `token`
 
 ---
 
-## 🔐 Autenticação
+## 🆕 Autenticação
 
-Todos os endpoints (exceto `/auth/login`) requerem autenticação via JWT Bearer Token.
+Todos os endpoints (exceto `/auth/login`) requerem Autenticação via JWT Bearer Token.
 
 ### Login
 
@@ -141,7 +155,7 @@ Content-Type: application/json
 
 **Como usar o token:**
 
-Em todas as requisições subsequentes, adicione o header:
+Em todas as requisiaaes subsequentes, adicione o header:
 ```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
@@ -154,13 +168,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 }
 ```
 
-**⏱️ Expiração do Token:**
-- Padrão: 1 hora
-- Após expirado, faça login novamente para obter novo token
+**🆕 Expiraaao do Token:**
+- Padrao: 1 hora
+- após expirado, faaa login novamente para obter novo token
 
 ---
 
-## 📚 Endpoints
+## 🆕 Endpoints
 
 ### Auth
 
@@ -176,7 +190,7 @@ Realizar login e obter token JWT.
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `username` - Nome de usuário
 - `password` - Senha
 
@@ -189,7 +203,7 @@ Realizar login e obter token JWT.
 
 **Responses:**
 - `200` - Login realizado com sucesso
-- `401` - Credenciais inválidas
+- `401` - Credenciais invalidas
 
 **Exemplo com cURL:**
 ```bash
@@ -199,6 +213,87 @@ curl -X POST http://localhost:3000/auth/login \
 ```
 
 ---
+
+#### `POST /auth/change-password`
+
+Trocar senha do usuário autenticado.
+
+**Autenticação:** ✅ Requerida (Bearer Token)
+
+**Request Body:**
+```json
+{
+  "currentPassword": "SenhaAntiga123!",
+  "newPassword": "SenhaNova456!"
+}
+```
+
+**Campos obrigatórios:**
+- `currentPassword` - Senha atual do usuário
+- `newPassword` - Nova senha desejada (mín. 6 caracteres)
+
+**Response (200 OK):**
+```json
+{
+  "message": "Password changed successfully"
+}
+```
+
+**Responses:**
+- `200` - Senha alterada com sucesso
+- `401` - Senha atual incorreta ou token inválido
+- `404` - Usuário não encontrado
+
+**Exemplo com cURL:**
+```bash
+curl -X POST http://localhost:3000/auth/change-password \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer {seu-token}" \
+  -d '{"currentPassword":"SenhaAntiga123!","newPassword":"SenhaNova456!"}'
+```
+
+---
+
+#### `POST /auth/reset-password`
+
+Redefinir senha de usuário (rota pública - sem autenticação).
+
+**⚠️ Nota de Segurança:** Esta é uma implementação básica. Em produção, deve-se:
+- Enviar email com token único de redefinição
+- Validar token temporário antes de permitir reset
+- Implementar expiração de token (ex: 15 minutos)
+- Adicionar rate limiting para prevenir abuso
+
+**Request Body:**
+```json
+{
+  "email": "usuario@example.com",
+  "newPassword": "NovaSenha789!"
+}
+```
+
+**Campos obrigatórios:**
+- `email` - Email do usuário cadastrado
+- `newPassword` - Nova senha desejada (mín. 6 caracteres)
+
+**Response (200 OK):**
+```json
+{
+  "message": "Password reset successfully"
+}
+```
+
+**Responses:**
+- `200` - Senha redefinida com sucesso
+- `401` - Email não encontrado no sistema
+
+**Exemplo com cURL:**
+```bash
+curl -X POST http://localhost:3000/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -d '{"email":"usuario@example.com","newPassword":"NovaSenha789!"}'
+```
+
 
 ### Users
 
@@ -226,13 +321,13 @@ Authorization: Bearer {token}
   {
     "id": 2,
     "username": "joao.silva",
-    "name": "João Silva",
+    "name": "Joao Silva",
     "createdAt": "2024-11-20T14:30:00.000Z"
   }
 ]
 ```
 
-**⚠️ Nota:** A senha não é retornada nas respostas por segurança.
+**🆕 Nota:** A senha nao a retornada nas respostas por seguranaa.
 
 ---
 
@@ -254,14 +349,14 @@ Authorization: Bearer {token}
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário encontrado
-- `404` - Usuário não encontrado
+- `200` - usuário encontrado
+- `404` - usuário nao encontrado
 
 ---
 
@@ -274,39 +369,39 @@ Criar novo usuário.
 {
   "username": "joao.silva",
   "password": "Senha@123",
-  "name": "João Silva"
+  "name": "Joao Silva"
 }
 ```
 
-**Campos obrigatórios:**
-- `username` - Nome de usuário único (mín. 3, máx. 50 caracteres)
-- `password` - Senha do usuário (mín. 6, máx. 100 caracteres)
+**Campos obrigatarios:**
+- `username` - Nome de usuário anico (man. 3, max. 50 caracteres)
+- `password` - Senha do usuário (man. 6, max. 100 caracteres)
 
 **Campos opcionais:**
-- `name` - Nome completo do usuário (máx. 255 caracteres)
+- `name` - Nome completo do usuário (max. 255 caracteres)
 
-**Validações:**
-- ✅ Username deve ter pelo menos 3 caracteres
-- ✅ Senha deve ter pelo menos 6 caracteres
-- ✅ Username deve ser único no sistema
-- ✅ Senha será hasheada automaticamente antes de salvar
+**Validaaaes:**
+- ✨ Username deve ter pelo menos 3 caracteres
+- ✨ Senha deve ter pelo menos 6 caracteres
+- ✨ Username deve ser anico no sistema
+- ✨ Senha sera hasheada automáticamente antes de salvar
 
 **Response (201 Created):**
 ```json
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `201` - Usuário criado com sucesso
-- `409` - Usuário com este username já existe
-- `400` - Dados inválidos (validação falhou)
+- `201` - usuário criado com sucesso
+- `409` - usuário com este username ja existe
+- `400` - Dados invalidos (validaaao falhou)
 
-**Exemplo de erro de validação:**
+**Exemplo de erro de validaaao:**
 ```json
 {
   "statusCode": 400,
@@ -333,17 +428,17 @@ Atualizar usuário.
 ```json
 {
   "username": "joao.silva2",
-  "name": "João Silva Santos",
+  "name": "Joao Silva Santos",
   "password": "NovaSenha@456"
 }
 ```
 
 **Campos opcionais:**
-- `username` - Novo nome de usuário (mín. 3, máx. 50 caracteres)
-- `password` - Nova senha (mín. 6, máx. 100 caracteres)
-- `name` - Novo nome completo (máx. 255 caracteres)
+- `username` - Novo nome de usuário (man. 3, max. 50 caracteres)
+- `password` - Nova senha (man. 6, max. 100 caracteres)
+- `name` - Novo nome completo (max. 255 caracteres)
 
-**Exemplos de atualização:**
+**Exemplos de atualizaaao:**
 
 **Atualizar apenas a senha:**
 ```json
@@ -355,7 +450,7 @@ Atualizar usuário.
 **Atualizar apenas o nome:**
 ```json
 {
-  "name": "João Silva Santos"
+  "name": "Joao Silva Santos"
 }
 ```
 
@@ -363,7 +458,7 @@ Atualizar usuário.
 ```json
 {
   "username": "joao.silva2",
-  "name": "João Silva Santos"
+  "name": "Joao Silva Santos"
 }
 ```
 
@@ -372,16 +467,16 @@ Atualizar usuário.
 {
   "id": 2,
   "username": "joao.silva2",
-  "name": "João Silva Santos",
+  "name": "Joao Silva Santos",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário atualizado com sucesso
-- `404` - Usuário não encontrado
-- `409` - Novo username já existe (se tentar mudar para username em uso)
-- `400` - Dados inválidos
+- `200` - usuário atualizado com sucesso
+- `404` - usuário nao encontrado
+- `409` - Novo username ja existe (se tentar mudar para username em uso)
+- `400` - Dados invalidos
 
 ---
 
@@ -403,16 +498,16 @@ Authorization: Bearer {token}
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário deletado com sucesso
-- `404` - Usuário não encontrado
+- `200` - usuário deletado com sucesso
+- `404` - usuário nao encontrado
 
-**⚠️ Atenção:** Esta é uma exclusão permanente (hard delete). O usuário não poderá mais fazer login.
+**🆕 Atenaao:** Esta a uma exclusao permanente (hard delete). O usuário nao podera mais fazer login.
 
 ---
 
@@ -439,7 +534,7 @@ Authorization: Bearer {token}
     "cnpj": "12345678901234",
     "name": "Empresa ABC LTDA",
     "street": "Rua das Flores, 123",
-    "city": "São Paulo",
+    "city": "Sao Paulo",
     "state": "SP",
     "country": "Brasil",
     "postalCode": "01234567",
@@ -466,7 +561,7 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Empresa encontrada
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
@@ -475,7 +570,7 @@ Authorization: Bearer {token}
 Buscar empresa por CNPJ.
 
 **Parameters:**
-- `cnpj` (path) - CNPJ da empresa (14 dígitos)
+- `cnpj` (path) - CNPJ da empresa (14 dagitos)
 
 **Exemplo:**
 ```http
@@ -495,7 +590,7 @@ Criar nova empresa.
   "cnpj": "12345678901234",
   "name": "Empresa ABC LTDA",
   "street": "Rua das Flores, 123",
-  "city": "São Paulo",
+  "city": "Sao Paulo",
   "state": "SP",
   "country": "Brasil",
   "postalCode": "01234567",
@@ -503,19 +598,19 @@ Criar nova empresa.
 }
 ```
 
-**Campos obrigatórios:**
-- `cnpj` - CNPJ da empresa (14 dígitos, único)
-- `name` - Nome da empresa (máx. 255 caracteres)
-- `street` - Endereço (máx. 255 caracteres)
-- `city` - Cidade (máx. 100 caracteres)
-- `state` - Estado, sigla (máx. 2 caracteres)
-- `country` - País (máx. 100 caracteres)
-- `postalCode` - CEP (máx. 10 caracteres)
+**Campos obrigatarios:**
+- `cnpj` - CNPJ da empresa (14 dagitos, anico)
+- `name` - Nome da empresa (max. 255 caracteres)
+- `street` - Endereao (max. 255 caracteres)
+- `city` - Cidade (max. 100 caracteres)
+- `state` - Estado, sigla (max. 2 caracteres)
+- `country` - Paas (max. 100 caracteres)
+- `postalCode` - CEP (max. 10 caracteres)
 
 **Campos opcionais:**
-- `status` - Status da empresa (padrão: `ACTIVE`)
+- `status` - Status da empresa (padrao: `ACTIVE`)
 
-**Status disponíveis:**
+**Status disponaveis:**
 - `ACTIVE` - Ativo
 - `INACTIVE` - Inativo
 - `BLOCKED` - Bloqueado
@@ -528,7 +623,7 @@ Criar nova empresa.
   "cnpj": "12345678901234",
   "name": "Empresa ABC LTDA",
   "street": "Rua das Flores, 123",
-  "city": "São Paulo",
+  "city": "Sao Paulo",
   "state": "SP",
   "country": "Brasil",
   "postalCode": "01234567",
@@ -539,7 +634,7 @@ Criar nova empresa.
 
 **Responses:**
 - `201` - Empresa criada com sucesso
-- `409` - Empresa com este CNPJ já existe
+- `409` - Empresa com este CNPJ ja existe
 
 ---
 
@@ -558,11 +653,11 @@ Atualizar empresa.
 }
 ```
 
-**Todos os campos são opcionais.** Envie apenas os que deseja atualizar.
+**Todos os campos sao opcionais.** Envie apenas os que deseja atualizar.
 
 **Responses:**
 - `200` - Empresa atualizada com sucesso
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
@@ -581,13 +676,13 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Empresa deletada com sucesso
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
 ### Suppliers
 
-Gerenciamento de fornecedores. Cada fornecedor está vinculado a uma empresa (Company).
+Gerenciamento de fornecedores. Cada fornecedor esta vinculado a uma empresa (Company).
 
 #### `GET /suppliers`
 
@@ -639,7 +734,7 @@ Buscar fornecedor por UUID.
 Buscar fornecedor por CNPJ.
 
 **Parameters:**
-- `cnpj` (path) - CNPJ do fornecedor (14 dígitos)
+- `cnpj` (path) - CNPJ do fornecedor (14 dagitos)
 
 **Exemplo:**
 ```http
@@ -667,9 +762,9 @@ Criar novo fornecedor.
 }
 ```
 
-**⚠️ Importante - Reutilização de Companies:** 
-- Se já existir uma `Company` com esse CNPJ, ela será **reutilizada**
-- Caso contrário, uma nova `Company` será criada automaticamente
+**🆕 Importante - Reutilizaaao de Companies:** 
+- Se ja existir uma `Company` com esse CNPJ, ela sera **reutilizada**
+- Caso contrario, uma nova `Company` sera criada automáticamente
 - Isso permite que a mesma empresa seja fornecedor e cliente
 
 **Response (201 Created):**
@@ -696,7 +791,7 @@ Criar novo fornecedor.
 
 **Responses:**
 - `201` - Fornecedor criado com sucesso
-- `409` - Fornecedor com este CNPJ já existe
+- `409` - Fornecedor com este CNPJ ja existe
 
 ---
 
@@ -730,11 +825,11 @@ DELETE /suppliers/650e8400-e29b-41d4-a716-446655440001
 Authorization: Bearer {token}
 ```
 
-**⚠️ Nota:** Ao deletar um fornecedor, apenas o vínculo (`supplierInfo`) é removido. A `Company` permanece no banco, pois pode ter outros vínculos.
+**🆕 Nota:** Ao deletar um fornecedor, apenas o vanculo (`supplierInfo`) a removido. A `Company` permanece no banco, pois pode ter outros vanculos.
 
 **Responses:**
 - `200` - Fornecedor deletado com sucesso
-- `404` - Fornecedor não encontrado
+- `404` - Fornecedor nao encontrado
 
 ---
 
@@ -802,24 +897,24 @@ Criar nova categoria.
 }
 ```
 
-**Campos obrigatórios:**
-- `name` - Nome da categoria, único (máx. 100 caracteres)
-- `materialUnit` - Unidade de medida padrão
+**Campos obrigatarios:**
+- `name` - Nome da categoria, anico (max. 100 caracteres)
+- `materialUnit` - Unidade de medida padrao
 
 **Campos opcionais:**
-- `description` - Descrição da categoria (máx. 255 caracteres)
+- `description` - Descriaao da categoria (max. 255 caracteres)
 
 **Unidades de medida suportadas:**
 
-| Código | Descrição |
+| Cadigo | Descriaao |
 |--------|-----------|
 | `BX` | Caixa |
-| `CM` | Centímetro |
+| `CM` | Centametro |
 | `GR` | Grama |
 | `KG` | Quilograma |
 | `LT` | Litro |
 | `M2` | Metro Quadrado |
-| `M3` | Metro Cúbico |
+| `M3` | Metro Cabico |
 | `ML` | Mililitro |
 | `MT` | Metro |
 | `PK` | Pacote |
@@ -839,7 +934,7 @@ Criar nova categoria.
 
 **Responses:**
 - `201` - Categoria criada com sucesso
-- `409` - Categoria com este nome já existe
+- `409` - Categoria com este nome ja existe
 
 ---
 
@@ -887,7 +982,7 @@ Authorization: Bearer {token}
     "uuid": "850e8400-e29b-41d4-a716-446655440003",
     "externalCode": "PAR-001",
     "categoryId": 1,
-    "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+    "description": "Parafuso Allen M6 x 20mm - Aao Inox",
     "materialUnit": "UN",
     "status": "ACTIVE",
     "createdAt": "2024-11-20T11:30:00.000Z"
@@ -905,10 +1000,10 @@ Buscar material por UUID.
 
 #### `GET /materials/external-code/{externalCode}`
 
-Buscar material por código externo.
+Buscar material por cadigo externo.
 
 **Parameters:**
-- `externalCode` (path) - Código externo do material
+- `externalCode` (path) - Cadigo externo do material
 
 **Exemplo:**
 ```http
@@ -942,26 +1037,26 @@ Criar novo material.
 {
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE"
 }
 ```
 
-**Campos obrigatórios:**
-- `externalCode` - Código externo do material, único (máx. 50 caracteres)
+**Campos obrigatarios:**
+- `externalCode` - Cadigo externo do material, anico (max. 50 caracteres)
 - `categoryId` - ID da categoria
-- `description` - Descrição do material (máx. 255 caracteres)
+- `description` - Descriaao do material (max. 255 caracteres)
 - `materialUnit` - Unidade de medida (veja tabela acima)
 
 **Campos opcionais:**
-- `status` - Status do material (padrão: `ACTIVE`)
+- `status` - Status do material (padrao: `ACTIVE`)
 
 **Status do Material:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `ACTIVE` | Material ativo e disponível |
+| `ACTIVE` | Material ativo e disponavel |
 | `INACTIVE` | Material inativo temporariamente |
 | `DISCONTINUED` | Material descontinuado |
 | `DEVELOPMENT` | Material em desenvolvimento |
@@ -973,7 +1068,7 @@ Criar novo material.
   "uuid": "850e8400-e29b-41d4-a716-446655440003",
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE",
   "createdAt": "2024-11-20T11:30:00.000Z"
@@ -982,7 +1077,7 @@ Criar novo material.
 
 **Responses:**
 - `201` - Material criado com sucesso
-- `409` - Material com este código externo já existe
+- `409` - Material com este cadigo externo ja existe
 
 ---
 
@@ -996,7 +1091,7 @@ Atualizar material.
 **Request Body:**
 ```json
 {
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox 304",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox 304",
   "status": "DISCONTINUED"
 }
 ```
@@ -1011,7 +1106,7 @@ Deletar material.
 
 ### Storages
 
-Gerenciamento de locais de armazenamento (armazéns, prateleiras, setores, etc.).
+Gerenciamento de locais de armazenamento (armazans, prateleiras, setores, etc.).
 
 #### `GET /storages`
 
@@ -1030,7 +1125,7 @@ Authorization: Bearer {token}
     "id": 1,
     "uuid": "950e8400-e29b-41d4-a716-446655440004",
     "code": "A01-01",
-    "name": "Armazém Principal - Setor A - Prateleira 01",
+    "name": "Armazam Principal - Setor A - Prateleira 01",
     "companyId": 1,
     "createdAt": "2024-11-20T12:00:00.000Z"
   }
@@ -1047,10 +1142,10 @@ Buscar storage por UUID.
 
 #### `GET /storages/code/{code}`
 
-Buscar storage por código.
+Buscar storage por cadigo.
 
 **Parameters:**
-- `code` (path) - Código do storage
+- `code` (path) - Cadigo do storage
 
 **Exemplo:**
 ```http
@@ -1083,15 +1178,15 @@ Criar novo storage.
 ```json
 {
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1
 }
 ```
 
-**Campos obrigatórios:**
-- `code` - Código do local, único (máx. 50 caracteres)
-- `name` - Nome/descrição do local (máx. 255 caracteres)
-- `companyId` - ID da empresa responsável
+**Campos obrigatarios:**
+- `code` - Cadigo do local, anico (max. 50 caracteres)
+- `name` - Nome/descriaao do local (max. 255 caracteres)
+- `companyId` - ID da empresa responsavel
 
 **Response (201 Created):**
 ```json
@@ -1099,7 +1194,7 @@ Criar novo storage.
   "id": 1,
   "uuid": "950e8400-e29b-41d4-a716-446655440004",
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1,
   "createdAt": "2024-11-20T12:00:00.000Z"
 }
@@ -1107,7 +1202,7 @@ Criar novo storage.
 
 **Responses:**
 - `201` - Storage criado com sucesso
-- `409` - Storage com este código já existe
+- `409` - Storage com este cadigo ja existe
 
 ---
 
@@ -1174,28 +1269,28 @@ Criar nova nota fiscal.
 }
 ```
 
-**Campos obrigatórios:**
-- `invoiceNumber` - Número da nota fiscal, único (máx. 50 caracteres)
+**Campos obrigatarios:**
+- `invoiceNumber` - Namero da nota fiscal, anico (max. 50 caracteres)
 - `supplierId` - ID do fornecedor
 - `receivedAt` - Data/hora de recebimento (formato ISO 8601)
 
 **Campos opcionais:**
-- `status` - Status da nota (padrão: `PENDING`)
+- `status` - Status da nota (padrao: `PENDING`)
 
 **Status da Invoice:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `PENDING` | Pendente de recebimento (padrão) |
-| `WAITING_INSPECTION` | Aguardando inspeção |
+| `PENDING` | Pendente de recebimento (padrao) |
+| `WAITING_INSPECTION` | Aguardando inspeaao |
 | `RECEIVED` | Recebida e conferida |
 | `REJECTED` | Rejeitada |
 | `CANCELLED` | Cancelada |
 
 **Fluxo de Status:**
 ```
-PENDING → WAITING_INSPECTION → RECEIVED
-   ↓
+PENDING ✨ WAITING_INSPECTION ✨ RECEIVED
+   ✨
 REJECTED / CANCELLED
 ```
 
@@ -1214,7 +1309,7 @@ REJECTED / CANCELLED
 
 **Responses:**
 - `201` - Invoice criada com sucesso
-- `409` - Invoice com este número já existe
+- `409` - Invoice com este namero ja existe
 
 ---
 
@@ -1275,7 +1370,7 @@ GET /invoice-items?invoiceId=1&materialId=4
     "totalValue": "1500.00",
     "unitValue": "15.000000",
     "status": "WAITING",
-    "remark": "Material em boas condições",
+    "remark": "Material em boas condiaaes",
     "createdAt": "2024-11-20T13:00:00.000Z"
   }
 ]
@@ -1301,42 +1396,42 @@ Criar novo item de nota fiscal.
   "quantity": "100",
   "totalValue": "1500.00",
   "status": "WAITING",
-  "remark": "Material em boas condições"
+  "remark": "Material em boas condiaaes"
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `invoiceId` - ID da nota fiscal
 - `materialId` - ID do material
-- `quantity` - Quantidade recebida (string, suporta decimais até 3 casas)
-- `totalValue` - Valor total do item (string, suporta decimais até 2 casas)
+- `quantity` - Quantidade recebida (string, suporta decimais ata 3 casas)
+- `totalValue` - Valor total do item (string, suporta decimais ata 2 casas)
 
 **Campos opcionais:**
-- `status` - Status do item (padrão: `WAITING`)
-- `remark` - Observações sobre o item (máx. 255 caracteres)
+- `status` - Status do item (padrao: `WAITING`)
+- `remark` - Observaaaes sobre o item (max. 255 caracteres)
 
-**⚠️ Campo Calculado:** 
-O campo `unitValue` é **calculado automaticamente** pelo banco de dados:
+**🆕 Campo Calculado:** 
+O campo `unitValue` a **calculado automáticamente** pelo banco de dados:
 ```sql
 unitValue = totalValue / quantity
 ```
 
 **Status do Invoice Item:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `WAITING` | Aguardando conferência (padrão) |
+| `WAITING` | Aguardando Conferência (padrao) |
 | `COUNTING` | Em processo de contagem |
 | `CONFORMING` | Conforme/aprovado |
 | `DIVERGENT` | Divergente (quantidade ou qualidade) |
 | `DAMAGED` | Danificado |
 | `MISSING` | Faltando |
-| `MISMATCHED` | Incompatível com pedido |
+| `MISMATCHED` | Incompatavel com pedido |
 
 **Fluxo de Status:**
 ```
-WAITING → COUNTING → CONFORMING / DIVERGENT
-   ↓
+WAITING ✨ COUNTING ✨ CONFORMING / DIVERGENT
+   ✨
 DAMAGED / MISSING / MISMATCHED (a qualquer momento)
 ```
 
@@ -1351,14 +1446,14 @@ DAMAGED / MISSING / MISMATCHED (a qualquer momento)
   "totalValue": "1500.00",
   "unitValue": "15.000000",
   "status": "WAITING",
-  "remark": "Material em boas condições",
+  "remark": "Material em boas condiaaes",
   "createdAt": "2024-11-20T13:00:00.000Z"
 }
 ```
 
 **Responses:**
 - `201` - Item criado com sucesso
-- `400` - Dados inválidos (foreign key, valores, etc.)
+- `400` - Dados invalidos (foreign key, valores, etc.)
 
 ---
 
@@ -1412,7 +1507,7 @@ Deletar item de nota fiscal.
 
 ### Inventories
 
-Gerenciamento de inventário. Cada registro de inventário representa um item de nota fiscal armazenado em um local específico, garantindo **rastreabilidade completa**.
+Gerenciamento de inventário. Cada registro de inventário representa um item de nota fiscal armazenado em um local especafico, garantindo **rastreabilidade completa**.
 
 #### `GET /inventories`
 
@@ -1440,10 +1535,10 @@ Authorization: Bearer {token}
 ]
 ```
 
-**⚠️ Importante sobre o campo `materialId`:**
-- O campo `materialId` no inventário refere-se ao **ID do invoice item** (não do material diretamente)
-- Isso garante **rastreabilidade completa**: você sabe exatamente de qual nota fiscal veio cada item no estoque
-- Mesmo material de fornecedores ou notas diferentes terá registros separados no inventário
+**🆕 Importante sobre o campo `materialId`:**
+- O campo `materialId` no inventário refere-se ao **ID do invoice item** (nao do material diretamente)
+- Isso garante **rastreabilidade completa**: voca sabe exatamente de qual nota fiscal veio cada item no estoque
+- Mesmo material de fornecedores ou notas diferentes tera registros separados no inventário
 
 **Campo calculado `available`:**
 ```sql
@@ -1471,7 +1566,7 @@ GET /inventories/invoice-item/2
 Authorization: Bearer {token}
 ```
 
-Retorna todos os locais onde o item de nota fiscal específico está armazenado.
+Retorna todos os locais onde o item de nota fiscal especafico esta armazenado.
 
 ---
 
@@ -1488,13 +1583,13 @@ GET /inventories/storage/1
 Authorization: Bearer {token}
 ```
 
-Retorna todos os itens armazenados em um local específico.
+Retorna todos os itens armazenados em um local especafico.
 
 ---
 
 #### `GET /inventories/search?invoiceItemId={id}&storageId={id}`
 
-Buscar inventário específico (invoice item + storage).
+Buscar inventário especafico (invoice item + storage).
 
 **Query Parameters:**
 - `invoiceItemId` - ID do invoice item
@@ -1521,12 +1616,12 @@ Criar novo registro de inventário.
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `invoiceItemId` - ID do item de nota fiscal
 - `storageId` - ID do local de armazenamento
-- `quantity` - Quantidade armazenada (string, suporta decimais até 3 casas)
+- `quantity` - Quantidade armazenada (string, suporta decimais ata 3 casas)
 
-**⚠️ Validação:** Não é permitido criar dois registros com o mesmo `invoiceItemId` + `storageId` (constraint de unicidade).
+**🆕 Validaaao:** Nao a permitido criar dois registros com o mesmo `invoiceItemId` + `storageId` (constraint de unicidade).
 
 **Response (201 Created):**
 ```json
@@ -1543,9 +1638,9 @@ Criar novo registro de inventário.
 ```
 
 **Responses:**
-- `201` - Inventário criado com sucesso
-- `409` - Inventário para este invoice item e storage já existe
-- `400` - Invoice item ou storage não existe
+- `201` - inventário criado com sucesso
+- `409` - inventário para este invoice item e storage ja existe
+- `400` - Invoice item ou storage nao existe
 
 ---
 
@@ -1581,33 +1676,33 @@ Deletar registro de inventário.
 
 ### Tasks
 
-Gerenciamento de tarefas do armazém. As tarefas representam operações que precisam ser realizadas, como conferência, armazenamento, separação, etc.
+Gerenciamento de tarefas do armazam. As tarefas representam operaaaes que precisam ser realizadas, como Conferência, armazenamento, separaaao, etc.
 
 #### Tipos de Tarefas
 
-| Tipo | Descrição | Uso Principal |
+| Tipo | Descriaao | Uso Principal |
 |------|-----------|---------------|
 | `CONFERENCE` | Conferência de recebimento | Validar quantidade recebida vs nota fiscal |
-| `STORAGE` | Armazenamento de materiais | Alocar material em local físico |
-| `PICKING` | Separação de materiais | Separar materiais para expedição/uso |
+| `STORAGE` | Armazenamento de materiais | Alocar material em local fasico |
+| `PICKING` | Separaaao de materiais | Separar materiais para expediaao/uso |
 | `PACKAGING` | Embalagem de materiais | Embalar materiais |
-| `SHIPPING` | Expedição | Despachar materiais |
-| `INVENTORY` | Inventário/Contagem | Contagem física de estoque |
-| `DEMOBILIZATION` | Desmobilização | Desmobilizar equipamentos/materiais |
+| `SHIPPING` | Expediaao | Despachar materiais |
+| `INVENTORY` | inventário/Contagem | Contagem fasica de estoque |
+| `DEMOBILIZATION` | Desmobilizaaao | Desmobilizar equipamentos/materiais |
 
 #### Status de Tarefas
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `PENDING` | Pendente (padrão) |
+| `PENDING` | Pendente (padrao) |
 | `IN_PROGRESS` | Em andamento |
-| `COMPLETED` | Concluída |
+| `COMPLETED` | Concluada |
 | `CANCELLED` | Cancelada |
 
 **Fluxo de Status:**
 ```
-PENDING → IN_PROGRESS → COMPLETED
-   ↓
+PENDING ✨ IN_PROGRESS ✨ COMPLETED
+   ✨
 CANCELLED
 ```
 
@@ -1620,7 +1715,7 @@ Listar todas as tarefas com filtros opcionais.
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`
 - `taskType` (opcional) - Filtrar por tipo: `PICKING`, `STORAGE`, `CONFERENCE`, etc.
-- `assignedUserId` (opcional) - Filtrar por usuário atribuído (ID numérico)
+- `assignedUserUuid` (opcional) - Filtrar por usuário atribuado (UUID)
 
 **Exemplos:**
 
@@ -1633,16 +1728,16 @@ Authorization: Bearer {token}
 GET /tasks?status=PENDING
 Authorization: Bearer {token}
 
-# Tarefas de conferência
+# Tarefas de Conferência
 GET /tasks?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas do usuário 2
-GET /tasks?assignedUserId=2
+GET /tasks?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
-# Tarefas de conferência pendentes do usuário 2
-GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserId=2
+# Tarefas de Conferência pendentes do usuário 2
+GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -1693,7 +1788,7 @@ Authorization: Bearer {token}
 GET /tasks/my-tasks?status=PENDING
 Authorization: Bearer {token}
 
-# Minhas tarefas de conferência em andamento
+# Minhas tarefas de Conferência em andamento
 GET /tasks/my-tasks?status=IN_PROGRESS&taskType=CONFERENCE
 Authorization: Bearer {token}
 ```
@@ -1704,7 +1799,7 @@ Authorization: Bearer {token}
   {
     "uuid": "e8d71a24-6c83-4e69-a787-bd4de3529d94",
     "title": "Conferência - Nota 1234568",
-    "description": "Lote de luvas de proteção",
+    "description": "Lote de luvas de proteaao",
     "status": "IN_PROGRESS",
     "taskType": "CONFERENCE",
     "assignedUserId": 2,
@@ -1722,7 +1817,7 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -1731,12 +1826,12 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 GET /tasks/open
 Authorization: Bearer {token}
 
-# Tarefas de conferência abertas
+# Tarefas de Conferência abertas
 GET /tasks/open?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas abertas do usuário 2
-GET /tasks/open?assignedUserId=2
+GET /tasks/open?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -1748,7 +1843,7 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -1757,19 +1852,19 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 GET /tasks/closed
 Authorization: Bearer {token}
 
-# Tarefas de armazenamento concluídas
+# Tarefas de armazenamento concluadas
 GET /tasks/closed?taskType=STORAGE
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/user/{userId}`
+#### `GET /tasks/user/{userUuid}`
 
-Listar tarefas de um usuário específico.
+Listar tarefas de um usuário especafico.
 
 **Parameters:**
-- `userId` (path) - ID do usuário
+- `userUuid` (path) - UUID do usuário
 
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status
@@ -1779,26 +1874,26 @@ Listar tarefas de um usuário específico.
 
 ```http
 # Todas as tarefas do usuário 1
-GET /tasks/user/1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
-# Tarefas concluídas do usuário 1
-GET /tasks/user/1?status=COMPLETED
+# Tarefas concluadas do usuário 1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=COMPLETED
 Authorization: Bearer {token}
 
 # Tarefas de picking em andamento do usuário 1
-GET /tasks/user/1?status=IN_PROGRESS&taskType=PICKING
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=IN_PROGRESS&taskType=PICKING
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/invoice/{invoiceId}`
+#### `GET /tasks/invoice/{invoiceUuid}`
 
 Buscar tarefas relacionadas a uma nota fiscal.
 
 **Parameters:**
-- `invoiceId` (path) - ID da nota fiscal
+- `invoiceUuid` (path) - UUID da nota fiscal
 
 **Exemplo:**
 
@@ -1850,7 +1945,7 @@ Authorization: Bearer {token}
 {
   "uuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "title": "Conferência - Nota NF-15",
-  "description": "Conferir quantidade de Luvas de Segurança",
+  "description": "Conferir quantidade de Luvas de Seguranaa",
   "status": "PENDING",
   "dueDate": "2025-12-23T23:59:59.000Z",
   "createdAt": "2025-11-23T20:47:34.142Z",
@@ -1871,7 +1966,7 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Tarefa encontrada
-- `404` - Tarefa não encontrada
+- `404` - Tarefa nao encontrada
 
 ---
 
@@ -1889,26 +1984,26 @@ Criar nova tarefa.
   "invoiceId": 1,
   "materialId": 4,
   "itemSpecification": "Luva PVC Tamanho G",
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-25T23:59:59.000Z"
 }
 ```
 
-**Campos obrigatórios:**
-- `title` - Título da tarefa (máx. 255 caracteres)
+**Campos obrigatarios:**
+- `title` - Tatulo da tarefa (max. 255 caracteres)
 - `taskType` - Tipo da tarefa: `PICKING`, `STORAGE`, `CONFERENCE`, `PACKAGING`, `SHIPPING`, `INVENTORY`, `DEMOBILIZATION`
 
 **Campos opcionais:**
-- `description` - Descrição detalhada (máx. 1024 caracteres)
-- `status` - Status inicial (padrão: `PENDING`)
-- `dueDate` - Data/hora limite para conclusão (formato ISO 8601)
+- `description` - Descriaao detalhada (max. 1024 caracteres)
+- `status` - Status inicial (padrao: `PENDING`)
+- `dueDate` - Data/hora limite para conclusao (formato ISO 8601)
 - `invoiceId` - ID da nota fiscal relacionada
 - `materialId` - ID do material relacionado
-- `itemSpecification` - Especificação do item (máx. 255 caracteres)
-- `assignedUserId` - ID do usuário atribuído
-- `issuedBy` - Nome de quem emitiu a tarefa (máx. 255 caracteres)
-- `entryDate` - Data de entrada/criação da tarefa (formato ISO 8601)
+- `itemSpecification` - Especificaaao do item (max. 255 caracteres)
+- `assignedUserId` - ID do usuário atribuado
+- `issuedBy` - Nome de quem emitiu a tarefa (max. 255 caracteres)
+- `entryDate` - Data de entrada/Criação da tarefa (formato ISO 8601)
 
 **Response (201 Created):**
 ```json
@@ -1924,7 +2019,7 @@ Criar nova tarefa.
 }
 ```
 
-**Exemplos de criação por tipo:**
+**Exemplos de Criação por tipo:**
 
 **Tarefa de Conferência:**
 ```json
@@ -1952,7 +2047,7 @@ Criar nova tarefa.
 }
 ```
 
-**Tarefa de Separação:**
+**Tarefa de Separaaao:**
 ```json
 {
   "title": "Separar - Pedido #789",
@@ -1965,7 +2060,7 @@ Criar nova tarefa.
 
 **Responses:**
 - `201` - Tarefa criada com sucesso
-- `400` - Dados inválidos
+- `400` - Dados invalidos
 
 ---
 
@@ -1982,13 +2077,13 @@ Atualizar tarefa.
   "title": "Conferência - NF-001234 - Urgente",
   "status": "IN_PROGRESS",
   "assignedUserId": 2,
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z"
 }
 ```
 
-**Todos os campos são opcionais.** Envie apenas os campos que deseja atualizar.
+**Todos os campos sao opcionais.** Envie apenas os campos que deseja atualizar.
 
 **Exemplos:**
 
@@ -2021,7 +2116,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z"
 }
@@ -2034,7 +2129,7 @@ Content-Type: application/json
   "title": "Conferência - NF-001234 - Urgente",
   "status": "IN_PROGRESS",
   "assignedUserId": 2,
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z",
   "updatedAt": "2025-11-24T11:00:00.000Z"
@@ -2043,7 +2138,7 @@ Content-Type: application/json
 
 **Responses:**
 - `200` - Tarefa atualizada com sucesso
-- `404` - Tarefa não encontrada
+- `404` - Tarefa nao encontrada
 
 ---
 
@@ -2061,10 +2156,10 @@ Atualizar apenas o status da tarefa.
 }
 ```
 
-**Status válidos:**
+**Status validos:**
 - `PENDING` - Pendente
 - `IN_PROGRESS` - Em andamento
-- `COMPLETED` - Concluída (atualiza `completedAt` automaticamente)
+- `COMPLETED` - Concluada (atualiza `completedAt` automáticamente)
 - `CANCELLED` - Cancelada
 
 **Exemplo:**
@@ -2089,8 +2184,8 @@ Content-Type: application/json
 }
 ```
 
-**⚠️ Comportamento especial:**
-- Quando status = `COMPLETED`, o campo `completedAt` é preenchido automaticamente com a data/hora atual
+**🆕 Comportamento especial:**
+- Quando status = `COMPLETED`, o campo `completedAt` a preenchido automáticamente com a data/hora atual
 - Quando status muda para outro valor, `completedAt` permanece inalterado
 
 ---
@@ -2105,7 +2200,7 @@ Atribuir tarefa a um usuário.
 **Request Body:**
 ```json
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -2117,7 +2212,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -2133,35 +2228,40 @@ Content-Type: application/json
 
 **Responses:**
 - `200` - Tarefa atribuída com sucesso
-- `404` - Tarefa não encontrada
-- `400` - Usuário não existe
+- `404` - Tarefa nao encontrada
+- `400` - usuário nao existe
 
 ---
 
 #### `POST /tasks/conference`
 
-Realizar conferência de material (tarefa de conferência).
+Realizar Conferência de material (tarefa de Conferência).
 
-**⚠️ Importante:** 
+**🆕 Importante:** 
 - A tarefa deve ter `invoiceId` e `materialId` preenchidos
 - Deve existir um `invoice_item` correspondente
 - A quantidade esperada vem da nota fiscal (`invoice_item.quantity`)
+- Se `storageId` for fornecido e a Conferência for conforme, o inventário a criado automáticamente
 
 **Request Body:**
 ```json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Campos obrigatórios:**
-- `taskUuid` - UUID da tarefa de conferência
-- `quantityFound` - Quantidade encontrada durante a conferência
-- `userId` - ID do usuário que está realizando a conferência
+**Campos obrigatarios:**
+- `taskUuid` - UUID da tarefa de Conferência
+- `quantityFound` - Quantidade encontrada durante a Conferência
+- `userUuid` - UUID do usuário que esta realizando a Conferência
 
-**Exemplo - Conferência com quantidade conforme:**
+**Campos opcionais:**
+- `storageId` - ID do local de armazenamento (se fornecido e Conferência conforme, cria inventário automáticamente)
+
+**Exemplo - Conferência com quantidade conforme e armazenamento:**
 
 ```http
 POST /tasks/conference
@@ -2171,22 +2271,23 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 150,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Response (200 OK - Conforme):**
+**Response (200 OK - Conforme com armazenamento):**
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade esta conforme a nota fiscal. inventário criado/atualizado.",
   "quantityFound": 150,
   "expectedQuantity": 150,
   "requiresReview": false
 }
 ```
 
-**Exemplo - Conferência com divergência:**
+**Exemplo - Conferência com divergancia:**
 
 ```http
 POST /tasks/conference
@@ -2196,7 +2297,8 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
@@ -2204,7 +2306,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "DIVERGÊNCIA DETECTADA: Esperado 150, mas foram encontrados 145.",
+  "message": "DIVERGaNCIA DETECTADA: Esperado 150, mas foram encontrados 145.",
   "quantityFound": 145,
   "expectedQuantity": 150,
   "requiresReview": true
@@ -2213,27 +2315,27 @@ Content-Type: application/json
 
 **O que acontece ao conferir:**
 
-1. ✅ Task é atualizada:
-   - `status` → `COMPLETED`
-   - `completedAt` → data/hora atual
-   - `countedQuantity` → quantidade encontrada
-   - `assignedUserId` → usuário que conferiu
+1. ✨ Task a atualizada:
+   - `status` ✨ `COMPLETED`
+   - `completedAt` ✨ data/hora atual
+   - `countedQuantity` ✨ quantidade encontrada
+   - `assignedUserId` ✨ usuário que conferiu
 
-2. ✅ Invoice Item é atualizado:
-   - `status` → `CONFORMING` (se quantidade correta) ou `DIVERGENT` (se diferente)
-   - `remark` → descrição da conformidade ou divergência
+2. ✨ Invoice Item a atualizado:
+   - `status` ✨ `CONFORMING` (se quantidade correta) ou `DIVERGENT` (se diferente)
+   - `remark` ✨ descriaao da conformidade ou divergancia
 
-**Cenários de conferência:**
+**Cenarios de Conferência:**
 
 | Esperado | Encontrado | Status | Mensagem |
 |----------|------------|--------|----------|
 | <!-- filepath: c:\Users\diego\Repo\MALLDRE WMS\5sem\WMS-API\Readme.md -->
-# 📦 Documentação da API - Sistema WMS (Warehouse Management System)
+# 🆕 Documentaaao da API - Sistema WMS (Warehouse Management System)
 
-## 📋 Índice
+## 🆕 andice
 
-1. [Visão Geral](#visão-geral)
-2. [Autenticação](#autenticação)
+1. [Visao Geral](#visao-geral)
+2. [Autenticação](#Autenticação)
 3. [Endpoints](#endpoints)
    - [Auth](#auth)
    - [Users](#users)
@@ -2248,29 +2350,29 @@ Content-Type: application/json
    - [Tasks](#tasks)
 4. [Fluxos Completos](#fluxos-completos)
    - [Fluxo de Recebimento de Material](#fluxo-de-recebimento-de-material)
-   - [Fluxo de Conferência com Tasks](#fluxo-de-conferência-com-tasks)
-5. [Códigos de Status HTTP](#códigos-de-status-http)
+   - [Fluxo de Conferência com Tasks](#fluxo-de-Conferência-com-tasks)
+5. [Cadigos de Status HTTP](#cadigos-de-status-http)
 6. [Tratamento de Erros](#tratamento-de-erros)
 7. [Modelo de Dados](#modelo-de-dados)
-9. [Começando](#começando)
-10. [Observações Importantes](#observações-importantes)
+9. [Comeaando](#comeaando)
+10. [Observaaaes Importantes](#observaaaes-importantes)
 11. [Testando a API](#testando-a-api)
 12. [Suporte](#suporte)
 13. [Changelog](#changelog)
 
 ---
 
-## 🎯 Visão Geral
+## 🆕 Visao Geral
 
-Esta API REST foi desenvolvida para gerenciar operações completas de um sistema WMS (Warehouse Management System), incluindo:
+Esta API REST foi desenvolvida para gerenciar operaaaes completas de um sistema WMS (Warehouse Management System), incluindo:
 
-- ✅ Gestão de empresas e fornecedores
-- ✅ Controle de categorias e materiais
-- ✅ Gerenciamento de armazéns (storages)
-- ✅ Controle de notas fiscais e seus itens
-- ✅ Rastreabilidade completa de inventário
-- ✅ **Sistema de tarefas (Tasks) para operações de armazém**
-- ✅ **Conferência automatizada com validação de quantidades**
+- ✨ Gestao de empresas e fornecedores
+- ✨ Controle de categorias e materiais
+- ✨ Gerenciamento de armazans (storages)
+- ✨ Controle de notas fiscais e seus itens
+- ✨ Rastreabilidade completa de inventário
+- ✨ **Sistema de tarefas (Tasks) para operaaaes de armazam**
+- ✨ **Conferência automatizada com validaaao de quantidades**
 
 **Base URL:** `http://localhost:3000`
 
@@ -2281,13 +2383,13 @@ Esta API REST foi desenvolvida para gerenciar operações completas de um sistem
 - JWT Authentication
 - bcrypt (hash de senhas)
 
-**Versão da API:** 1.1.0
+**Versao da API:** 1.1.0
 
 ---
 
-## 🔐 Autenticação
+## 🆕 Autenticação
 
-Todos os endpoints (exceto `/auth/login`) requerem autenticação via JWT Bearer Token.
+Todos os endpoints (exceto `/auth/login`) requerem Autenticação via JWT Bearer Token.
 
 ### Login
 
@@ -2315,7 +2417,7 @@ Content-Type: application/json
 
 **Como usar o token:**
 
-Em todas as requisições subsequentes, adicione o header:
+Em todas as requisiaaes subsequentes, adicione o header:
 ```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
@@ -2328,13 +2430,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 }
 ```
 
-**⏱️ Expiração do Token:**
-- Padrão: 1 hora
-- Após expirado, faça login novamente para obter novo token
+**🆕 Expiraaao do Token:**
+- Padrao: 1 hora
+- após expirado, faaa login novamente para obter novo token
 
 ---
 
-## 📚 Endpoints
+## 🆕 Endpoints
 
 ### Auth
 
@@ -2350,7 +2452,7 @@ Realizar login e obter token JWT.
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `username` - Nome de usuário
 - `password` - Senha
 
@@ -2363,7 +2465,7 @@ Realizar login e obter token JWT.
 
 **Responses:**
 - `200` - Login realizado com sucesso
-- `401` - Credenciais inválidas
+- `401` - Credenciais invalidas
 
 **Exemplo com cURL:**
 ```bash
@@ -2400,13 +2502,13 @@ Authorization: Bearer {token}
   {
     "id": 2,
     "username": "joao.silva",
-    "name": "João Silva",
+    "name": "Joao Silva",
     "createdAt": "2024-11-20T14:30:00.000Z"
   }
 ]
 ```
 
-**⚠️ Nota:** A senha não é retornada nas respostas por segurança.
+**🆕 Nota:** A senha nao a retornada nas respostas por seguranaa.
 
 ---
 
@@ -2428,14 +2530,14 @@ Authorization: Bearer {token}
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário encontrado
-- `404` - Usuário não encontrado
+- `200` - usuário encontrado
+- `404` - usuário nao encontrado
 
 ---
 
@@ -2448,39 +2550,39 @@ Criar novo usuário.
 {
   "username": "joao.silva",
   "password": "Senha@123",
-  "name": "João Silva"
+  "name": "Joao Silva"
 }
 ```
 
-**Campos obrigatórios:**
-- `username` - Nome de usuário único (mín. 3, máx. 50 caracteres)
-- `password` - Senha do usuário (mín. 6, máx. 100 caracteres)
+**Campos obrigatarios:**
+- `username` - Nome de usuário anico (man. 3, max. 50 caracteres)
+- `password` - Senha do usuário (man. 6, max. 100 caracteres)
 
 **Campos opcionais:**
-- `name` - Nome completo do usuário (máx. 255 caracteres)
+- `name` - Nome completo do usuário (max. 255 caracteres)
 
-**Validações:**
-- ✅ Username deve ter pelo menos 3 caracteres
-- ✅ Senha deve ter pelo menos 6 caracteres
-- ✅ Username deve ser único no sistema
-- ✅ Senha será hasheada automaticamente antes de salvar
+**Validaaaes:**
+- ✨ Username deve ter pelo menos 3 caracteres
+- ✨ Senha deve ter pelo menos 6 caracteres
+- ✨ Username deve ser anico no sistema
+- ✨ Senha sera hasheada automáticamente antes de salvar
 
 **Response (201 Created):**
 ```json
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `201` - Usuário criado com sucesso
-- `409` - Usuário com este username já existe
-- `400` - Dados inválidos (validação falhou)
+- `201` - usuário criado com sucesso
+- `409` - usuário com este username ja existe
+- `400` - Dados invalidos (validaaao falhou)
 
-**Exemplo de erro de validação:**
+**Exemplo de erro de validaaao:**
 ```json
 {
   "statusCode": 400,
@@ -2507,17 +2609,17 @@ Atualizar usuário.
 ```json
 {
   "username": "joao.silva2",
-  "name": "João Silva Santos",
+  "name": "Joao Silva Santos",
   "password": "NovaSenha@456"
 }
 ```
 
 **Campos opcionais:**
-- `username` - Novo nome de usuário (mín. 3, máx. 50 caracteres)
-- `password` - Nova senha (mín. 6, máx. 100 caracteres)
-- `name` - Novo nome completo (máx. 255 caracteres)
+- `username` - Novo nome de usuário (man. 3, max. 50 caracteres)
+- `password` - Nova senha (man. 6, max. 100 caracteres)
+- `name` - Novo nome completo (max. 255 caracteres)
 
-**Exemplos de atualização:**
+**Exemplos de atualizaaao:**
 
 **Atualizar apenas a senha:**
 ```json
@@ -2529,7 +2631,7 @@ Atualizar usuário.
 **Atualizar apenas o nome:**
 ```json
 {
-  "name": "João Silva Santos"
+  "name": "Joao Silva Santos"
 }
 ```
 
@@ -2537,7 +2639,7 @@ Atualizar usuário.
 ```json
 {
   "username": "joao.silva2",
-  "name": "João Silva Santos"
+  "name": "Joao Silva Santos"
 }
 ```
 
@@ -2546,16 +2648,16 @@ Atualizar usuário.
 {
   "id": 2,
   "username": "joao.silva2",
-  "name": "João Silva Santos",
+  "name": "Joao Silva Santos",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário atualizado com sucesso
-- `404` - Usuário não encontrado
-- `409` - Novo username já existe (se tentar mudar para username em uso)
-- `400` - Dados inválidos
+- `200` - usuário atualizado com sucesso
+- `404` - usuário nao encontrado
+- `409` - Novo username ja existe (se tentar mudar para username em uso)
+- `400` - Dados invalidos
 
 ---
 
@@ -2577,16 +2679,16 @@ Authorization: Bearer {token}
 {
   "id": 2,
   "username": "joao.silva",
-  "name": "João Silva",
+  "name": "Joao Silva",
   "createdAt": "2024-11-20T14:30:00.000Z"
 }
 ```
 
 **Responses:**
-- `200` - Usuário deletado com sucesso
-- `404` - Usuário não encontrado
+- `200` - usuário deletado com sucesso
+- `404` - usuário nao encontrado
 
-**⚠️ Atenção:** Esta é uma exclusão permanente (hard delete). O usuário não poderá mais fazer login.
+**🆕 Atenaao:** Esta a uma exclusao permanente (hard delete). O usuário nao podera mais fazer login.
 
 ---
 
@@ -2613,7 +2715,7 @@ Authorization: Bearer {token}
     "cnpj": "12345678901234",
     "name": "Empresa ABC LTDA",
     "street": "Rua das Flores, 123",
-    "city": "São Paulo",
+    "city": "Sao Paulo",
     "state": "SP",
     "country": "Brasil",
     "postalCode": "01234567",
@@ -2640,7 +2742,7 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Empresa encontrada
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
@@ -2649,7 +2751,7 @@ Authorization: Bearer {token}
 Buscar empresa por CNPJ.
 
 **Parameters:**
-- `cnpj` (path) - CNPJ da empresa (14 dígitos)
+- `cnpj` (path) - CNPJ da empresa (14 dagitos)
 
 **Exemplo:**
 ```http
@@ -2669,7 +2771,7 @@ Criar nova empresa.
   "cnpj": "12345678901234",
   "name": "Empresa ABC LTDA",
   "street": "Rua das Flores, 123",
-  "city": "São Paulo",
+  "city": "Sao Paulo",
   "state": "SP",
   "country": "Brasil",
   "postalCode": "01234567",
@@ -2677,19 +2779,19 @@ Criar nova empresa.
 }
 ```
 
-**Campos obrigatórios:**
-- `cnpj` - CNPJ da empresa (14 dígitos, único)
-- `name` - Nome da empresa (máx. 255 caracteres)
-- `street` - Endereço (máx. 255 caracteres)
-- `city` - Cidade (máx. 100 caracteres)
-- `state` - Estado, sigla (máx. 2 caracteres)
-- `country` - País (máx. 100 caracteres)
-- `postalCode` - CEP (máx. 10 caracteres)
+**Campos obrigatarios:**
+- `cnpj` - CNPJ da empresa (14 dagitos, anico)
+- `name` - Nome da empresa (max. 255 caracteres)
+- `street` - Endereao (max. 255 caracteres)
+- `city` - Cidade (max. 100 caracteres)
+- `state` - Estado, sigla (max. 2 caracteres)
+- `country` - Paas (max. 100 caracteres)
+- `postalCode` - CEP (max. 10 caracteres)
 
 **Campos opcionais:**
-- `status` - Status da empresa (padrão: `ACTIVE`)
+- `status` - Status da empresa (padrao: `ACTIVE`)
 
-**Status disponíveis:**
+**Status disponaveis:**
 - `ACTIVE` - Ativo
 - `INACTIVE` - Inativo
 - `BLOCKED` - Bloqueado
@@ -2702,7 +2804,7 @@ Criar nova empresa.
   "cnpj": "12345678901234",
   "name": "Empresa ABC LTDA",
   "street": "Rua das Flores, 123",
-  "city": "São Paulo",
+  "city": "Sao Paulo",
   "state": "SP",
   "country": "Brasil",
   "postalCode": "01234567",
@@ -2713,7 +2815,7 @@ Criar nova empresa.
 
 **Responses:**
 - `201` - Empresa criada com sucesso
-- `409` - Empresa com este CNPJ já existe
+- `409` - Empresa com este CNPJ ja existe
 
 ---
 
@@ -2732,11 +2834,11 @@ Atualizar empresa.
 }
 ```
 
-**Todos os campos são opcionais.** Envie apenas os que deseja atualizar.
+**Todos os campos sao opcionais.** Envie apenas os que deseja atualizar.
 
 **Responses:**
 - `200` - Empresa atualizada com sucesso
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
@@ -2755,13 +2857,13 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Empresa deletada com sucesso
-- `404` - Empresa não encontrada
+- `404` - Empresa nao encontrada
 
 ---
 
 ### Suppliers
 
-Gerenciamento de fornecedores. Cada fornecedor está vinculado a uma empresa (Company).
+Gerenciamento de fornecedores. Cada fornecedor esta vinculado a uma empresa (Company).
 
 #### `GET /suppliers`
 
@@ -2813,7 +2915,7 @@ Buscar fornecedor por UUID.
 Buscar fornecedor por CNPJ.
 
 **Parameters:**
-- `cnpj` (path) - CNPJ do fornecedor (14 dígitos)
+- `cnpj` (path) - CNPJ do fornecedor (14 dagitos)
 
 **Exemplo:**
 ```http
@@ -2841,9 +2943,9 @@ Criar novo fornecedor.
 }
 ```
 
-**⚠️ Importante - Reutilização de Companies:** 
-- Se já existir uma `Company` com esse CNPJ, ela será **reutilizada**
-- Caso contrário, uma nova `Company` será criada automaticamente
+**🆕 Importante - Reutilizaaao de Companies:** 
+- Se ja existir uma `Company` com esse CNPJ, ela sera **reutilizada**
+- Caso contrario, uma nova `Company` sera criada automáticamente
 - Isso permite que a mesma empresa seja fornecedor e cliente
 
 **Response (201 Created):**
@@ -2870,7 +2972,7 @@ Criar novo fornecedor.
 
 **Responses:**
 - `201` - Fornecedor criado com sucesso
-- `409` - Fornecedor com este CNPJ já existe
+- `409` - Fornecedor com este CNPJ ja existe
 
 ---
 
@@ -2904,11 +3006,11 @@ DELETE /suppliers/650e8400-e29b-41d4-a716-446655440001
 Authorization: Bearer {token}
 ```
 
-**⚠️ Nota:** Ao deletar um fornecedor, apenas o vínculo (`supplierInfo`) é removido. A `Company` permanece no banco, pois pode ter outros vínculos.
+**🆕 Nota:** Ao deletar um fornecedor, apenas o vanculo (`supplierInfo`) a removido. A `Company` permanece no banco, pois pode ter outros vanculos.
 
 **Responses:**
 - `200` - Fornecedor deletado com sucesso
-- `404` - Fornecedor não encontrado
+- `404` - Fornecedor nao encontrado
 
 ---
 
@@ -2976,24 +3078,24 @@ Criar nova categoria.
 }
 ```
 
-**Campos obrigatórios:**
-- `name` - Nome da categoria, único (máx. 100 caracteres)
-- `materialUnit` - Unidade de medida padrão
+**Campos obrigatarios:**
+- `name` - Nome da categoria, anico (max. 100 caracteres)
+- `materialUnit` - Unidade de medida padrao
 
 **Campos opcionais:**
-- `description` - Descrição da categoria (máx. 255 caracteres)
+- `description` - Descriaao da categoria (max. 255 caracteres)
 
 **Unidades de medida suportadas:**
 
-| Código | Descrição |
+| Cadigo | Descriaao |
 |--------|-----------|
 | `BX` | Caixa |
-| `CM` | Centímetro |
+| `CM` | Centametro |
 | `GR` | Grama |
 | `KG` | Quilograma |
 | `LT` | Litro |
 | `M2` | Metro Quadrado |
-| `M3` | Metro Cúbico |
+| `M3` | Metro Cabico |
 | `ML` | Mililitro |
 | `MT` | Metro |
 | `PK` | Pacote |
@@ -3013,7 +3115,7 @@ Criar nova categoria.
 
 **Responses:**
 - `201` - Categoria criada com sucesso
-- `409` - Categoria com este nome já existe
+- `409` - Categoria com este nome ja existe
 
 ---
 
@@ -3061,7 +3163,7 @@ Authorization: Bearer {token}
     "uuid": "850e8400-e29b-41d4-a716-446655440003",
     "externalCode": "PAR-001",
     "categoryId": 1,
-    "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+    "description": "Parafuso Allen M6 x 20mm - Aao Inox",
     "materialUnit": "UN",
     "status": "ACTIVE",
     "createdAt": "2024-11-20T11:30:00.000Z"
@@ -3079,10 +3181,10 @@ Buscar material por UUID.
 
 #### `GET /materials/external-code/{externalCode}`
 
-Buscar material por código externo.
+Buscar material por cadigo externo.
 
 **Parameters:**
-- `externalCode` (path) - Código externo do material
+- `externalCode` (path) - Cadigo externo do material
 
 **Exemplo:**
 ```http
@@ -3116,26 +3218,26 @@ Criar novo material.
 {
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE"
 }
 ```
 
-**Campos obrigatórios:**
-- `externalCode` - Código externo do material, único (máx. 50 caracteres)
+**Campos obrigatarios:**
+- `externalCode` - Cadigo externo do material, anico (max. 50 caracteres)
 - `categoryId` - ID da categoria
-- `description` - Descrição do material (máx. 255 caracteres)
+- `description` - Descriaao do material (max. 255 caracteres)
 - `materialUnit` - Unidade de medida (veja tabela acima)
 
 **Campos opcionais:**
-- `status` - Status do material (padrão: `ACTIVE`)
+- `status` - Status do material (padrao: `ACTIVE`)
 
 **Status do Material:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `ACTIVE` | Material ativo e disponível |
+| `ACTIVE` | Material ativo e disponavel |
 | `INACTIVE` | Material inativo temporariamente |
 | `DISCONTINUED` | Material descontinuado |
 | `DEVELOPMENT` | Material em desenvolvimento |
@@ -3147,7 +3249,7 @@ Criar novo material.
   "uuid": "850e8400-e29b-41d4-a716-446655440003",
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE",
   "createdAt": "2024-11-20T11:30:00.000Z"
@@ -3156,7 +3258,7 @@ Criar novo material.
 
 **Responses:**
 - `201` - Material criado com sucesso
-- `409` - Material com este código externo já existe
+- `409` - Material com este cadigo externo ja existe
 
 ---
 
@@ -3170,7 +3272,7 @@ Atualizar material.
 **Request Body:**
 ```json
 {
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox 304",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox 304",
   "status": "DISCONTINUED"
 }
 ```
@@ -3185,7 +3287,7 @@ Deletar material.
 
 ### Storages
 
-Gerenciamento de locais de armazenamento (armazéns, prateleiras, setores, etc.).
+Gerenciamento de locais de armazenamento (armazans, prateleiras, setores, etc.).
 
 #### `GET /storages`
 
@@ -3204,7 +3306,7 @@ Authorization: Bearer {token}
     "id": 1,
     "uuid": "950e8400-e29b-41d4-a716-446655440004",
     "code": "A01-01",
-    "name": "Armazém Principal - Setor A - Prateleira 01",
+    "name": "Armazam Principal - Setor A - Prateleira 01",
     "companyId": 1,
     "createdAt": "2024-11-20T12:00:00.000Z"
   }
@@ -3221,10 +3323,10 @@ Buscar storage por UUID.
 
 #### `GET /storages/code/{code}`
 
-Buscar storage por código.
+Buscar storage por cadigo.
 
 **Parameters:**
-- `code` (path) - Código do storage
+- `code` (path) - Cadigo do storage
 
 **Exemplo:**
 ```http
@@ -3257,15 +3359,15 @@ Criar novo storage.
 ```json
 {
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1
 }
 ```
 
-**Campos obrigatórios:**
-- `code` - Código do local, único (máx. 50 caracteres)
-- `name` - Nome/descrição do local (máx. 255 caracteres)
-- `companyId` - ID da empresa responsável
+**Campos obrigatarios:**
+- `code` - Cadigo do local, anico (max. 50 caracteres)
+- `name` - Nome/descriaao do local (max. 255 caracteres)
+- `companyId` - ID da empresa responsavel
 
 **Response (201 Created):**
 ```json
@@ -3273,7 +3375,7 @@ Criar novo storage.
   "id": 1,
   "uuid": "950e8400-e29b-41d4-a716-446655440004",
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1,
   "createdAt": "2024-11-20T12:00:00.000Z"
 }
@@ -3281,7 +3383,7 @@ Criar novo storage.
 
 **Responses:**
 - `201` - Storage criado com sucesso
-- `409` - Storage com este código já existe
+- `409` - Storage com este cadigo ja existe
 
 ---
 
@@ -3348,28 +3450,28 @@ Criar nova nota fiscal.
 }
 ```
 
-**Campos obrigatórios:**
-- `invoiceNumber` - Número da nota fiscal, único (máx. 50 caracteres)
+**Campos obrigatarios:**
+- `invoiceNumber` - Namero da nota fiscal, anico (max. 50 caracteres)
 - `supplierId` - ID do fornecedor
 - `receivedAt` - Data/hora de recebimento (formato ISO 8601)
 
 **Campos opcionais:**
-- `status` - Status da nota (padrão: `PENDING`)
+- `status` - Status da nota (padrao: `PENDING`)
 
 **Status da Invoice:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `PENDING` | Pendente de recebimento (padrão) |
-| `WAITING_INSPECTION` | Aguardando inspeção |
+| `PENDING` | Pendente de recebimento (padrao) |
+| `WAITING_INSPECTION` | Aguardando inspeaao |
 | `RECEIVED` | Recebida e conferida |
 | `REJECTED` | Rejeitada |
 | `CANCELLED` | Cancelada |
 
 **Fluxo de Status:**
 ```
-PENDING → WAITING_INSPECTION → RECEIVED
-   ↓
+PENDING ✨ WAITING_INSPECTION ✨ RECEIVED
+   ✨
 REJECTED / CANCELLED
 ```
 
@@ -3388,7 +3490,7 @@ REJECTED / CANCELLED
 
 **Responses:**
 - `201` - Invoice criada com sucesso
-- `409` - Invoice com este número já existe
+- `409` - Invoice com este namero ja existe
 
 ---
 
@@ -3449,7 +3551,7 @@ GET /invoice-items?invoiceId=1&materialId=4
     "totalValue": "1500.00",
     "unitValue": "15.000000",
     "status": "WAITING",
-    "remark": "Material em boas condições",
+    "remark": "Material em boas condiaaes",
     "createdAt": "2024-11-20T13:00:00.000Z"
   }
 ]
@@ -3475,42 +3577,42 @@ Criar novo item de nota fiscal.
   "quantity": "100",
   "totalValue": "1500.00",
   "status": "WAITING",
-  "remark": "Material em boas condições"
+  "remark": "Material em boas condiaaes"
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `invoiceId` - ID da nota fiscal
 - `materialId` - ID do material
-- `quantity` - Quantidade recebida (string, suporta decimais até 3 casas)
-- `totalValue` - Valor total do item (string, suporta decimais até 2 casas)
+- `quantity` - Quantidade recebida (string, suporta decimais ata 3 casas)
+- `totalValue` - Valor total do item (string, suporta decimais ata 2 casas)
 
 **Campos opcionais:**
-- `status` - Status do item (padrão: `WAITING`)
-- `remark` - Observações sobre o item (máx. 255 caracteres)
+- `status` - Status do item (padrao: `WAITING`)
+- `remark` - Observaaaes sobre o item (max. 255 caracteres)
 
-**⚠️ Campo Calculado:** 
-O campo `unitValue` é **calculado automaticamente** pelo banco de dados:
+**🆕 Campo Calculado:** 
+O campo `unitValue` a **calculado automáticamente** pelo banco de dados:
 ```sql
 unitValue = totalValue / quantity
 ```
 
 **Status do Invoice Item:**
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `WAITING` | Aguardando conferência (padrão) |
+| `WAITING` | Aguardando Conferência (padrao) |
 | `COUNTING` | Em processo de contagem |
 | `CONFORMING` | Conforme/aprovado |
 | `DIVERGENT` | Divergente (quantidade ou qualidade) |
 | `DAMAGED` | Danificado |
 | `MISSING` | Faltando |
-| `MISMATCHED` | Incompatível com pedido |
+| `MISMATCHED` | Incompatavel com pedido |
 
 **Fluxo de Status:**
 ```
-WAITING → COUNTING → CONFORMING / DIVERGENT
-   ↓
+WAITING ✨ COUNTING ✨ CONFORMING / DIVERGENT
+   ✨
 DAMAGED / MISSING / MISMATCHED (a qualquer momento)
 ```
 
@@ -3525,14 +3627,14 @@ DAMAGED / MISSING / MISMATCHED (a qualquer momento)
   "totalValue": "1500.00",
   "unitValue": "15.000000",
   "status": "WAITING",
-  "remark": "Material em boas condições",
+  "remark": "Material em boas condiaaes",
   "createdAt": "2024-11-20T13:00:00.000Z"
 }
 ```
 
 **Responses:**
 - `201` - Item criado com sucesso
-- `400` - Dados inválidos (foreign key, valores, etc.)
+- `400` - Dados invalidos (foreign key, valores, etc.)
 
 ---
 
@@ -3586,7 +3688,7 @@ Deletar item de nota fiscal.
 
 ### Inventories
 
-Gerenciamento de inventário. Cada registro de inventário representa um item de nota fiscal armazenado em um local específico, garantindo **rastreabilidade completa**.
+Gerenciamento de inventário. Cada registro de inventário representa um item de nota fiscal armazenado em um local especafico, garantindo **rastreabilidade completa**.
 
 #### `GET /inventories`
 
@@ -3614,10 +3716,10 @@ Authorization: Bearer {token}
 ]
 ```
 
-**⚠️ Importante sobre o campo `materialId`:**
-- O campo `materialId` no inventário refere-se ao **ID do invoice item** (não do material diretamente)
-- Isso garante **rastreabilidade completa**: você sabe exatamente de qual nota fiscal veio cada item no estoque
-- Mesmo material de fornecedores ou notas diferentes terá registros separados no inventário
+**🆕 Importante sobre o campo `materialId`:**
+- O campo `materialId` no inventário refere-se ao **ID do invoice item** (nao do material diretamente)
+- Isso garante **rastreabilidade completa**: voca sabe exatamente de qual nota fiscal veio cada item no estoque
+- Mesmo material de fornecedores ou notas diferentes tera registros separados no inventário
 
 **Campo calculado `available`:**
 ```sql
@@ -3645,7 +3747,7 @@ GET /inventories/invoice-item/2
 Authorization: Bearer {token}
 ```
 
-Retorna todos os locais onde o item de nota fiscal específico está armazenado.
+Retorna todos os locais onde o item de nota fiscal especafico esta armazenado.
 
 ---
 
@@ -3662,13 +3764,13 @@ GET /inventories/storage/1
 Authorization: Bearer {token}
 ```
 
-Retorna todos os itens armazenados em um local específico.
+Retorna todos os itens armazenados em um local especafico.
 
 ---
 
 #### `GET /inventories/search?invoiceItemId={id}&storageId={id}`
 
-Buscar inventário específico (invoice item + storage).
+Buscar inventário especafico (invoice item + storage).
 
 **Query Parameters:**
 - `invoiceItemId` - ID do invoice item
@@ -3695,12 +3797,12 @@ Criar novo registro de inventário.
 }
 ```
 
-**Campos obrigatórios:**
+**Campos obrigatarios:**
 - `invoiceItemId` - ID do item de nota fiscal
 - `storageId` - ID do local de armazenamento
-- `quantity` - Quantidade armazenada (string, suporta decimais até 3 casas)
+- `quantity` - Quantidade armazenada (string, suporta decimais ata 3 casas)
 
-**⚠️ Validação:** Não é permitido criar dois registros com o mesmo `invoiceItemId` + `storageId` (constraint de unicidade).
+**🆕 Validaaao:** Nao a permitido criar dois registros com o mesmo `invoiceItemId` + `storageId` (constraint de unicidade).
 
 **Response (201 Created):**
 ```json
@@ -3717,9 +3819,9 @@ Criar novo registro de inventário.
 ```
 
 **Responses:**
-- `201` - Inventário criado com sucesso
-- `409` - Inventário para este invoice item e storage já existe
-- `400` - Invoice item ou storage não existe
+- `201` - inventário criado com sucesso
+- `409` - inventário para este invoice item e storage ja existe
+- `400` - Invoice item ou storage nao existe
 
 ---
 
@@ -3755,33 +3857,33 @@ Deletar registro de inventário.
 
 ### Tasks
 
-Gerenciamento de tarefas do armazém. As tarefas representam operações que precisam ser realizadas, como conferência, armazenamento, separação, etc.
+Gerenciamento de tarefas do armazam. As tarefas representam operaaaes que precisam ser realizadas, como Conferência, armazenamento, separaaao, etc.
 
 #### Tipos de Tarefas
 
-| Tipo | Descrição | Uso Principal |
+| Tipo | Descriaao | Uso Principal |
 |------|-----------|---------------|
 | `CONFERENCE` | Conferência de recebimento | Validar quantidade recebida vs nota fiscal |
-| `STORAGE` | Armazenamento de materiais | Alocar material em local físico |
-| `PICKING` | Separação de materiais | Separar materiais para expedição/uso |
+| `STORAGE` | Armazenamento de materiais | Alocar material em local fasico |
+| `PICKING` | Separaaao de materiais | Separar materiais para expediaao/uso |
 | `PACKAGING` | Embalagem de materiais | Embalar materiais |
-| `SHIPPING` | Expedição | Despachar materiais |
-| `INVENTORY` | Inventário/Contagem | Contagem física de estoque |
-| `DEMOBILIZATION` | Desmobilização | Desmobilizar equipamentos/materiais |
+| `SHIPPING` | Expediaao | Despachar materiais |
+| `INVENTORY` | inventário/Contagem | Contagem fasica de estoque |
+| `DEMOBILIZATION` | Desmobilizaaao | Desmobilizar equipamentos/materiais |
 
 #### Status de Tarefas
 
-| Status | Descrição |
+| Status | Descriaao |
 |--------|-----------|
-| `PENDING` | Pendente (padrão) |
+| `PENDING` | Pendente (padrao) |
 | `IN_PROGRESS` | Em andamento |
-| `COMPLETED` | Concluída |
+| `COMPLETED` | Concluada |
 | `CANCELLED` | Cancelada |
 
 **Fluxo de Status:**
 ```
-PENDING → IN_PROGRESS → COMPLETED
-   ↓
+PENDING ✨ IN_PROGRESS ✨ COMPLETED
+   ✨
 CANCELLED
 ```
 
@@ -3794,7 +3896,7 @@ Listar todas as tarefas com filtros opcionais.
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status: `PENDING`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`
 - `taskType` (opcional) - Filtrar por tipo: `PICKING`, `STORAGE`, `CONFERENCE`, etc.
-- `assignedUserId` (opcional) - Filtrar por usuário atribuído (ID numérico)
+- `assignedUserUuid` (opcional) - Filtrar por usuário atribuado (UUID)
 
 **Exemplos:**
 
@@ -3807,16 +3909,16 @@ Authorization: Bearer {token}
 GET /tasks?status=PENDING
 Authorization: Bearer {token}
 
-# Tarefas de conferência
+# Tarefas de Conferência
 GET /tasks?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas do usuário 2
-GET /tasks?assignedUserId=2
+GET /tasks?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
-# Tarefas de conferência pendentes do usuário 2
-GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserId=2
+# Tarefas de Conferência pendentes do usuário 2
+GET /tasks?status=PENDING&taskType=CONFERENCE&assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -3867,7 +3969,7 @@ Authorization: Bearer {token}
 GET /tasks/my-tasks?status=PENDING
 Authorization: Bearer {token}
 
-# Minhas tarefas de conferência em andamento
+# Minhas tarefas de Conferência em andamento
 GET /tasks/my-tasks?status=IN_PROGRESS&taskType=CONFERENCE
 Authorization: Bearer {token}
 ```
@@ -3878,7 +3980,7 @@ Authorization: Bearer {token}
   {
     "uuid": "e8d71a24-6c83-4e69-a787-bd4de3529d94",
     "title": "Conferência - Nota 1234568",
-    "description": "Lote de luvas de proteção",
+    "description": "Lote de luvas de proteaao",
     "status": "IN_PROGRESS",
     "taskType": "CONFERENCE",
     "assignedUserId": 2,
@@ -3896,7 +3998,7 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -3905,12 +4007,12 @@ Listar tarefas abertas (status `PENDING` ou `IN_PROGRESS`).
 GET /tasks/open
 Authorization: Bearer {token}
 
-# Tarefas de conferência abertas
+# Tarefas de Conferência abertas
 GET /tasks/open?taskType=CONFERENCE
 Authorization: Bearer {token}
 
 # Tarefas abertas do usuário 2
-GET /tasks/open?assignedUserId=2
+GET /tasks/open?assignedUserUuid=2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 ```
 
@@ -3922,7 +4024,7 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 
 **Query Parameters:**
 - `taskType` (opcional) - Filtrar por tipo
-- `assignedUserId` (opcional) - Filtrar por usuário
+- `assignedUserUuid` (opcional) - Filtrar por usuário (UUID)
 
 **Exemplos:**
 
@@ -3931,19 +4033,19 @@ Listar tarefas fechadas (status `COMPLETED` ou `CANCELLED`).
 GET /tasks/closed
 Authorization: Bearer {token}
 
-# Tarefas de armazenamento concluídas
+# Tarefas de armazenamento concluadas
 GET /tasks/closed?taskType=STORAGE
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/user/{userId}`
+#### `GET /tasks/user/{userUuid}`
 
-Listar tarefas de um usuário específico.
+Listar tarefas de um usuário especafico.
 
 **Parameters:**
-- `userId` (path) - ID do usuário
+- `userUuid` (path) - UUID do usuário
 
 **Query Parameters:**
 - `status` (opcional) - Filtrar por status
@@ -3953,26 +4055,26 @@ Listar tarefas de um usuário específico.
 
 ```http
 # Todas as tarefas do usuário 1
-GET /tasks/user/1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35
 Authorization: Bearer {token}
 
-# Tarefas concluídas do usuário 1
-GET /tasks/user/1?status=COMPLETED
+# Tarefas concluadas do usuário 1
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=COMPLETED
 Authorization: Bearer {token}
 
 # Tarefas de picking em andamento do usuário 1
-GET /tasks/user/1?status=IN_PROGRESS&taskType=PICKING
+GET /tasks/user/2103e8df-f89d-47be-9be1-3a3db0172c35?status=IN_PROGRESS&taskType=PICKING
 Authorization: Bearer {token}
 ```
 
 ---
 
-#### `GET /tasks/invoice/{invoiceId}`
+#### `GET /tasks/invoice/{invoiceUuid}`
 
 Buscar tarefas relacionadas a uma nota fiscal.
 
 **Parameters:**
-- `invoiceId` (path) - ID da nota fiscal
+- `invoiceUuid` (path) - UUID da nota fiscal
 
 **Exemplo:**
 
@@ -4024,7 +4126,7 @@ Authorization: Bearer {token}
 {
   "uuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "title": "Conferência - Nota NF-15",
-  "description": "Conferir quantidade de Luvas de Segurança",
+  "description": "Conferir quantidade de Luvas de Seguranaa",
   "status": "PENDING",
   "dueDate": "2025-12-23T23:59:59.000Z",
   "createdAt": "2025-11-23T20:47:34.142Z",
@@ -4045,7 +4147,7 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Tarefa encontrada
-- `404` - Tarefa não encontrada
+- `404` - Tarefa nao encontrada
 
 ---
 
@@ -4063,26 +4165,26 @@ Criar nova tarefa.
   "invoiceId": 1,
   "materialId": 4,
   "itemSpecification": "Luva PVC Tamanho G",
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-25T23:59:59.000Z"
 }
 ```
 
-**Campos obrigatórios:**
-- `title` - Título da tarefa (máx. 255 caracteres)
+**Campos obrigatarios:**
+- `title` - Tatulo da tarefa (max. 255 caracteres)
 - `taskType` - Tipo da tarefa: `PICKING`, `STORAGE`, `CONFERENCE`, `PACKAGING`, `SHIPPING`, `INVENTORY`, `DEMOBILIZATION`
 
 **Campos opcionais:**
-- `description` - Descrição detalhada (máx. 1024 caracteres)
-- `status` - Status inicial (padrão: `PENDING`)
-- `dueDate` - Data/hora limite para conclusão (formato ISO 8601)
+- `description` - Descriaao detalhada (max. 1024 caracteres)
+- `status` - Status inicial (padrao: `PENDING`)
+- `dueDate` - Data/hora limite para conclusao (formato ISO 8601)
 - `invoiceId` - ID da nota fiscal relacionada
 - `materialId` - ID do material relacionado
-- `itemSpecification` - Especificação do item (máx. 255 caracteres)
-- `assignedUserId` - ID do usuário atribuído
-- `issuedBy` - Nome de quem emitiu a tarefa (máx. 255 caracteres)
-- `entryDate` - Data de entrada/criação da tarefa (formato ISO 8601)
+- `itemSpecification` - Especificaaao do item (max. 255 caracteres)
+- `assignedUserId` - ID do usuário atribuado
+- `issuedBy` - Nome de quem emitiu a tarefa (max. 255 caracteres)
+- `entryDate` - Data de entrada/Criação da tarefa (formato ISO 8601)
 
 **Response (201 Created):**
 ```json
@@ -4098,7 +4200,7 @@ Criar nova tarefa.
 }
 ```
 
-**Exemplos de criação por tipo:**
+**Exemplos de Criação por tipo:**
 
 **Tarefa de Conferência:**
 ```json
@@ -4126,7 +4228,7 @@ Criar nova tarefa.
 }
 ```
 
-**Tarefa de Separação:**
+**Tarefa de Separaaao:**
 ```json
 {
   "title": "Separar - Pedido #789",
@@ -4139,7 +4241,7 @@ Criar nova tarefa.
 
 **Responses:**
 - `201` - Tarefa criada com sucesso
-- `400` - Dados inválidos
+- `400` - Dados invalidos
 
 ---
 
@@ -4156,13 +4258,13 @@ Atualizar tarefa.
   "title": "Conferência - NF-001234 - Urgente",
   "status": "IN_PROGRESS",
   "assignedUserId": 2,
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z"
 }
 ```
 
-**Todos os campos são opcionais.** Envie apenas os campos que deseja atualizar.
+**Todos os campos sao opcionais.** Envie apenas os campos que deseja atualizar.
 
 **Exemplos:**
 
@@ -4195,7 +4297,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z"
 }
@@ -4208,7 +4310,7 @@ Content-Type: application/json
   "title": "Conferência - NF-001234 - Urgente",
   "status": "IN_PROGRESS",
   "assignedUserId": 2,
-  "issuedBy": "João Silva",
+  "issuedBy": "Joao Silva",
   "entryDate": "2025-11-20T10:00:00.000Z",
   "dueDate": "2025-12-23T23:59:59.000Z",
   "updatedAt": "2025-11-24T11:00:00.000Z"
@@ -4217,7 +4319,7 @@ Content-Type: application/json
 
 **Responses:**
 - `200` - Tarefa atualizada com sucesso
-- `404` - Tarefa não encontrada
+- `404` - Tarefa nao encontrada
 
 ---
 
@@ -4235,10 +4337,10 @@ Atualizar apenas o status da tarefa.
 }
 ```
 
-**Status válidos:**
+**Status validos:**
 - `PENDING` - Pendente
 - `IN_PROGRESS` - Em andamento
-- `COMPLETED` - Concluída (atualiza `completedAt` automaticamente)
+- `COMPLETED` - Concluada (atualiza `completedAt` automáticamente)
 - `CANCELLED` - Cancelada
 
 **Exemplo:**
@@ -4263,8 +4365,8 @@ Content-Type: application/json
 }
 ```
 
-**⚠️ Comportamento especial:**
-- Quando status = `COMPLETED`, o campo `completedAt` é preenchido automaticamente com a data/hora atual
+**🆕 Comportamento especial:**
+- Quando status = `COMPLETED`, o campo `completedAt` a preenchido automáticamente com a data/hora atual
 - Quando status muda para outro valor, `completedAt` permanece inalterado
 
 ---
@@ -4279,7 +4381,7 @@ Atribuir tarefa a um usuário.
 **Request Body:**
 ```json
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4291,7 +4393,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4307,35 +4409,40 @@ Content-Type: application/json
 
 **Responses:**
 - `200` - Tarefa atribuída com sucesso
-- `404` - Tarefa não encontrada
-- `400` - Usuário não existe
+- `404` - Tarefa nao encontrada
+- `400` - usuário nao existe
 
 ---
 
 #### `POST /tasks/conference`
 
-Realizar conferência de material (tarefa de conferência).
+Realizar Conferência de material (tarefa de Conferência).
 
-**⚠️ Importante:** 
+**🆕 Importante:** 
 - A tarefa deve ter `invoiceId` e `materialId` preenchidos
 - Deve existir um `invoice_item` correspondente
 - A quantidade esperada vem da nota fiscal (`invoice_item.quantity`)
+- Se `storageId` for fornecido e a Conferência for conforme, o inventário a criado automáticamente
 
 **Request Body:**
 ```json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Campos obrigatórios:**
-- `taskUuid` - UUID da tarefa de conferência
-- `quantityFound` - Quantidade encontrada durante a conferência
-- `userId` - ID do usuário que está realizando a conferência
+**Campos obrigatarios:**
+- `taskUuid` - UUID da tarefa de Conferência
+- `quantityFound` - Quantidade encontrada durante a Conferência
+- `userUuid` - UUID do usuário que esta realizando a Conferência
 
-**Exemplo - Conferência com quantidade conforme:**
+**Campos opcionais:**
+- `storageId` - ID do local de armazenamento (se fornecido e Conferência conforme, cria inventário automáticamente)
+
+**Exemplo - Conferência com quantidade conforme e armazenamento:**
 
 ```http
 POST /tasks/conference
@@ -4345,22 +4452,23 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 150,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
-**Response (200 OK - Conforme):**
+**Response (200 OK - Conforme com armazenamento):**
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade esta conforme a nota fiscal. inventário criado/atualizado.",
   "quantityFound": 150,
   "expectedQuantity": 150,
   "requiresReview": false
 }
 ```
 
-**Exemplo - Conferência com divergência:**
+**Exemplo - Conferência com divergancia:**
 
 ```http
 POST /tasks/conference
@@ -4370,7 +4478,8 @@ Content-Type: application/json
 {
   "taskUuid": "53a6f1c2-0dbc-4588-9195-6041b533c667",
   "quantityFound": 145,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35",
+  "storageId": 1
 }
 ```
 
@@ -4378,7 +4487,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "DIVERGÊNCIA DETECTADA: Esperado 150, mas foram encontrados 145.",
+  "message": "DIVERGaNCIA DETECTADA: Esperado 150, mas foram encontrados 145.",
   "quantityFound": 145,
   "expectedQuantity": 150,
   "requiresReview": true
@@ -4387,34 +4496,34 @@ Content-Type: application/json
 
 **O que acontece ao conferir:**
 
-1. ✅ Task é atualizada:
-   - `status` → `COMPLETED`
-   - `completedAt` → data/hora atual
-   - `countedQuantity` → quantidade encontrada
-   - `assignedUserId` → usuário que conferiu
+1. ✨ Task a atualizada:
+   - `status` ✨ `COMPLETED`
+   - `completedAt` ✨ data/hora atual
+   - `countedQuantity` ✨ quantidade encontrada
+   - `assignedUserId` ✨ usuário que conferiu
 
-2. ✅ Invoice Item é atualizado:
-   - `status` → `CONFORMING` (se quantidade correta) ou `DIVERGENT` (se diferente)
-   - `remark` → descrição da conformidade ou divergência
+2. ✨ Invoice Item a atualizado:
+   - `status` ✨ `CONFORMING` (se quantidade correta) ou `DIVERGENT` (se diferente)
+   - `remark` ✨ descriaao da conformidade ou divergancia
 
-**Cenários de conferência:**
+**Cenarios de Conferência:**
 
 | Esperado | Encontrado | Status | Mensagem |
 |----------|------------|--------|----------|
-| 150 | 150 | `CONFORMING` | ✅ Quantidade está conforme a nota fiscal |
-| 150 | 145 | `DIVERGENT` | ⚠️ DIVERGÊNCIA: Esperado 150, encontrado 145 |
-| 150 | 155 | `DIVERGENT` | ⚠️ DIVERGÊNCIA: Esperado 150, encontrado 155 |
+| 150 | 150 | `CONFORMING` | ✨ Quantidade esta conforme a nota fiscal |
+| 150 | 145 | `DIVERGENT` | 🆕 DIVERGaNCIA: Esperado 150, encontrado 145 |
+| 150 | 155 | `DIVERGENT` | 🆕 DIVERGaNCIA: Esperado 150, encontrado 155 |
 
 **Responses:**
 - `200` - Conferência realizada (conforme ou divergente)
-- `404` - Tarefa não encontrada ou invoice item não encontrado
-- `400` - Dados inválidos ou tarefa não é do tipo CONFERENCE
+- `404` - Tarefa nao encontrada ou invoice item nao encontrado
+- `400` - Dados invalidos ou tarefa nao a do tipo CONFERENCE
 
-**⚠️ Notas importantes:**
+**🆕 Notas importantes:**
 - A tarefa deve ser do tipo `CONFERENCE`
 - Deve existir um `invoice_item` com o `invoiceId` e `materialId` especificados na tarefa
-- A conferência pode ser realizada mesmo com divergência
-- Se houver divergência, o sistema retorna `success: false` mas registra a contagem
+- A Conferência pode ser realizada mesmo com divergancia
+- Se houver divergancia, o sistema retorna `success: false` mas registra a contagem
 
 ---
 
@@ -4444,19 +4553,19 @@ Authorization: Bearer {token}
 
 **Responses:**
 - `200` - Tarefa deletada com sucesso
-- `404` - Tarefa não encontrada
+- `404` - Tarefa nao encontrada
 
-**⚠️ Atenção:** Esta é uma exclusão permanente (hard delete). A tarefa não poderá ser recuperada.
+**🆕 Atenaao:** Esta a uma exclusao permanente (hard delete). A tarefa nao podera ser recuperada.
 
 ---
 
-## 🔄 Fluxos Completos
+## 🆕 Fluxos Completos
 
 ### Fluxo de Recebimento de Material
 
-Este fluxo demonstra como registrar o recebimento completo de materiais de um fornecedor, desde o cadastro até o inventário.
+Este fluxo demonstra como registrar o recebimento completo de materiais de um fornecedor, desde o cadastro ata o inventário.
 
-#### 1️⃣ Autenticação
+#### 1🆕 Autenticação
 
 ```http
 POST /auth/login
@@ -4475,11 +4584,11 @@ Content-Type: application/json
 }
 ```
 
-✅ Guarde o `access_token` e use em todas as próximas requisições.
+✨ Guarde o `access_token` e use em todas as praximas requisiaaes.
 
 ---
 
-#### 2️⃣ Criar Categoria de Material
+#### 2🆕 Criar Categoria de Material
 
 ```http
 POST /material-categories
@@ -4505,11 +4614,11 @@ Content-Type: application/json
 }
 ```
 
-✅ Guarde o `id: 1`
+✨ Guarde o `id: 1`
 
 ---
 
-#### 3️⃣ Criar Materiais
+#### 3🆕 Criar Materiais
 
 ```http
 POST /materials
@@ -4519,7 +4628,7 @@ Content-Type: application/json
 {
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE"
 }
@@ -4532,20 +4641,20 @@ Content-Type: application/json
   "uuid": "850e8400-e29b-41d4-a716-446655440003",
   "externalCode": "PAR-001",
   "categoryId": 1,
-  "description": "Parafuso Allen M6 x 20mm - Aço Inox",
+  "description": "Parafuso Allen M6 x 20mm - Aao Inox",
   "materialUnit": "UN",
   "status": "ACTIVE",
   "createdAt": "2024-11-20T11:30:00.000Z"
 }
 ```
 
-✅ Guarde o `id: 4`
+✨ Guarde o `id: 4`
 
 Repita para criar outros materiais (PAR-002, FER-001, etc.).
 
 ---
 
-#### 4️⃣ Criar Fornecedor
+#### 4🆕 Criar Fornecedor
 
 ```http
 POST /suppliers
@@ -4586,11 +4695,11 @@ Content-Type: application/json
 }
 ```
 
-✅ Guarde o `id: 1`
+✨ Guarde o `id: 1`
 
 ---
 
-#### 5️⃣ Criar Storage (Local de Armazenamento)
+#### 5🆕 Criar Storage (Local de Armazenamento)
 
 ```http
 POST /storages
@@ -4599,7 +4708,7 @@ Content-Type: application/json
 
 {
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1
 }
 ```
@@ -4610,17 +4719,17 @@ Content-Type: application/json
   "id": 1,
   "uuid": "950e8400-e29b-41d4-a716-446655440004",
   "code": "A01-01",
-  "name": "Armazém Principal - Setor A - Prateleira 01",
+  "name": "Armazam Principal - Setor A - Prateleira 01",
   "companyId": 1,
   "createdAt": "2024-11-20T12:00:00.000Z"
 }
 ```
 
-✅ Guarde o `id: 1`
+✨ Guarde o `id: 1`
 
 ---
 
-#### 6️⃣ Criar Nota Fiscal
+#### 6🆕 Criar Nota Fiscal
 
 ```http
 POST /invoices
@@ -4648,11 +4757,11 @@ Content-Type: application/json
 }
 ```
 
-✅ Guarde o `id: 1`
+✨ Guarde o `id: 1`
 
 ---
 
-#### 7️⃣ Adicionar Itens à Nota Fiscal
+#### 7🆕 Adicionar Itens a Nota Fiscal
 
 ```http
 POST /invoice-items
@@ -4665,7 +4774,7 @@ Content-Type: application/json
   "quantity": "1000",
   "totalValue": "500.00",
   "status": "WAITING",
-  "remark": "Material conforme especificação"
+  "remark": "Material conforme especificaaao"
 }
 ```
 
@@ -4680,18 +4789,18 @@ Content-Type: application/json
   "totalValue": "500.00",
   "unitValue": "0.500000",
   "status": "WAITING",
-  "remark": "Material conforme especificação",
+  "remark": "Material conforme especificaaao",
   "createdAt": "2024-11-20T13:00:00.000Z"
 }
 ```
 
-✅ Guarde o `id: 2`
+✨ Guarde o `id: 2`
 
 Repita para adicionar outros itens da nota fiscal.
 
 ---
 
-#### 8️⃣ Conferir e Aprovar Item
+#### 8🆕 Conferir e Aprovar Item
 
 ```http
 PUT /invoice-items/b50e8400-e29b-41d4-a716-446655440006
@@ -4722,7 +4831,7 @@ Content-Type: application/json
 
 ---
 
-#### 9️⃣ Registrar no Inventário
+#### 9🆕 Registrar no inventário
 
 ```http
 POST /inventories
@@ -4750,23 +4859,23 @@ Content-Type: application/json
 }
 ```
 
-🎉 **Agora você tem rastreabilidade completa:**
+🆕 **Agora voca tem rastreabilidade completa:**
 - Sabe que esse estoque veio do **invoice item #2**
 - Da **nota fiscal NF-2024-001**
 - Do **fornecedor ABC** (CNPJ 98765432109876)
 - Material **PAR-001** (Parafuso Allen M6 x 20mm)
-- Está no **storage A01-01** (Armazém Principal - Setor A - Prateleira 01)
-- Quantidade: **1000 unidades disponíveis**
+- Esta no **storage A01-01** (Armazam Principal - Setor A - Prateleira 01)
+- Quantidade: **1000 unidades disponaveis**
 
 ---
 
 ### Fluxo de Conferência com Tasks
 
-Este fluxo demonstra como usar o sistema de tarefas para gerenciar a conferência de materiais recebidos.
+Este fluxo demonstra como usar o sistema de tarefas para gerenciar a Conferência de materiais recebidos.
 
-#### 1️⃣ Criar Tarefa de Conferência
+#### 1🆕 Criar Tarefa de Conferência
 
-Após receber a nota fiscal, crie uma tarefa para conferir o material:
+após receber a nota fiscal, crie uma tarefa para conferir o material:
 
 ```http
 POST /tasks
@@ -4779,8 +4888,8 @@ Content-Type: application/json
   "taskType": "CONFERENCE",
   "invoiceId": 1,
   "materialId": 4,
-  "itemSpecification": "Parafuso Allen M6 x 20mm - Aço Inox",
-  "issuedBy": "João Silva - Supervisor",
+  "itemSpecification": "Parafuso Allen M6 x 20mm - Aao Inox",
+  "issuedBy": "Joao Silva - Supervisor",
   "dueDate": "2024-11-25T17:00:00.000Z"
 }
 ```
@@ -4799,13 +4908,13 @@ Content-Type: application/json
 }
 ```
 
-✅ Tarefa criada e aguardando atribuição
+✨ Tarefa criada e aguardando atribuiaao
 
 ---
 
-#### 2️⃣ Listar Tarefas Pendentes
+#### 2🆕 Listar Tarefas Pendentes
 
-O operador do armazém visualiza suas tarefas pendentes:
+O operador do armazam visualiza suas tarefas pendentes:
 
 ```http
 GET /tasks?status=PENDING&taskType=CONFERENCE
@@ -4822,14 +4931,14 @@ Authorization: Bearer {token}
     "status": "PENDING",
     "taskType": "CONFERENCE",
     "dueDate": "2024-11-25T17:00:00.000Z",
-    "issuedBy": "João Silva - Supervisor"
+    "issuedBy": "Joao Silva - Supervisor"
   }
 ]
 ```
 
 ---
 
-#### 3️⃣ Atribuir Tarefa a um Operador
+#### 3🆕 Atribuir Tarefa a um Operador
 
 O supervisor atribui a tarefa a um operador:
 
@@ -4839,7 +4948,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4855,7 +4964,7 @@ Content-Type: application/json
 
 ---
 
-#### 4️⃣ Operador Inicia a Conferência
+#### 4🆕 Operador Inicia a Conferência
 
 O operador marca a tarefa como em andamento:
 
@@ -4871,11 +4980,11 @@ Content-Type: application/json
 
 ---
 
-#### 5️⃣ Realizar a Conferência
+#### 5🆕 Realizar a Conferência
 
 O operador conta os materiais e registra o resultado:
 
-**Cenário A - Quantidade Conforme:**
+**Cenario A - Quantidade Conforme:**
 
 ```http
 POST /tasks/conference
@@ -4885,7 +4994,7 @@ Content-Type: application/json
 {
   "taskUuid": "abc123-def456-ghi789",
   "quantityFound": 1000,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
@@ -4893,21 +5002,21 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Conferência realizada com sucesso. Quantidade está conforme a nota fiscal.",
+  "message": "Conferência realizada com sucesso. Quantidade esta conforme a nota fiscal. inventário criado/atualizado.",
   "quantityFound": 1000,
   "expectedQuantity": 1000,
   "requiresReview": false
 }
 ```
 
-✅ **O que aconteceu:**
-- Task → Status `COMPLETED` com `completedAt` preenchido
-- Invoice Item → Status `CONFORMING`
+✨ **O que aconteceu:**
+- Task ✨ Status `COMPLETED` com `completedAt` preenchido
+- Invoice Item ✨ Status `CONFORMING`
 - Material pode ser armazenado
 
 ---
 
-**Cenário B - Divergência na Quantidade:**
+**Cenario B - Divergancia na Quantidade:**
 
 ```http
 POST /tasks/conference
@@ -4917,31 +5026,31 @@ Content-Type: application/json
 {
   "taskUuid": "abc123-def456-ghi789",
   "quantityFound": 950,
-  "userId": 2
+  "userUuid": "2103e8df-f89d-47be-9be1-3a3db0172c35"
 }
 ```
 
-**Response (Divergência):**
+**Response (Divergancia):**
 ```json
 {
   "success": false,
-  "message": "DIVERGÊNCIA DETECTADA: Esperado 1000, mas foram encontrados 950.",
+  "message": "DIVERGaNCIA DETECTADA: Esperado 1000, mas foram encontrados 950.",
   "quantityFound": 950,
   "expectedQuantity": 1000,
   "requiresReview": true
 }
 ```
 
-⚠️ **O que aconteceu:**
-- Task → Status `COMPLETED` (conferência finalizada)
-- Invoice Item → Status `DIVERGENT` com observação da diferença
-- Supervisor precisa revisar e tomar ação
+🆕 **O que aconteceu:**
+- Task ✨ Status `COMPLETED` (Conferência finalizada)
+- Invoice Item ✨ Status `DIVERGENT` com observaaao da diferenaa
+- Supervisor precisa revisar e tomar aaao
 
 ---
 
-#### 6️⃣ Consultar Status da Conferência
+#### 6🆕 Consultar Status da Conferência
 
-Verificar o status da tarefa concluída:
+Verificar o status da tarefa concluada:
 
 ```http
 GET /tasks/abc123-def456-ghi789
@@ -4963,7 +5072,7 @@ Authorization: Bearer {token}
 
 ---
 
-#### 7️⃣ Listar Tarefas Concluídas
+#### 7🆕 Listar Tarefas Concluadas
 
 ```http
 GET /tasks/closed?taskType=CONFERENCE
@@ -4986,23 +5095,23 @@ Authorization: Bearer {token}
 
 ---
 
-## 📊 Códigos de Status HTTP
+## 🆕 Cadigos de Status HTTP
 
-| Código | Descrição | Quando ocorre |
+| Cadigo | Descriaao | Quando ocorre |
 |--------|-----------|---------------|
-| `200 OK` | Requisição bem-sucedida | GET, PUT, DELETE com sucesso |
+| `200 OK` | Requisiaao bem-sucedida | GET, PUT, DELETE com sucesso |
 | `201 Created` | Recurso criado com sucesso | POST com sucesso |
-| `400 Bad Request` | Dados inválidos na requisição | Campos obrigatórios faltando, tipos errados, foreign keys inválidas |
-| `401 Unauthorized` | Token ausente ou inválido | Sem token, token expirado, token malformado |
-| `404 Not Found` | Recurso não encontrado | UUID não existe, recurso foi deletado |
-| `409 Conflict` | Conflito de dados | CNPJ duplicado, código externo duplicado, constraint de unicidade |
-| `500 Internal Server Error` | Erro interno do servidor | Erro não tratado, problema no banco de dados |
+| `400 Bad Request` | Dados invalidos na requisiaao | Campos obrigatarios faltando, tipos errados, foreign keys invalidas |
+| `401 Unauthorized` | Token ausente ou invalido | Sem token, token expirado, token malformado |
+| `404 Not Found` | Recurso nao encontrado | UUID nao existe, recurso foi deletado |
+| `409 Conflict` | Conflito de dados | CNPJ duplicado, cadigo externo duplicado, constraint de unicidade |
+| `500 Internal Server Error` | Erro interno do servidor | Erro nao tratado, problema no banco de dados |
 
 ---
 
-## ⚠️ Tratamento de Erros
+## 🆕 Tratamento de Erros
 
-### Erro 401 - Não autenticado
+### Erro 401 - Nao autenticado
 
 ```json
 {
@@ -5011,11 +5120,11 @@ Authorization: Bearer {token}
 }
 ```
 
-**Solução:** Faça login novamente para obter um novo token válido.
+**Soluaao:** Faaa login novamente para obter um novo token valido.
 
 ---
 
-### Erro 404 - Recurso não encontrado
+### Erro 404 - Recurso nao encontrado
 
 ```json
 {
@@ -5024,11 +5133,11 @@ Authorization: Bearer {token}
 }
 ```
 
-**Solução:** Verifique se o UUID está correto. O recurso pode ter sido deletado.
+**Soluaao:** Verifique se o UUID esta correto. O recurso pode ter sido deletado.
 
 ---
 
-### Erro 409 - Conflito (duplicação)
+### Erro 409 - Conflito (duplicaaao)
 
 ```json
 {
@@ -5037,14 +5146,14 @@ Authorization: Bearer {token}
 }
 ```
 
-**Solução:** 
-- O recurso que você está tentando criar já existe
-- Use o endpoint de busca para encontrá-lo
+**Soluaao:** 
+- O recurso que voca esta tentando criar ja existe
+- Use o endpoint de busca para encontra-lo
 - Ou atualize o existente com PUT
 
 ---
 
-### Erro 400 - Foreign Key inválida
+### Erro 400 - Foreign Key invalida
 
 ```json
 {
@@ -5054,14 +5163,14 @@ Authorization: Bearer {token}
 }
 ```
 
-**Solução:** 
-- O ID referenciado não existe
+**Soluaao:** 
+- O ID referenciado nao existe
 - Crie o recurso pai antes (ex: material, invoice, supplier, etc.)
-- Verifique se os IDs estão corretos
+- Verifique se os IDs estao corretos
 
 ---
 
-### Erro 400 - Validação de dados
+### Erro 400 - Validaaao de dados
 
 ```json
 {
@@ -5074,205 +5183,205 @@ Authorization: Bearer {token}
 }
 ```
 
-**Solução:** Corrija os campos indicados na mensagem de erro.
+**Soluaao:** Corrija os campos indicados na mensagem de erro.
 
 ---
 
-## 📐 Modelo de Dados
+## 🆕 Modelo de Dados
 
 ### Diagrama de Relacionamentos Completo
 
 ```
-┌─────────────────────┐
-│       User          │
-│─────────────────────│
-│ id (PK)             │
-│ uuid (unique)       │
-│ username (unique)   │
-│ password (hash)     │
-│ name                │
-│ createdAt           │
-└─────────────────────┘
-         ▲
-         │ assignedUserId
-         │
-┌─────────────────────┐       ┌─────────────────────┐
-│      Company        │       │   MaterialCategory  │
-│─────────────────────│       │─────────────────────│
-│ id (PK)             │       │ id (PK)             │
-│ uuid (unique)       │       │ uuid (unique)       │
-│ cnpj (unique)       │       │ name (unique)       │
-│ name                │       │ description         │
-│ street              │       │ materialUnit        │
-│ city                │       │ createdAt           │
-│ state               │       └─────────────────────┘
-│ country             │                │
-│ postalCode          │                │ categoryId
-│ status              │                ▼
-│ createdAt           │       ┌─────────────────────┐
-└─────────────────────┘       │      Material       │
-         │                    │─────────────────────│
-         │ companyId          │ id (PK)             │
-         │                    │ uuid (unique)       │
-         ▼                    │ externalCode (uniq) │
-┌─────────────────────┐       │ categoryId (FK)     │
-│   SupplierInfo      │       │ description         │
-│─────────────────────│       │ materialUnit        │
-│ id (PK)             │       │ status              │
-│ uuid (unique)       │       │ createdAt           │
-│ companyId (FK)      │       └─────────────────────┘
-│ createdAt           │                │
-└─────────────────────┘                │ materialId
-         │                             │
-         │ supplierId                  │
-         ▼                             ▼
-┌─────────────────────┐       ┌─────────────────────┐
-│      Invoice        │       │    InvoiceItem      │
-│─────────────────────│       │─────────────────────│
-│ id (PK)             │       │ id (PK)             │
-│ uuid (unique)       │       │ uuid (unique)       │
-│ invoiceNumber (uniq)│◄──────│ invoiceId (FK)      │
-│ supplierId (FK)     │       │ materialId (FK)     │
-│ receivedAt          │       │ quantity            │
-│ status              │       │ totalValue          │
-│ createdAt           │       │ unitValue (calc)    │
-└─────────────────────┘       │ status              │
-         │                    │ remark              │
-         │ invoiceId          │ createdAt           │
-         │                    └─────────────────────┘
-         │                             │
-         │                             │ invoiceItemId
-         │                             ▼
-         │                    ┌─────────────────────┐
-         │                    │     Inventory       │
-         │                    │─────────────────────│
-         │                    │ id (PK)             │
-         │                    │ uuid (unique)       │
-         │                    │ invoiceItemId (FK)  │
-         │                    │ storageId (FK)      │
-         │                    │ quantity            │
-         │                    │ reserved            │
-         │                    │ available (calc)    │
-         │                    │ createdAt           │
-         │                    └─────────────────────┘
-         │                             │
-         │                             │
-         ▼                             ▼
-┌─────────────────────┐       ┌─────────────────────┐
-│        Task         │       │      Storage        │
-│─────────────────────│       │─────────────────────│
-│ id (PK)             │       │ id (PK)             │
-│ uuid (unique)       │       │ uuid (unique)       │
-│ title               │       │ code (unique)       │
-│ description         │       │ name                │
-│ status              │       │ companyId (FK)      │
-│ dueDate             │       │ createdAt           │
-│ createdAt           │       └─────────────────────┘
-│ taskType            │
-│ invoiceId (FK)      │
-│ materialId (FK)     │
-│ itemSpecification   │
-│ assignedUserId (FK) │
-│ issuedBy            │
-│ entryDate           │
-│ completedAt         │
-│ expectedQuantity    │
-│ countedQuantity     │
-│ countAttempts       │
-│ lastCountAt         │
-└─────────────────────┘
++---------------------+
+a       User          a
+a---------------------a
+a id (PK)             a
+a uuid (unique)       a
+a username (unique)   a
+a password (hash)     a
+a name                a
+a createdAt           a
++---------------------+
+         ✨
+         a assignedUserId
+         a
++---------------------+       +---------------------+
+a      Company        a       a   MaterialCategory  a
+a---------------------a       a---------------------a
+a id (PK)             a       a id (PK)             a
+a uuid (unique)       a       a uuid (unique)       a
+a cnpj (unique)       a       a name (unique)       a
+a name                a       a description         a
+a street              a       a materialUnit        a
+a city                a       a createdAt           a
+a state               a       +---------------------+
+a country             a                a
+a postalCode          a                a categoryId
+a status              a                ✨
+a createdAt           a       +---------------------+
++---------------------+       a      Material       a
+         a                    a---------------------a
+         a companyId          a id (PK)             a
+         a                    a uuid (unique)       a
+         ✨                    a externalCode (uniq) a
++---------------------+       a categoryId (FK)     a
+a   SupplierInfo      a       a description         a
+a---------------------a       a materialUnit        a
+a id (PK)             a       a status              a
+a uuid (unique)       a       a createdAt           a
+a companyId (FK)      a       +---------------------+
+a createdAt           a                a
++---------------------+                a materialId
+         a                             a
+         a supplierId                  a
+         ✨                             ✨
++---------------------+       +---------------------+
+a      Invoice        a       a    InvoiceItem      a
+a---------------------a       a---------------------a
+a id (PK)             a       a id (PK)             a
+a uuid (unique)       a       a uuid (unique)       a
+a invoiceNumber (uniq)a?------a invoiceId (FK)      a
+a supplierId (FK)     a       a materialId (FK)     a
+a receivedAt          a       a quantity            a
+a status              a       a totalValue          a
+a createdAt           a       a unitValue (calc)    a
++---------------------+       a status              a
+         a                    a remark              a
+         a invoiceId          a createdAt           a
+         a                    +---------------------+
+         a                             a
+         a                             a invoiceItemId
+         a                             ✨
+         a                    +---------------------+
+         a                    a     Inventory       a
+         a                    a---------------------a
+         a                    a id (PK)             a
+         a                    a uuid (unique)       a
+         a                    a invoiceItemId (FK)  a
+         a                    a storageId (FK)      a
+         a                    a quantity            a
+         a                    a reserved            a
+         a                    a available (calc)    a
+         a                    a createdAt           a
+         a                    +---------------------+
+         a                             a
+         a                             a
+         ✨                             ✨
++---------------------+       +---------------------+
+a        Task         a       a      Storage        a
+a---------------------a       a---------------------a
+a id (PK)             a       a id (PK)             a
+a uuid (unique)       a       a uuid (unique)       a
+a title               a       a code (unique)       a
+a description         a       a name                a
+a status              a       a companyId (FK)      a
+a dueDate             a       a createdAt           a
+a createdAt           a       +---------------------+
+a taskType            a
+a invoiceId (FK)      a
+a materialId (FK)     a
+a itemSpecification   a
+a assignedUserId (FK) a
+a issuedBy            a
+a entryDate           a
+a completedAt         a
+a expectedQuantity    a
+a countedQuantity     a
+a countAttempts       a
+a lastCountAt         a
++---------------------+
 
 **Legenda:**
-- PK = Primary Key (id interno, não exposto na API)
+- PK = Primary Key (id interno, nao exposto na API)
 - FK = Foreign Key (relacionamento entre tabelas)
 - (unique) = Constraint de unicidade
-- (calc) = Campo calculado automaticamente
+- (calc) = Campo calculado automáticamente
 - (hash) = Campo com hash bcrypt
 ```
 
 ### Principais Relacionamentos
 
-1. **Company ↔ SupplierInfo**: 1:N (uma empresa pode ser fornecedor)
-2. **Company ↔ Storage**: 1:N (uma empresa pode ter vários storages)
-3. **MaterialCategory ↔ Material**: 1:N (uma categoria tem vários materiais)
-4. **Supplier ↔ Invoice**: 1:N (um fornecedor emite várias notas)
-5. **Invoice ↔ InvoiceItem**: 1:N (uma nota tem vários itens)
-6. **Material ↔ InvoiceItem**: 1:N (um material pode estar em vários itens)
-7. **InvoiceItem ↔ Inventory**: 1:N (um item pode estar em vários locais)
-8. **Storage ↔ Inventory**: 1:N (um local armazena vários itens)
-9. **User ↔ Task**: 1:N (um usuário tem várias tarefas atribuídas)
-10. **Invoice ↔ Task**: 1:N (uma nota gera várias tarefas)
-11. **Material ↔ Task**: 1:N (um material pode ter várias tarefas)
+1. **Company ✨ SupplierInfo**: 1:N (uma empresa pode ser fornecedor)
+2. **Company ✨ Storage**: 1:N (uma empresa pode ter varios storages)
+3. **MaterialCategory ✨ Material**: 1:N (uma categoria tem varios materiais)
+4. **Supplier ✨ Invoice**: 1:N (um fornecedor emite varias notas)
+5. **Invoice ✨ InvoiceItem**: 1:N (uma nota tem varios itens)
+6. **Material ✨ InvoiceItem**: 1:N (um material pode estar em varios itens)
+7. **InvoiceItem ✨ Inventory**: 1:N (um item pode estar em varios locais)
+8. **Storage ✨ Inventory**: 1:N (um local armazena varios itens)
+9. **User ✨ Task**: 1:N (um usuário tem varias tarefas atribuídas)
+10. **Invoice ✨ Task**: 1:N (uma nota gera varias tarefas)
+11. **Material ✨ Task**: 1:N (um material pode ter varias tarefas)
 
 ### Rastreabilidade Completa
 
 ```
-┌─────────────┐
-│  Material   │ (O que?)
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│InvoiceItem  │ (Quanto? Por quanto?)
-└──────┬──────┘
-       │
-       ├──► Invoice ──► Supplier ──► Company (De quem? Quando?)
-       │
-       └──► Inventory ──► Storage ──► Company (Onde?)
-              │
-              └──► Task (Quem conferiu? Quando?)
++-------------+
+a  Material   a (O que?)
++-------------+
+       a
+       ✨
++-------------+
+aInvoiceItem  a (Quanto? Por quanto?)
++-------------+
+       a
+       +--✨ Invoice --✨ Supplier --✨ Company (De quem? Quando?)
+       a
+       +--✨ Inventory --✨ Storage --✨ Company (Onde?)
+              a
+              +--✨ Task (Quem conferiu? Quando?)
 ```
 
-**Com este modelo você consegue:**
-- ✅ Rastrear cada unidade de material até sua origem (nota fiscal + fornecedor)
-- ✅ Saber exatamente onde cada lote está armazenado
-- ✅ Identificar quem conferiu, armazenou e movimentou cada item
-- ✅ Separar estoques do mesmo material de fornecedores diferentes
-- ✅ Manter histórico completo de operações via Tasks
-- ✅ Calcular valores unitários automaticamente
-- ✅ Controlar quantidade disponível vs reservada
+**Com este modelo voca consegue:**
+- ✨ Rastrear cada unidade de material ata sua origem (nota fiscal + fornecedor)
+- ✨ Saber exatamente onde cada lote esta armazenado
+- ✨ Identificar quem conferiu, armazenou e movimentou cada item
+- ✨ Separar estoques do mesmo material de fornecedores diferentes
+- ✨ Manter histarico completo de operaaaes via Tasks
+- ✨ Calcular valores unitarios automáticamente
+- ✨ Controlar quantidade disponavel vs reservada
 
 ---
 
-## 📝 Observações Importantes
+## 🆕 Observaaaes Importantes
 
 ### 1. Rastreabilidade Completa
 
-O sistema garante rastreabilidade através da seguinte cadeia:
+O sistema garante rastreabilidade atravas da seguinte cadeia:
 
 ```
-Material ────┐
-             ▼
-         Invoice Item ────► Inventory ────► Storage
-             ▲
-             │
+Material ----+
+             ✨
+         Invoice Item ----✨ Inventory ----✨ Storage
+             ✨
+             a
          Invoice
-             ▲
-             │
+             ✨
+             a
          Supplier
-             ▲
-             │
+             ✨
+             a
          Company
 ```
 
-**Você sempre sabe:**
-- ✅ De qual fornecedor veio o material
-- ✅ Em qual nota fiscal foi recebido
-- ✅ Qual item específico da nota (com quantidade e valor)
-- ✅ Onde está armazenado
-- ✅ Quantidade disponível e reservada
+**Voca sempre sabe:**
+- ✨ De qual fornecedor veio o material
+- ✨ Em qual nota fiscal foi recebido
+- ✨ Qual item especafico da nota (com quantidade e valor)
+- ✨ Onde esta armazenado
+- ✨ Quantidade disponavel e reservada
 
-**Exemplo prático:**
+**Exemplo pratico:**
 
-Se você tem 2000 parafusos PAR-001 no estoque, sendo:
+Se voca tem 2000 parafusos PAR-001 no estoque, sendo:
 - 1000 da NF-2024-001 (Fornecedor ABC) no storage A01-01
 - 1000 da NF-2024-010 (Fornecedor XYZ) no storage B02-03
 
-Você consegue rastrear cada lote separadamente, mesmo sendo o mesmo material!
+Voca consegue rastrear cada lote separadamente, mesmo sendo o mesmo material!
 
 ---
 
-### 2. Reutilização de Companies
+### 2. Reutilizaaao de Companies
 
 Ao criar um Supplier:
 
@@ -5287,19 +5396,19 @@ POST /suppliers
 
 **Comportamento:**
 1. Sistema verifica se existe uma `Company` com CNPJ `12345678901234`
-2. **Se existir:** Reutiliza a `Company` existente e apenas cria o vínculo `SupplierInfo`
-3. **Se não existir:** Cria nova `Company` + novo `SupplierInfo`
+2. **Se existir:** Reutiliza a `Company` existente e apenas cria o vanculo `SupplierInfo`
+3. **Se nao existir:** Cria nova `Company` + novo `SupplierInfo`
 
-**Benefícios:**
-- ✅ A mesma empresa pode ser fornecedor e cliente
-- ✅ Evita duplicação de dados de empresas
-- ✅ Mantém histórico unificado por CNPJ
+**Benefacios:**
+- ✨ A mesma empresa pode ser fornecedor e cliente
+- ✨ Evita duplicaaao de dados de empresas
+- ✨ Mantam histarico unificado por CNPJ
 
 ---
 
-### 3. Campos Calculados Automaticamente
+### 3. Campos Calculados automáticamente
 
-Alguns campos são **calculados automaticamente pelo PostgreSQL** usando generated columns:
+Alguns campos sao **calculados automáticamente pelo PostgreSQL** usando generated columns:
 
 #### Invoice Item - Unit Value
 ```sql
@@ -5312,10 +5421,10 @@ unitValue NUMERIC(15, 6) GENERATED ALWAYS AS (
 ```
 
 **Comportamento:**
-- Calculado automaticamente quando `totalValue` ou `quantity` mudam
+- Calculado automáticamente quando `totalValue` ou `quantity` mudam
 - Armazenado fisicamente no banco (STORED)
-- Não pode ser inserido ou atualizado manualmente
-- Previne divisão por zero
+- Nao pode ser inserido ou atualizado manualmente
+- Previne divisao por zero
 
 **Exemplo:**
 ```json
@@ -5329,7 +5438,7 @@ POST /invoice-items
 {
   "quantity": "1000.000",
   "totalValue": "500.00",
-  "unitValue": "0.500000"  // ← Calculado automaticamente
+  "unitValue": "0.500000"  // ✨ Calculado automáticamente
 }
 ```
 
@@ -5343,9 +5452,9 @@ available NUMERIC(10, 3) GENERATED ALWAYS AS (
 ```
 
 **Comportamento:**
-- Calculado automaticamente quando `quantity` ou `reserved` mudam
-- Sempre reflete a quantidade realmente disponível
-- Não pode ser inserido ou atualizado manualmente
+- Calculado automáticamente quando `quantity` ou `reserved` mudam
+- Sempre reflete a quantidade realmente disponavel
+- Nao pode ser inserido ou atualizado manualmente
 
 **Exemplo:**
 ```json
@@ -5359,10 +5468,10 @@ POST /inventories
 {
   "quantity": "1000.000",
   "reserved": "0.000",
-  "available": "1000.000"  // ← Calculado automaticamente
+  "available": "1000.000"  // ✨ Calculado automáticamente
 }
 
-// Após reservar 250 unidades:
+// após reservar 250 unidades:
 PUT /inventories/{uuid}
 {
   "reserved": "250"
@@ -5372,15 +5481,15 @@ PUT /inventories/{uuid}
 {
   "quantity": "1000.000",
   "reserved": "250.000",
-  "available": "750.000"  // ← Atualizado automaticamente
+  "available": "750.000"  // ✨ Atualizado automáticamente
 }
 ```
 
-**⚠️ Importante:**
-- Estes campos são **read-only** na API
-- Qualquer tentativa de enviar valores para eles será **ignorada**
-- O PostgreSQL garante que os valores estão sempre corretos
-- Use-os para consultas e relatórios com segurança
+**🆕 Importante:**
+- Estes campos sao **read-only** na API
+- Qualquer tentativa de enviar valores para eles sera **ignorada**
+- O PostgreSQL garante que os valores estao sempre corretos
+- Use-os para consultas e relatarios com seguranaa
 
 ---
 
@@ -5388,33 +5497,33 @@ PUT /inventories/{uuid}
 
 #### Material Status
 ```
-DEVELOPMENT → ACTIVE → INACTIVE → DISCONTINUED
-      ↓
+DEVELOPMENT ✨ ACTIVE ✨ INACTIVE ✨ DISCONTINUED
+      ✨
    ACTIVE (aprovado)
 ```
 
 #### Invoice Status
 ```
-PENDING → WAITING_INSPECTION → RECEIVED
-   ↓
+PENDING ✨ WAITING_INSPECTION ✨ RECEIVED
+   ✨
 REJECTED
-   ↓
+   ✨
 CANCELLED
 ```
 
 #### Invoice Item Status
 ```
-WAITING → COUNTING → CONFORMING
-   │         │
-   │         └─────► DIVERGENT
-   │
-   └─────► DAMAGED / MISSING / MISMATCHED
+WAITING ✨ COUNTING ✨ CONFORMING
+   a         a
+   a         +-----✨ DIVERGENT
+   a
+   +-----✨ DAMAGED / MISSING / MISMATCHED
 ```
 
 #### Task Status
 ```
-PENDING → IN_PROGRESS → COMPLETED
-   ↓
+PENDING ✨ IN_PROGRESS ✨ COMPLETED
+   ✨
 CANCELLED
 ```
 
@@ -5423,14 +5532,14 @@ CANCELLED
 ### 5. Soft Delete vs Hard Delete
 
 **Hard Delete (usado atualmente):**
-- Todos os endpoints DELETE fazem exclusão permanente
-- Dados são removidos fisicamente do banco
-- Não há recuperação possível
+- Todos os endpoints DELETE fazem exclusao permanente
+- Dados sao removidos fisicamente do banco
+- Nao ha recuperaaao possavel
 
-**⚠️ Cuidado:** Antes de deletar, certifique-se de que não há dependências:
-- Não delete Companies que têm Suppliers/Customers
-- Não delete Materials que têm Invoice Items
-- Não delete Storages que têm Inventory
+**🆕 Cuidado:** Antes de deletar, certifique-se de que nao ha dependancias:
+- Nao delete Companies que tam Suppliers/Customers
+- Nao delete Materials que tam Invoice Items
+- Nao delete Storages que tam Inventory
 
 ---
 
@@ -5439,11 +5548,11 @@ CANCELLED
 **Campos únicos no sistema:**
 - `users.username` - Nome de usuário
 - `companies.cnpj` - CNPJ da empresa
-- `materials.externalCode` - Código externo do material
+- `materials.externalCode` - Cadigo externo do material
 - `materialCategories.name` - Nome da categoria
-- `storages.code` - Código do local
-- `invoices.invoiceNumber` - Número da nota fiscal
-- `(inventories.invoiceItemId, inventories.storageId)` - Par único de invoice item + storage
+- `storages.code` - Cadigo do local
+- `invoices.invoiceNumber` - Namero da nota fiscal
+- `(inventories.invoiceItemId, inventories.storageId)` - Par anico de invoice item + storage
 
 ---
 
@@ -5469,21 +5578,21 @@ new Date().toISOString()
 
 ---
 
-### 8. Precisão Numérica
+### 8. Precisao Numarica
 
 #### Quantidades (quantity, reserved, available):
 - Tipo: `NUMERIC(10, 3)`
-- Precisão: 10 dígitos no total
+- Precisao: 10 dagitos no total
 - Escala: 3 casas decimais
 - Exemplo: `1234567.890`
 
-#### Valores monetários (totalValue, unitValue):
-- `totalValue`: `NUMERIC(10, 2)` → 2 casas decimais
-- `unitValue`: `NUMERIC(15, 6)` → 6 casas decimais (para cálculo preciso)
+#### Valores monetarios (totalValue, unitValue):
+- `totalValue`: `NUMERIC(10, 2)` ✨ 2 casas decimais
+- `unitValue`: `NUMERIC(15, 6)` ✨ 6 casas decimais (para calculo preciso)
 - Exemplo total: `12345678.90`
-- Exemplo unitário: `123456789.012345`
+- Exemplo unitario: `123456789.012345`
 
-**⚠️ Envie sempre como string para preservar precisão:**
+**🆕 Envie sempre como string para preservar precisao:**
 ```json
 {
   "quantity": "1000.500",
@@ -5495,26 +5604,26 @@ new Date().toISOString()
 
 ### 9. Sistema de Tasks
 
-**Boas práticas:**
+**Boas praticas:**
 
-✅ **Criar tasks automaticamente:**
-- Ao receber nota fiscal → criar task de CONFERENCE
-- Após conferência → criar task de STORAGE
-- Quando preciso separar → criar task de PICKING
+✨ **Criar tasks automáticamente:**
+- Ao receber nota fiscal ✨ criar task de CONFERENCE
+- após Conferência ✨ criar task de STORAGE
+- Quando preciso separar ✨ criar task de PICKING
 
-✅ **Atribuição de tasks:**
-- Use `assignedUserId` para designar responsável
-- Tasks sem atribuição ficam no "pool" para qualquer um pegar
+✨ **Atribuiaao de tasks:**
+- Use `assignedUserId` para designar responsavel
+- Tasks sem atribuiaao ficam no "pool" para qualquer um pegar
 
-✅ **Conferência com tasks:**
+✨ **Conferência com tasks:**
 - Sempre use o endpoint `/tasks/conference` para conferir
 - Isso garante registro de quem conferiu e quando
-- Detecta automaticamente divergências
+- Detecta automáticamente divergancias
 
-✅ **Monitoramento:**
+✨ **Monitoramento:**
 - Use `/tasks/open` para ver trabalho pendente
-- Use `/tasks/closed` para ver histórico
-- Use filtros por `taskType` para análise específica
+- Use `/tasks/closed` para ver histarico
+- Use filtros por `taskType` para analise especafica
 
 ---
 
@@ -5522,29 +5631,29 @@ new Date().toISOString()
 
 #### Por que dois identificadores?
 
-**ID (interno - não exposto):**
+**ID (interno - nao exposto):**
 - Tipo: `SERIAL` (auto-incremento)
 - Uso: Foreign keys internas do banco
-- Performance: Índices mais rápidos
+- Performance: andices mais rapidos
 - **Nunca** retornado nas respostas da API
 
-**UUID (público - exposto):**
+**UUID (pablico - exposto):**
 - Tipo: `UUID v4`
-- Uso: Identificador público em todas as respostas
-- Segurança: Não revela informações sobre quantidade de registros
-- Portabilidade: Único globalmente
+- Uso: Identificador pablico em todas as respostas
+- Seguranaa: Nao revela informaaaes sobre quantidade de registros
+- Portabilidade: anico globalmente
 
-#### Como funciona na prática
+#### Como funciona na pratica
 
-**❌ Errado - Usar ID interno:**
+**✨ Errado - Usar ID interno:**
 ```http
 GET /materials/4
 Authorization: Bearer {token}
 
-// Erro 404 - Endpoint não existe
+// Erro 404 - Endpoint nao existe
 ```
 
-**✅ Correto - Usar UUID:**
+**✨ Correto - Usar UUID:**
 ```http
 GET /materials/850e8400-e29b-41d4-a716-446655440003
 Authorization: Bearer {token}
@@ -5556,10 +5665,10 @@ Authorization: Bearer {token}
 
 ```json
 {
-  // ❌ "id" não é retornado
-  "uuid": "850e8400-e29b-41d4-a716-446655440003",  // ✅ Use este
+  // ✨ "id" nao a retornado
+  "uuid": "850e8400-e29b-41d4-a716-446655440003",  // ✨ Use este
   "externalCode": "PAR-001",
-  "categoryId": 1,  // ⚠️ Foreign key - apenas para referência
+  "categoryId": 1,  // 🆕 Foreign key - apenas para referancia
   "description": "Parafuso Allen M6 x 20mm",
   "createdAt": "2024-11-20T11:30:00.000Z"
 }
@@ -5567,23 +5676,23 @@ Authorization: Bearer {token}
 
 #### Foreign Keys
 
-Foreign keys usam **ID numérico interno** por performance:
+Foreign keys usam **ID numarico interno** por performance:
 
 ```json
 POST /invoice-items
 {
-  "invoiceId": 1,      // ⚠️ ID numérico (interno)
-  "materialId": 4,     // ⚠️ ID numérico (interno)
+  "invoiceId": 1,      // 🆕 ID numarico (interno)
+  "materialId": 4,     // 🆕 ID numarico (interno)
   "quantity": "100",
   "totalValue": "1500.00"
 }
 ```
 
-**Como obter o ID numérico?**
+**Como obter o ID numarico?**
 
 1. Ao criar um recurso, guarde o `id` da resposta
 2. Ou busque pelo UUID e use o `id` retornado
-3. Ou busque por outros campos (código, nome, etc.)
+3. Ou busque por outros campos (cadigo, nome, etc.)
 
 **Exemplo completo:**
 
@@ -5598,7 +5707,7 @@ POST /materials
 
 // Resposta:
 {
-  "id": 4,  // ← Guarde este ID para usar em foreign keys
+  "id": 4,  // ✨ Guarde este ID para usar em foreign keys
   "uuid": "850e8400-e29b-41d4-a716-446655440003",
   "externalCode": "PAR-001"
 }
@@ -5606,7 +5715,7 @@ POST /materials
 // 2. Criar invoice item usando o ID
 POST /invoice-items
 {
-  "materialId": 4,  // ← Use o ID recebido acima
+  "materialId": 4,  // ✨ Use o ID recebido acima
   "invoiceId": 1,
   "quantity": "100"
 }
@@ -5614,50 +5723,50 @@ POST /invoice-items
 
 #### Busca por UUID vs Busca por ID
 
-| Operação | Usa UUID | Usa ID | Exemplo |
+| Operaaao | Usa UUID | Usa ID | Exemplo |
 |----------|----------|--------|---------|
-| GET específico | ✅ Sim | ❌ Não | `GET /materials/{uuid}` |
-| PUT/DELETE | ✅ Sim | ❌ Não | `PUT /materials/{uuid}` |
-| POST (foreign key) | ❌ Não | ✅ Sim | `materialId: 4` |
-| Relacionamentos | ❌ Não | ✅ Sim | `invoiceId: 1` |
+| GET especafico | ✨ Sim | ✨ Nao | `GET /materials/{uuid}` |
+| PUT/DELETE | ✨ Sim | ✨ Nao | `PUT /materials/{uuid}` |
+| POST (foreign key) | ✨ Nao | ✨ Sim | `materialId: 4` |
+| Relacionamentos | ✨ Nao | ✨ Sim | `invoiceId: 1` |
 
-#### Benefícios desta Abordagem
+#### Benefacios desta Abordagem
 
-✅ **Segurança:** UUIDs não revelam quantidade de registros
-✅ **Performance:** IDs numéricos para joins são mais rápidos
-✅ **Portabilidade:** UUIDs podem ser gerados no client se necessário
-✅ **Escalabilidade:** Fácil migração entre bancos diferentes
+✨ **Seguranaa:** UUIDs nao revelam quantidade de registros
+✨ **Performance:** IDs numéricos para joins sao mais rapidos
+✨ **Portabilidade:** UUIDs podem ser gerados no client se necessario
+✨ **Escalabilidade:** Facil migraaao entre bancos diferentes
 
 ---
 
-## 🚀 Começando
+## 🆕 Comeaando
 
-### Pré-requisitos
+### Pra-requisitos
 
 - Node.js v18 ou superior
 - PostgreSQL v14 ou superior
 - npm ou yarn
 
-### Instalação
+### Instalaaao
 
 1. **Clone o repositório:**
 ```bash
-git clone https://github.com/seu-usuario/wms-api.git
+git clone https://github.com/seu-usuário/wms-api.git
 cd wms-api
 ```
 
-2. **Instale as dependências:**
+2. **Instale as dependancias:**
 ```bash
 npm install
 ```
 
-3. **Configure as variáveis de ambiente:**
+3. **Configure as Variáveis de ambiente:**
 
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
 # Database
-DATABASE_URL=postgresql://usuario:senha@localhost:5432/wms_db
+DATABASE_URL=postgresql://usuário:senha@localhost:5432/wms_db
 
 # JWT
 JWT_SECRET=sua_chave_secreta_aqui_muito_segura
@@ -5678,17 +5787,17 @@ npm run db:push
 # Desenvolvimento
 npm run start:dev
 
-# Produção
+# Produaao
 npm run build
 npm run start:prod
 ```
 
-6. **Acesse a aplicação:**
+6. **Acesse a aplicaaao:**
 - API: `http://localhost:3000`
 
 ---
 
-## 🧪 Testando a API
+## 🆕 Testando a API
 
 ### Usando cURL
 ```bash
@@ -5702,42 +5811,42 @@ curl -X GET http://localhost:3000/materials \
   -H "Authorization: Bearer {token}"
 ```
 
-**💡 Dica:** Use o arquivo `test-all-routes.http` na raiz do projeto! Ele contém **80+ exemplos prontos** de requisições organizadas por módulo.
+**🆕 Dica:** Use o arquivo `test-all-routes.http` na raiz do projeto! Ele contam **80+ exemplos prontos** de requisiaaes organizadas por madulo.
 
 ### Usando o arquivo test-all-routes.http
 
-O projeto inclui um arquivo completo com todos os endpoints testados. Você pode usá-lo com:
+O projeto inclui um arquivo completo com todos os endpoints testados. Voca pode usa-lo com:
 
-- **VS Code:** Instale a extensão [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+- **VS Code:** Instale a extensao [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 - **IntelliJ/WebStorm:** Suporte nativo para arquivos `.http`
 
 **Como usar:**
 
-1. **Configure as variáveis:**
-   - Altere `@baseUrl` se necessário (padrão: `http://localhost:3000`)
-   - Após fazer login, copie o `access_token` e cole em `@token`
+1. **Configure as Variáveis:**
+   - Altere `@baseUrl` se necessario (padrao: `http://localhost:3000`)
+   - após fazer login, copie o `access_token` e cole em `@token`
 
-2. **Execute as requisições:**
-   - Clique em "Send Request" acima de cada requisição
+2. **Execute as requisiaaes:**
+   - Clique em "Send Request" acima de cada requisiaao
    - Ou use o atalho `Ctrl+Alt+R` (VS Code)
 
 3. **Navegue pelos módulos:**
-   - O arquivo está organizado em seções por módulo
-   - Use a estrutura de navegação do editor para pular entre seções
+   - O arquivo esta organizado em seaaes por madulo
+   - Use a estrutura de navegaaao do editor para pular entre seaaes
 
-**Benefícios:**
+**Benefacios:**
 
-✅ **Todos os endpoints testados** - Não precisa escrever cURL ou Postman collections
-✅ **Exemplos de todos os cenários** - Criação, atualização, busca, deleção
-✅ **Variáveis reutilizáveis** - Defina `@token` uma vez, use em todas as requisições
-✅ **Sintaxe simples** - Mais fácil que cURL, mais rápido que Postman
-✅ **Versionado com o código** - Sempre atualizado com as mudanças da API
-✅ **Fácil compartilhamento** - Envie o arquivo para o time usar
+✨ **Todos os endpoints testados** - Nao precisa escrever cURL ou Postman collections
+✨ **Exemplos de todos os cenarios** - Criação, atualizaaao, busca, deleaao
+✨ **Variáveis reutilizaveis** - Defina `@token` uma vez, use em todas as requisiaaes
+✨ **Sintaxe simples** - Mais facil que cURL, mais rapido que Postman
+✨ **Versionado com o cadigo** - Sempre atualizado com as Mudanças da API
+✨ **Facil compartilhamento** - Envie o arquivo para o time usar
 
-**Exemplo de uso prático:**
+**Exemplo de uso pratico:**
 
 ```http
-### 1. Faça login primeiro
+### 1. Faaa login primeiro
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -5754,96 +5863,105 @@ GET {{baseUrl}}/materials
 Authorization: Bearer {{token}}
 ```
 
-**📁 Localização:** `/test-all-routes.http` na raiz do projeto
+**🆕 localização:** `/test-all-routes.http` na raiz do projeto
 
-**🔗 Módulos incluídos:**
-- ✅ Auth (Login)
-- ✅ Users (CRUD completo)
-- ✅ Companies (CRUD completo)
-- ✅ Suppliers (CRUD completo)
-- ✅ Material Categories (CRUD completo)
-- ✅ Materials (CRUD completo)
-- ✅ Storages (CRUD completo + lista de nomes)
-- ✅ Invoices (CRUD completo)
-- ✅ Invoice Items (CRUD completo + filtros)
-- ✅ Inventories (CRUD completo + buscas avançadas)
-- ✅ Tasks (CRUD completo + conferência + filtros + atribuição)
+**🆕 módulos incluados:**
+- ✨ Auth (Login)
+- ✨ Users (CRUD completo)
+- ✨ Companies (CRUD completo)
+- ✨ Suppliers (CRUD completo)
+- ✨ Material Categories (CRUD completo)
+- ✨ Materials (CRUD completo)
+- ✨ Storages (CRUD completo + lista de nomes)
+- ✨ Invoices (CRUD completo)
+- ✨ Invoice Items (CRUD completo + filtros)
+- ✨ Inventories (CRUD completo + buscas avanaadas)
+- ✨ Tasks (CRUD completo + Conferência + filtros + atribuiaao)
 
-**⚡ Produtividade:** Com o arquivo `.http`, você pode testar toda a API em minutos!
+**✨ Produtividade:** Com o arquivo `.http`, voca pode testar toda a API em minutos!
 
 
 ### Usando Postman
 
-1. Importe a collection (se disponível)
-2. Configure a variável `{{baseUrl}}` = `http://localhost:3000`
-3. Configure a variável `{{token}}` após o login
+1. Importe a collection (se disponavel)
+2. Configure a variavel `{{baseUrl}}` = `http://localhost:3000`
+3. Configure a variavel `{{token}}` após o login
 4. Use `{{token}}` no header Authorization
 
 ---
 
-## 📧 Suporte
+## 🆕 Suporte
 
-Para dúvidas, problemas ou sugestões:
+Para davidas, problemas ou sugestaes:
 
-- 📧 Email: contato@wms.com
-- 🐛 Issues: https://github.com/seu-usuario/wms-api/issues
-- 📖 Wiki: https://github.com/seu-usuario/wms-api/wiki
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+- 🆕 Email: contato@wms.com
+- 🆕 Issues: https://github.com/seu-usuário/wms-api/issues
+- 🆕 Wiki: https://github.com/seu-usuário/wms-api/wiki
 
 ---
 
-## 👥 Contribuindo
+## 🆕 Licenaa
 
-Contribuições são bem-vindas! Por favor:
+Este projeto esta sob a licenaa MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 🆕 Contribuindo
+
+Contribuiaaes sao bem-vindas! Por favor:
 
 1. Fork o projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+3. Commit suas Mudanças (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
 ---
 
-## 🔄 Changelog
+## 🆕 Changelog
 
 ### [1.1.0] - 2024-11-24
 
 #### Adicionado
 - ✨ Sistema completo de Tasks (Tarefas)
-- ✨ Endpoint de conferência com validação automática
-- ✨ Filtros avançados para listagem de tasks
-- ✨ Atribuição de tasks a usuários
-- ✨ Integração tasks + invoice items para conferência
+- ✨ Endpoint de Conferência com validaaao automática
+- ✨ Filtros avanaados para listagem de tasks
+- ✨ Atribuiaao de tasks a usuários
+- ✨ Integraaao tasks + invoice items para Conferência
 - ✨ Campos de rastreamento de contagem (countedQuantity, countAttempts, lastCountAt)
 
 #### Modificado
-- 🔄 Documentação expandida com fluxos de tasks
-- 🔄 Melhorias na rastreabilidade de operações
+- 🆕 Documentaaao expandida com fluxos de tasks
+- 🆕 Melhorias na rastreabilidade de operaaaes
 
 ### [1.0.0] - 2024-11-20
 
 #### Adicionado
-- ✨ Sistema completo de autenticação JWT
+- ✨ Sistema completo de Autenticação JWT
 - ✨ CRUD completo de Users (com hash de senha)
 - ✨ CRUD completo de Companies
-- ✨ CRUD completo de Suppliers (com reutilização de Companies)
+- ✨ CRUD completo de Suppliers (com reutilizaaao de Companies)
 - ✨ CRUD completo de Material Categories
 - ✨ CRUD completo de Materials
 - ✨ CRUD completo de Storages
 - ✨ CRUD completo de Invoices
-- ✨ CRUD completo de Invoice Items (com cálculo automático de unit value)
+- ✨ CRUD completo de Invoice Items (com calculo automatico de unit value)
 - ✨ CRUD completo de Inventories (com rastreabilidade por invoice item)
-- ✨ Validação de dados em todos os endpoints
+- ✨ Validaaao de dados em todos os endpoints
 - ✨ Tratamento de erros padronizado
-- ✨ Hash automático de senhas com bcrypt
+- ✨ Hash automatico de senhas com bcrypt
 
 ---
 
-**Versão da API:** 1.1.0  
-**Última atualização:** 24 de Novembro de 2024  
-**Desenvolvido com:** ❤️ e NestJS
+**Versao da API:** 1.1.0  
+**altima atualizaaao:** 24 de Novembro de 2024  
+**Desenvolvido com:** 🆕 e NestJS
+
+
+
+
+
+
+
+
+
