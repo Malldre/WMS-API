@@ -23,8 +23,16 @@ export class InventoryService {
     return await this.inventoryRepository.findByInvoiceItemId(invoiceItemId);
   }
 
+  async findByInvoiceItemUuid(invoiceItemUuid: string) {
+    return await this.inventoryRepository.findByInvoiceItemUuid(invoiceItemUuid);
+  }
+
   async findByStorageId(storageId: number) {
     return await this.inventoryRepository.findByStorageId(storageId);
+  }
+
+  async findByStorageUuid(storageUuid: string) {
+    return await this.inventoryRepository.findByStorageUuid(storageUuid);
   }
 
   async findByInvoiceItemAndStorage(invoiceItemId: number, storageId: number) {

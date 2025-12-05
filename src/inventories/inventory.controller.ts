@@ -28,14 +28,14 @@ export class InventoryController {
     return await this.inventoryService.findByUuid(uuid);
   }
 
-  @Get('invoice-item/:invoiceItemId')
-  async findByInvoiceItem(@Param('invoiceItemId') invoiceItemId: string) {
-    return await this.inventoryService.findByInvoiceItemId(parseInt(invoiceItemId));
+  @Get('invoice-item/:invoiceItemUuid')
+  async findByInvoiceItem(@Param('invoiceItemUuid') invoiceItemUuid: string) {
+    return await this.inventoryService.findByInvoiceItemUuid(invoiceItemUuid);
   }
 
-  @Get('storage/:storageId')
-  async findByStorage(@Param('storageId') storageId: string) {
-    return await this.inventoryService.findByStorageId(parseInt(storageId));
+  @Get('storage/:storageUuid')
+  async findByStorage(@Param('storageUuid') storageUuid: string) {
+    return await this.inventoryService.findByStorageUuid(storageUuid);
   }
 
   @Post()

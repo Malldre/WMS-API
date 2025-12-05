@@ -103,6 +103,48 @@ export class InventoryRepository {
     return omitAllInternalIds(inventory);
   }
 
+  async findByInvoiceItemUuid(invoiceItemUuid: string): Promise<Omit<typeof inventories.$inferSelect, 'id'>[]> {
+    const result = await this.db
+      .select({
+        uuid: inventories.uuid,
+        invoiceItemId: inventories.invoiceItemId,
+        storageId: inventories.storageId,
+        quantity: inventories.quantity,
+        reserved: inventories.reserved,
+        available: inventories.available,
+        createdAt: inventories.createdAt,
+      })
+      .from(inventories)
+      .leftJoin(
+        (await import('../db/schema')).invoiceItems,
+        eq(inventories.invoiceItemId, (await import('../db/schema')).invoiceItems.id)
+      )
+      .where(eq((await import('../db/schema')).invoiceItems.uuid, invoiceItemUuid));
+    
+    return result;
+  }
+
+  async findByStorageUuid(storageUuid: string): Promise<Omit<typeof inventories.$inferSelect, 'id'>[]> {
+    const result = await this.db
+      .select({
+        uuid: inventories.uuid,
+        invoiceItemId: inventories.invoiceItemId,
+        storageId: inventories.storageId,
+        quantity: inventories.quantity,
+        reserved: inventories.reserved,
+        available: inventories.available,
+        createdAt: inventories.createdAt,
+      })
+      .from(inventories)
+      .leftJoin(
+        (await import('../db/schema')).storages,
+        eq(inventories.storageId, (await import('../db/schema')).storages.id)
+      )
+      .where(eq((await import('../db/schema')).storages.uuid, storageUuid));
+    
+    return result;
+  }
+
   async delete(uuid: string): Promise<Omit<typeof inventories.$inferSelect, 'id'>> {
     const [inventory] = await this.db
       .delete(inventories)
