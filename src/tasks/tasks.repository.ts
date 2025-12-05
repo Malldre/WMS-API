@@ -70,7 +70,7 @@ export class TasksRepository {
   async findOpenTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<any[]> {
     const conditions = [
       or(
         eq(schema.tasks.status, 'PENDING'),
@@ -87,18 +87,35 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select()
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
       .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id))
       .where(and(...conditions))
       .orderBy(desc(schema.tasks.createdAt));
 
-    return omitAllInternalIdsFromArray(result);
+    return result;
   }
 
   async findClosedTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<any[]> {
     const conditions = [
       or(
         eq(schema.tasks.status, 'COMPLETED'),
@@ -115,19 +132,36 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select()
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
       .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id))
       .where(and(...conditions))
       .orderBy(desc(schema.tasks.createdAt));
 
-    return omitAllInternalIdsFromArray(result);
+    return result;
   }
 
   async findUserTasks(
     userId: number,
     taskType?: string,
     status?: string,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<any[]> {
     const conditions = [eq(schema.tasks.assignedUserId, userId)];
 
     if (taskType) {
@@ -139,12 +173,29 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select()
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
       .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id))
       .where(and(...conditions))
       .orderBy(desc(schema.tasks.createdAt));
 
-    return omitAllInternalIdsFromArray(result);
+    return result;
   }
 
   async create(
