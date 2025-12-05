@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TasksRepository } from './tasks.repository';
+import { TasksRepository, TaskWithRelations } from './tasks.repository';
 import { InvoiceItemService } from '../invoice_items/invoice_item.service';
 import * as schema from '../db/schema';
 import { MaterialRepository } from 'src/materials/material.repository';
@@ -22,13 +22,13 @@ export class TasksService {
     status?: string;
     taskType?: string;
     assignedUserId?: number;
-  }): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  }): Promise<TaskWithRelations[]> {
     return await this.tasksRepository.findAll(filters);
   }
 
   async findByUuid(
     uuid: string,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>> {
+  ): Promise<TaskWithRelations> {
     const task = await this.tasksRepository.findByUuid(uuid);
     if (!task) {
       throw new NotFoundException(`Task with UUID ${uuid} not found`);
@@ -38,21 +38,21 @@ export class TasksService {
 
   async findByInvoiceId(
     invoiceId: number,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<TaskWithRelations[]> {
     return await this.tasksRepository.findByInvoiceId(invoiceId);
   }
 
   async findOpenTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<TaskWithRelations[]> {
     return await this.tasksRepository.findOpenTasks(taskType, filters);
   }
 
   async findClosedTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<TaskWithRelations[]> {
     return await this.tasksRepository.findClosedTasks(taskType, filters);
   }
 
@@ -60,7 +60,7 @@ export class TasksService {
     userId: number,
     taskType?: string,
     status?: string,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<TaskWithRelations[]> {
     return await this.tasksRepository.findUserTasks(userId, taskType, status);
   }
 
