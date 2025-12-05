@@ -8,6 +8,28 @@ import {
   omitAllInternalIdsFromArray,
 } from '../common/utils/omit-id.util';
 
+export interface TaskWithRelations {
+  uuid: string;
+  title: string;
+  description: string | null;
+  taskType: string;
+  status: string;
+  entryDate: Date | null;
+  dueDate: Date | null;
+  completedAt: Date | null;
+  itemSpecification: string | null;
+  createdAt: Date;
+  invoiceUuid: string | null;
+  materialUuid: string | null;
+  assignedUserUuid: string | null;
+  invoiceId: number | null;
+  materialId: number | null;
+  assignedUserId: number | null;
+  countAttempts: number | null;
+  countedQuantity: string | null;
+  lastCountAt: Date | null;
+}
+
 @Injectable()
 export class TasksRepository {
   constructor(
@@ -15,11 +37,35 @@ export class TasksRepository {
     private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
+  private getTaskWithRelationsSelect() {
+    return {
+      uuid: schema.tasks.uuid,
+      title: schema.tasks.title,
+      description: schema.tasks.description,
+      taskType: schema.tasks.taskType,
+      status: schema.tasks.status,
+      entryDate: schema.tasks.entryDate,
+      dueDate: schema.tasks.dueDate,
+      completedAt: schema.tasks.completedAt,
+      itemSpecification: schema.tasks.itemSpecification,
+      createdAt: schema.tasks.createdAt,
+      invoiceUuid: schema.invoices.uuid,
+      materialUuid: schema.materials.uuid,
+      assignedUserUuid: schema.users.uuid,
+      invoiceId: schema.tasks.invoiceId,
+      materialId: schema.tasks.materialId,
+      assignedUserId: schema.tasks.assignedUserId,
+      countAttempts: schema.tasks.countAttempts,
+      countedQuantity: schema.tasks.countedQuantity,
+      lastCountAt: schema.tasks.lastCountAt,
+    };
+  }
+
   async findAll(filters?: {
     status?: string;
     taskType?: string;
     assignedUserId?: number;
-  }): Promise<any[]> {
+  }): Promise<TaskWithRelations[]> {
     const conditions = [];
 
     if (filters?.status) {
@@ -33,21 +79,7 @@ export class TasksRepository {
     }
 
     let query = this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
@@ -64,23 +96,9 @@ export class TasksRepository {
 
   async findByUuid(
     uuid: string,
-  ): Promise<any | null> {
+  ): Promise<TaskWithRelations | null> {
     const result = await this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
@@ -93,23 +111,9 @@ export class TasksRepository {
 
   async findByInvoiceId(
     invoiceId: number,
-  ): Promise<any[]> {
+  ): Promise<TaskWithRelations[]> {
     const result = await this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
@@ -123,7 +127,7 @@ export class TasksRepository {
   async findOpenTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<any[]> {
+  ): Promise<TaskWithRelations[]> {
     const conditions = [
       or(
         eq(schema.tasks.status, 'PENDING'),
@@ -140,21 +144,7 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
@@ -168,7 +158,7 @@ export class TasksRepository {
   async findClosedTasks(
     taskType?: string,
     filters?: { assignedUserId?: number },
-  ): Promise<any[]> {
+  ): Promise<TaskWithRelations[]> {
     const conditions = [
       or(
         eq(schema.tasks.status, 'COMPLETED'),
@@ -185,21 +175,7 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
@@ -214,7 +190,7 @@ export class TasksRepository {
     userId: number,
     taskType?: string,
     status?: string,
-  ): Promise<any[]> {
+  ): Promise<TaskWithRelations[]> {
     const conditions = [eq(schema.tasks.assignedUserId, userId)];
 
     if (taskType) {
@@ -226,21 +202,7 @@ export class TasksRepository {
     }
 
     const result = await this.db
-      .select({
-        uuid: schema.tasks.uuid,
-        title: schema.tasks.title,
-        description: schema.tasks.description,
-        taskType: schema.tasks.taskType,
-        status: schema.tasks.status,
-        entryDate: schema.tasks.entryDate,
-        dueDate: schema.tasks.dueDate,
-        completedAt: schema.tasks.completedAt,
-        itemSpecification: schema.tasks.itemSpecification,
-        createdAt: schema.tasks.createdAt,
-        invoiceUuid: schema.invoices.uuid,
-        materialUuid: schema.materials.uuid,
-        assignedUserUuid: schema.users.uuid,
-      })
+      .select(this.getTaskWithRelationsSelect())
       .from(schema.tasks)
       .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
       .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
