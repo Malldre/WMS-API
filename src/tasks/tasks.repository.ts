@@ -19,7 +19,7 @@ export class TasksRepository {
     status?: string;
     taskType?: string;
     assignedUserId?: number;
-  }): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  }): Promise<any[]> {
     const conditions = [];
 
     if (filters?.status) {
@@ -32,39 +32,92 @@ export class TasksRepository {
       conditions.push(eq(schema.tasks.assignedUserId, filters.assignedUserId));
     }
 
-    const query = this.db.select().from(schema.tasks);
+    let query = this.db
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
+      .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id));
 
     if (conditions.length > 0) {
-      query.where(and(...conditions));
+      query = query.where(and(...conditions)) as any;
     }
 
     const result = await query.orderBy(desc(schema.tasks.createdAt));
 
-    return omitAllInternalIdsFromArray(result);
+    return result;
   }
 
   async findByUuid(
     uuid: string,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'> | null> {
+  ): Promise<any | null> {
     const result = await this.db
-      .select()
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
       .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id))
       .where(eq(schema.tasks.uuid, uuid))
       .limit(1);
 
-    return result[0] ? omitAllInternalIds(result[0]) : null;
+    return result[0] || null;
   }
 
   async findByInvoiceId(
     invoiceId: number,
-  ): Promise<Omit<typeof schema.tasks.$inferSelect, 'id'>[]> {
+  ): Promise<any[]> {
     const result = await this.db
-      .select()
+      .select({
+        uuid: schema.tasks.uuid,
+        title: schema.tasks.title,
+        description: schema.tasks.description,
+        taskType: schema.tasks.taskType,
+        status: schema.tasks.status,
+        entryDate: schema.tasks.entryDate,
+        dueDate: schema.tasks.dueDate,
+        completedAt: schema.tasks.completedAt,
+        itemSpecification: schema.tasks.itemSpecification,
+        createdAt: schema.tasks.createdAt,
+        invoiceUuid: schema.invoices.uuid,
+        materialUuid: schema.materials.uuid,
+        assignedUserUuid: schema.users.uuid,
+      })
       .from(schema.tasks)
+      .leftJoin(schema.invoices, eq(schema.tasks.invoiceId, schema.invoices.id))
+      .leftJoin(schema.materials, eq(schema.tasks.materialId, schema.materials.id))
+      .leftJoin(schema.users, eq(schema.tasks.assignedUserId, schema.users.id))
       .where(eq(schema.tasks.invoiceId, invoiceId))
       .orderBy(desc(schema.tasks.createdAt));
 
-    return omitAllInternalIdsFromArray(result);
+    return result;
   }
 
   async findOpenTasks(
